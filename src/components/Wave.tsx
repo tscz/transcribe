@@ -1,39 +1,43 @@
 import { Component } from "react";
 import React from "react";
 import Peaks, { PeaksInstance } from 'peaks.js';
-import { isNull } from "util";
+import Button from 'react-bootstrap/Button';
 
-class Wave extends Component {
+class Wave extends Component<{ src: string }, {}> {
     state = {
     }
 
+    constructor(props: any) {
+        super(props);
+    }
+
     componentDidUpdate() {
+        console.log("initWave()");
         this.initWave();
     }
 
     render() {
+        console.log("this.props.src=" + this.props.src);
         return (
             <div>
-                <div id="waveform-container">
-                    <div id="zoomview-container"></div>
-                    <div id="overview-container"></div>
-                </div>
-
                 <div id="demo-controls">
                     <audio id="audio" controls>
-                        <source src="" type="audio/mpeg" />
+                        <source src={this.props.src} type="audio/mpeg" />
                         Your browser does not support the audio element.
                     </audio>
 
                     <div id="controls">
-                        <button data-action="zoom-in">Zoom in</button>
-                        <button data-action="zoom-out">Zoom out</button>
-                        <button data-action="add-segment">Add a Segment at current time</button>
-                        <button data-action="add-point">Add a Point at current time</button>
-                        <button data-action="log-data">Log segments/points</button>
-                        <input type="text" id="seek-time" value="0.0" />
-                        <button data-action="seek">Seek</button>
+                        <Button variant="dark" data-action="zoom-in">Zoom in</Button>
+                        <Button variant="dark" data-action="zoom-out">Zoom out</Button>
+                        <Button variant="dark" data-action="add-segment">Add a Segment at current time</Button>
+                        <Button variant="dark" data-action="add-point">Add a Point at current time</Button>
+                        <Button variant="dark" data-action="log-data">Log segments/points</Button>
                     </div>
+                </div>
+
+                <div id="waveform-container">
+                    <div id="zoomview-container"></div>
+                    <div id="overview-container"></div>
                 </div>
 
                 <div className="log">
@@ -130,6 +134,8 @@ class Wave extends Component {
 
         var audioElement: Element = document!.getElementById('audio')!;
 
+        (audioElement as HTMLAudioElement).src = this.props.src;
+
         var options = {
             containers: {
                 zoomview: document!.getElementById('zoomview-container')!,
@@ -178,15 +184,6 @@ class Wave extends Component {
             document!.querySelector('button[data-action="log-data"]')!.addEventListener('click', function (event) {
                 renderSegments(peaksInstance!);
                 renderPoints(peaksInstance!);
-            });
-
-            document!.querySelector('button[data-action="seek"]')!.addEventListener('click', function (event) {
-                var time = (document!.getElementById('seek-time') as HTMLInputElement)!.value;
-                var seconds = parseFloat(time);
-
-                if (!Number.isNaN(seconds)) {
-                    peaksInstance!.player.seek(seconds);
-                }
             });
 
             document!.querySelector('body')!.addEventListener('click', function (event) {
