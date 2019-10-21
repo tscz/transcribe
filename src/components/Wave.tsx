@@ -7,10 +7,6 @@ class Wave extends Component<{ src: string }, {}> {
     state = {
     }
 
-    constructor(props: any) {
-        super(props);
-    }
-
     componentDidUpdate() {
         console.log("initWave()");
         this.initWave();
@@ -91,9 +87,8 @@ class Wave extends Component<{ src: string }, {}> {
                     '<td>' + segment.labelText + '</td>' +
                     '<td>' + segment.startTime + '</td>' +
                     '<td>' + segment.endTime + '</td>' +
-                    '<td>' + '<a href="#' + segment.id + '" data-action="play-segment" data-id="' + segment.id + '">Play</a>' + '</td>' +
-                    '<td>' + '<a href="#' + segment.id + '" data-action="remove-segment" data-id="' + segment.id + '">Remove</a>' + '</td>' +
-                    '</tr>';
+                    '<td><a href="#' + segment.id + '" data-action="play-segment" data-id="' + segment.id + '">Play</a></td>' +
+                    '<td><a href="#' + segment.id + '" data-action="remove-segment" data-id="' + segment.id + '">Remove</a></td></tr>';
 
                 html += row;
             }
@@ -117,8 +112,7 @@ class Wave extends Component<{ src: string }, {}> {
                     '<td>' + point.id + '</td>' +
                     '<td>' + point.labelText + '</td>' +
                     '<td>' + point.time + '</td>' +
-                    '<td>' + '<a href="#' + point.id + '" data-action="remove-point" data-id="' + point.id + '">Remove</a>' + '</td>' +
-                    '</tr>';
+                    '<td><a href="#' + point.id + '" data-action="remove-point" data-id="' + point.id + '">Remove</a></td></tr>';
 
                 html += row;
             }
@@ -164,6 +158,8 @@ class Wave extends Component<{ src: string }, {}> {
                 peaksInstance!.zoom.zoomOut();
             });
 
+            /**
+             * TODO: Investigate Compile Issue/wrong Typescript definition For update callback function. Bug? 
             document!.querySelector('button[data-action="add-segment"]')!.addEventListener('click', function () {
                 peaksInstance!.segments.add({
                     startTime: peaksInstance!.player!.getCurrentTime(),
@@ -180,6 +176,7 @@ class Wave extends Component<{ src: string }, {}> {
                     editable: true
                 });
             });
+            */
 
             document!.querySelector('button[data-action="log-data"]')!.addEventListener('click', function (event) {
                 renderSegments(peaksInstance!);
