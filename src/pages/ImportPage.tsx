@@ -1,10 +1,9 @@
 import React from "react";
-import Wave from "./Wave";
-import Row from "react-bootstrap/Row";
-import Container from "react-bootstrap/Container";
-import Col from "react-bootstrap/Col";
 
-class ImportPage extends React.Component {
+class ImportPage extends React.Component<
+  { callback: (file: string) => void },
+  {}
+> {
   state = {
     file: ""
   };
@@ -13,6 +12,7 @@ class ImportPage extends React.Component {
 
   constructor(props: any) {
     super(props);
+
     this.fileInput = React.createRef();
     console.log("ImportPage constructor:" + this.state.file);
   }
@@ -29,28 +29,18 @@ class ImportPage extends React.Component {
     console.log("File BlobURL: " + fileURL);
 
     this.setState({ file: fileURL });
+    this.props.callback(fileURL);
   }
 
   render() {
     return (
-      <Container className="border">
-        <Row>
-          <Col>
-            <input
-              id="audio_file"
-              type="file"
-              accept="audio/*"
-              ref={this.fileInput}
-              onChange={() => this.handleChange()}
-            ></input>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Wave src={this.state.file} />
-          </Col>
-        </Row>
-      </Container>
+      <input
+        id="audio_file"
+        type="file"
+        accept="audio/*"
+        ref={this.fileInput}
+        onChange={() => this.handleChange()}
+      ></input>
     );
   }
 }
