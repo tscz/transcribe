@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 class Wave extends Component<{ src: string }, {}> {
   state = {};
 
-  componentDidUpdate() {
+  componentDidMount() {
     console.log("initWave()");
     this.initWave();
   }
@@ -15,11 +15,6 @@ class Wave extends Component<{ src: string }, {}> {
     return (
       <div>
         <div id="demo-controls">
-          <audio id="audio" controls>
-            <source src={this.props.src} type="audio/mpeg" />
-            Your browser does not support the audio element.
-          </audio>
-
           <div id="controls">
             <Button variant="dark" data-action="zoom-in">
               Zoom in
