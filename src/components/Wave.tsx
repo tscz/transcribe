@@ -194,28 +194,22 @@ class Wave extends Component<{ src: string }, {}> {
       document!
         .querySelector('button[data-action="add-segment"]')!
         .addEventListener("click", function() {
-          // Ignored because of  https://github.com/bbc/peaks.js/issues/281
-          // @ts-ignore-start
           peaksInstance!.segments.add({
             startTime: peaksInstance!.player!.getCurrentTime(),
             endTime: peaksInstance!.player!.getCurrentTime() + 10,
             labelText: "Test segment",
             editable: true
           });
-          // @ts-ignore-end
         });
 
       document!
         .querySelector('button[data-action="add-point"]')!
         .addEventListener("click", function() {
-          // Ignored because of  https://github.com/bbc/peaks.js/issues/281
-          // @ts-ignore-start
           peaksInstance!.points.add({
             time: peaksInstance!.player.getCurrentTime(),
             labelText: "Test point",
             editable: true
           });
-          // @ts-ignore-end
         });
 
       document!
