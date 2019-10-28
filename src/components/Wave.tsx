@@ -153,6 +153,8 @@ class Wave extends Component<{ src: string }, {}> {
       }
     };
 
+    var AudioContext =
+      (window as any).AudioContext || (window as any).webkitAudioContext;
     var audioContext = new AudioContext();
 
     var audioElement: Element = document!.getElementById("audio")!;
