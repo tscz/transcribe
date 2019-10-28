@@ -9,6 +9,7 @@
         "@types/node": "^12.11.5",
         "@types/react-dom": "^16.9.2",
         "bootstrap": "^4.3.1",
+        "file-saver": "^2.0.2",
         "howler": "^2.1.2",
         "peaks.js": "^0.13.1",
         "react": "^16.11.0",
@@ -43,6 +44,7 @@
         ]
     },
     "devDependencies": {
+        "@types/file-saver": "^2.0.1",
         "@types/react": "^16.9.9",
         "gh-pages": "^2.1.1"
     }
