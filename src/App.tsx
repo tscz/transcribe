@@ -1,5 +1,7 @@
 import React, { ReactElement } from "react";
 import ListGroup from "react-bootstrap/ListGroup";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
@@ -10,6 +12,7 @@ import ImportPage from "./pages/ImportPage";
 import PrintPage from "./pages/PrintPage";
 import SongStructurePage from "./pages/SongStructurePage";
 import StrummingPage from "./pages/StrummingPage";
+import FileSaver from "file-saver";
 
 class App extends React.Component {
   switchSong = (file: string) => {
@@ -18,7 +21,8 @@ class App extends React.Component {
 
   state = {
     currentPage: <ImportPage callback={this.switchSong} />,
-    src: ""
+    src: "",
+    show: false
   };
 
   constructor(props: any) {
@@ -27,8 +31,35 @@ class App extends React.Component {
     console.log("1=" + this + typeof this);
   }
 
+  showModal = () => {
+    this.setState({ show: true });
+  };
+
+  hideModal = () => {
+    this.setState({ show: false });
+  };
+
   switchPage(page: ReactElement) {
     this.setState({ currentPage: page });
+  }
+
+  createModalDialog(header: string, body: ReactElement) {
+    return (
+      <Modal show={this.state.show} onHide={this.hideModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>{header}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{body}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={this.hideModal}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={this.hideModal}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    );
   }
 
   render() {
@@ -36,6 +67,11 @@ class App extends React.Component {
 
     return (
       <>
+        {this.createModalDialog(
+          "New Analysis",
+          <ImportPage callback={this.switchSong} />
+        )}
+
         <Navbar
           bg="dark"
           variant="dark"
@@ -54,13 +90,7 @@ class App extends React.Component {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <NavDropdown title="File" id="basic-nav-dropdown">
-              <NavDropdown.Item
-                onClick={() =>
-                  this.switchPage(<SongStructurePage file={this.state.src} />)
-                }
-              >
-                New
-              </NavDropdown.Item>
+              <NavDropdown.Item onClick={this.showModal}>New</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item
                 onClick={() => this.switchPage(<HarmonyPage />)}
@@ -68,14 +98,12 @@ class App extends React.Component {
                 Open ...
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item
-                onClick={() => this.switchPage(<HarmonyPage />)}
-              >
-                Save
+              <NavDropdown.Item onClick={() => this.save()}>
+                Save as ...
               </NavDropdown.Item>
             </NavDropdown>
             <NavDropdown title="Preferences" id="basic-nav-dropdown">
-              <NavDropdown.Item onClick={() => this.switchPage(<DrumPage />)}>
+              <NavDropdown.Item onClick={this.showModal}>
                 Preferences...
               </NavDropdown.Item>
             </NavDropdown>
@@ -143,6 +171,21 @@ class App extends React.Component {
         </div>
       </>
     );
+  }
+  save(): void {
+    let analysis = {
+      sections: [1, 2, 3],
+      strumming: "",
+      beat: "forbyfor"
+    };
+
+    var blob = new Blob([JSON.stringify(analysis, null, 2)], {
+      type: "text/plain;charset=utf-8"
+    });
+
+    let filename = "analysis.txt";
+
+    FileSaver.saveAs(blob, filename);
   }
 }
 
