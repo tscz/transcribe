@@ -1,8 +1,13 @@
 import React from "react";
+import Page from "./Page";
 
 class DrumPage extends React.Component {
   render() {
-    return <p>DrumPage</p>;
+    return (
+      <Page header="Drum Pattern">
+        <p>DrumPage</p>
+      </Page>
+    );
   }
 }
 

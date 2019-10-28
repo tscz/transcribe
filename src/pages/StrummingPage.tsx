@@ -1,8 +1,13 @@
 import React from "react";
+import Page from "./Page";
 
 class StrummingPage extends React.Component {
   render() {
-    return <p>StrummingPage</p>;
+    return (
+      <Page header="Strumming Pattern">
+        <p>StrummingyPage</p>
+      </Page>
+    );
   }
 }
 

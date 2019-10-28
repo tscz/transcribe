@@ -1,18 +1,17 @@
+import FileSaver from "file-saver";
 import React, { ReactElement } from "react";
 import ListGroup from "react-bootstrap/ListGroup";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import "./App.css";
+import Dialog from "./dialogs/Dialog";
 import DrumPage from "./pages/DrumPage";
 import HarmonyPage from "./pages/HarmonyPage";
 import ImportPage from "./pages/ImportPage";
 import PrintPage from "./pages/PrintPage";
 import SongStructurePage from "./pages/SongStructurePage";
 import StrummingPage from "./pages/StrummingPage";
-import FileSaver from "file-saver";
 
 class App extends React.Component {
   switchSong = (file: string) => {
@@ -22,7 +21,11 @@ class App extends React.Component {
   state = {
     currentPage: <ImportPage callback={this.switchSong} />,
     src: "",
-    show: false
+    showNewDialog: false,
+    showOpenDialog: false,
+    showSaveDialog: false,
+    showPreferencesDialog: false,
+    showHelpDialog: false
   };
 
   constructor(props: any) {
@@ -31,35 +34,48 @@ class App extends React.Component {
     console.log("1=" + this + typeof this);
   }
 
-  showModal = () => {
-    this.setState({ show: true });
+  showNewDialog = () => {
+    this.setState({ showNewDialog: true });
   };
 
-  hideModal = () => {
-    this.setState({ show: false });
+  showOpenDialog = () => {
+    this.setState({ showOpenDialog: true });
+  };
+
+  showSaveDialog = () => {
+    this.setState({ showSaveDialog: true });
+  };
+
+  showPreferencesDialog = () => {
+    this.setState({ showPreferencesDialog: true });
+  };
+
+  showHelpDialog = () => {
+    this.setState({ showHelpDialog: true });
+  };
+
+  hideNewDialog = () => {
+    this.setState({ showNewDialog: false });
+  };
+
+  hideOpenDialog = () => {
+    this.setState({ showOpenDialog: false });
+  };
+
+  hideSaveDialog = () => {
+    this.setState({ showSaveDialog: false });
+  };
+
+  hidePreferencesDialog = () => {
+    this.setState({ showPreferencesDialog: false });
+  };
+
+  hideHelpDialog = () => {
+    this.setState({ showHelpDialog: false });
   };
 
   switchPage(page: ReactElement) {
     this.setState({ currentPage: page });
-  }
-
-  createModalDialog(header: string, body: ReactElement) {
-    return (
-      <Modal show={this.state.show} onHide={this.hideModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>{header}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{body}</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={this.hideModal}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={this.hideModal}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
   }
 
   render() {
@@ -67,10 +83,45 @@ class App extends React.Component {
 
     return (
       <>
-        {this.createModalDialog(
-          "New Analysis",
-          <ImportPage callback={this.switchSong} />
-        )}
+        <Dialog
+          title="Create new Analysis"
+          show={this.state.showNewDialog}
+          onHide={this.hideNewDialog}
+        >
+          <p>Create new Analysis</p>
+        </Dialog>
+
+        <Dialog
+          title="Open existing Analysis"
+          show={this.state.showOpenDialog}
+          onHide={this.hideOpenDialog}
+        >
+          <p>Open existing Analysis</p>
+        </Dialog>
+
+        <Dialog
+          title="Save Analysis"
+          show={this.state.showSaveDialog}
+          onHide={this.hideSaveDialog}
+        >
+          <p>Save Analysis</p>
+        </Dialog>
+
+        <Dialog
+          title="Preferences"
+          show={this.state.showPreferencesDialog}
+          onHide={this.hidePreferencesDialog}
+        >
+          <p>Save Analysis</p>
+        </Dialog>
+
+        <Dialog
+          title="Help"
+          show={this.state.showHelpDialog}
+          onHide={this.hideHelpDialog}
+        >
+          <p>Help</p>
+        </Dialog>
 
         <Navbar
           bg="dark"
@@ -90,31 +141,25 @@ class App extends React.Component {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <NavDropdown title="File" id="basic-nav-dropdown">
-              <NavDropdown.Item onClick={this.showModal}>New</NavDropdown.Item>
+              <NavDropdown.Item onClick={this.showNewDialog}>
+                New
+              </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item
-                onClick={() => this.switchPage(<HarmonyPage />)}
-              >
+              <NavDropdown.Item onClick={this.showOpenDialog}>
                 Open ...
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item onClick={() => this.save()}>
+              <NavDropdown.Item onClick={this.showSaveDialog}>
                 Save as ...
               </NavDropdown.Item>
             </NavDropdown>
             <NavDropdown title="Preferences" id="basic-nav-dropdown">
-              <NavDropdown.Item onClick={this.showModal}>
+              <NavDropdown.Item onClick={this.showPreferencesDialog}>
                 Preferences...
               </NavDropdown.Item>
             </NavDropdown>
             <Nav className="mr-auto">
-              <Nav.Link
-                onClick={() =>
-                  this.switchPage(<ImportPage callback={this.switchSong} />)
-                }
-              >
-                Help
-              </Nav.Link>
+              <Nav.Link onClick={this.showHelpDialog}>Help</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
