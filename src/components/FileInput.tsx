@@ -1,7 +1,7 @@
 import React from "react";
 
 class FileInput extends React.Component<
-  { callback: (file: string) => void },
+  { callback: (file: File, fileUrl: string) => void },
   {}
 > {
   state = {
@@ -28,8 +28,8 @@ class FileInput extends React.Component<
     console.log("File type: " + file!.type);
     console.log("File BlobURL: " + fileURL);
 
-    this.setState({ file: fileURL });
-    this.props.callback(fileURL);
+    this.setState({ file: file, fileUrl: fileURL });
+    this.props.callback(file, fileURL);
   }
 
   render() {

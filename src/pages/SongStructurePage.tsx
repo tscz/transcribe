@@ -2,12 +2,12 @@ import React from "react";
 import Wave from "../components/Wave";
 import Page from "./Page";
 
-class SongStructurePage extends React.Component<{ file: string }, {}> {
+class SongStructurePage extends React.Component<{ url: string }, {}> {
   render() {
     return (
       <>
         <Page header="Song Structure">
-          <Wave src={this.props.file} />
+          {this.props.url ? <Wave url={this.props.url} /> : null}
         </Page>
       </>
     );

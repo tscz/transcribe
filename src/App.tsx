@@ -16,8 +16,8 @@ import DefaultPage from "./pages/DefaultPage";
 import FileInput from "./components/FileInput";
 
 class App extends React.Component {
-  switchSong = (file: string) => {
-    this.setState({ src: file });
+  switchSong = (file: File, fileUrl: string) => {
+    this.setState({ file: file, fileUrl: fileUrl });
   };
 
   analysisLoaded = () => {
@@ -26,7 +26,8 @@ class App extends React.Component {
 
   state = {
     currentPage: <DefaultPage />,
-    src: "",
+    fileUrl: "",
+    file: null,
     showNewDialog: false,
     showOpenDialog: false,
     showSaveDialog: false,
@@ -86,7 +87,7 @@ class App extends React.Component {
   }
 
   render() {
-    console.log("render App with src=" + this.state.src);
+    console.log("render App with src=" + this.state.fileUrl);
 
     return (
       <>
@@ -95,7 +96,7 @@ class App extends React.Component {
           show={this.state.showNewDialog}
           onSubmit={() => {
             this.analysisLoaded();
-            this.switchPage(<SongStructurePage file={this.state.src} />);
+            this.switchPage(<SongStructurePage url={this.state.fileUrl} />);
             this.hideNewDialog();
           }}
           onCancel={() => {
@@ -134,6 +135,10 @@ class App extends React.Component {
           title="Save Analysis"
           show={this.state.showSaveDialog}
           onCancel={this.hideSaveDialog}
+          onSubmit={() => {
+            this.save();
+            this.hideSaveDialog();
+          }}
         >
           <p>Save Analysis</p>
         </Dialog>
@@ -201,7 +206,9 @@ class App extends React.Component {
                 <ListGroup.Item
                   action
                   onClick={() =>
-                    this.switchPage(<SongStructurePage file={this.state.src} />)
+                    this.switchPage(
+                      <SongStructurePage url={this.state.fileUrl} />
+                    )
                   }
                 >
                   Song Structure
@@ -232,9 +239,9 @@ class App extends React.Component {
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <audio id="audio" controls>
-                    {this.state.src !== "" && (
-                      <source src={this.state.src} type="audio/mpeg" />
-                    )}
+                    {this.state.fileUrl ? (
+                      <source src={this.state.fileUrl} type="audio/mpeg" />
+                    ) : null}
                     Your browser does not support the audio element.
                   </audio>
                 </ListGroup.Item>
@@ -250,19 +257,19 @@ class App extends React.Component {
     );
   }
   save(): void {
-    let analysis = {
-      sections: [1, 2, 3],
-      strumming: "",
-      beat: "forbyfor"
-    };
+    let analysis: any = this.state;
 
-    var blob = new Blob([JSON.stringify(analysis, null, 2)], {
-      type: "text/plain;charset=utf-8"
+    var reader = new FileReader();
+    reader.addEventListener("loadend", function() {
+      analysis.mp3 = reader.result;
+
+      var content = new Blob([JSON.stringify(analysis)], {
+        type: "text/plain;charset=utf-8"
+      });
+      let filename = "analysis.txt";
+      FileSaver.saveAs(content, filename);
     });
-
-    let filename = "analysis.txt";
-
-    FileSaver.saveAs(blob, filename);
+    reader.readAsText((this.state.file as unknown) as Blob);
   }
 }
 
