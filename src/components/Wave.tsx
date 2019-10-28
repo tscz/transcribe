@@ -2,7 +2,7 @@ import Peaks, { PeaksInstance } from "peaks.js";
 import React, { Component } from "react";
 import Button from "react-bootstrap/Button";
 
-class Wave extends Component<{ src: string }, {}> {
+class Wave extends Component<{ url: string }, {}> {
   state = {};
 
   componentDidMount() {
@@ -11,7 +11,7 @@ class Wave extends Component<{ src: string }, {}> {
   }
 
   render() {
-    console.log("this.props.src=" + this.props.src);
+    console.log("this.props.src=" + this.props.url);
     return (
       <div>
         <div id="demo-controls">
@@ -159,7 +159,7 @@ class Wave extends Component<{ src: string }, {}> {
 
     var audioElement: Element = document!.getElementById("audio")!;
 
-    (audioElement as HTMLAudioElement).src = this.props.src;
+    (audioElement as HTMLAudioElement).src = this.props.url;
 
     var options = {
       containers: {
