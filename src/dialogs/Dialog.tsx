@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
 class Dialog extends Component<
-  { title: string; show: boolean; onHide: () => void },
+  { title: string; show: boolean; onCancel: () => void; onSubmit?: () => void },
   {}
 > {
   constructor(props: any) {
@@ -13,17 +13,14 @@ class Dialog extends Component<
   }
   render() {
     return (
-      <Modal show={this.props.show} onHide={this.props.onHide}>
+      <Modal show={this.props.show} onHide={this.props.onCancel}>
         <Modal.Header closeButton>
           <Modal.Title>{this.props.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>{this.props.children}</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={this.props.onHide}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={this.props.onHide}>
-            Save Changes
+          <Button variant="dark" onClick={this.props.onSubmit}>
+            Create
           </Button>
         </Modal.Footer>
       </Modal>

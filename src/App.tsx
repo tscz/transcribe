@@ -3,29 +3,36 @@ import React, { ReactElement } from "react";
 import ListGroup from "react-bootstrap/ListGroup";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import Form from "react-bootstrap/Form";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import "./App.css";
 import Dialog from "./dialogs/Dialog";
 import DrumPage from "./pages/DrumPage";
 import HarmonyPage from "./pages/HarmonyPage";
-import ImportPage from "./pages/ImportPage";
 import PrintPage from "./pages/PrintPage";
 import SongStructurePage from "./pages/SongStructurePage";
 import StrummingPage from "./pages/StrummingPage";
+import DefaultPage from "./pages/DefaultPage";
+import FileInput from "./components/FileInput";
 
 class App extends React.Component {
   switchSong = (file: string) => {
     this.setState({ src: file });
   };
 
+  analysisLoaded = () => {
+    this.setState({ analysisStarted: true });
+  };
+
   state = {
-    currentPage: <ImportPage callback={this.switchSong} />,
+    currentPage: <DefaultPage />,
     src: "",
     showNewDialog: false,
     showOpenDialog: false,
     showSaveDialog: false,
     showPreferencesDialog: false,
-    showHelpDialog: false
+    showHelpDialog: false,
+    analysisStarted: false
   };
 
   constructor(props: any) {
@@ -86,15 +93,39 @@ class App extends React.Component {
         <Dialog
           title="Create new Analysis"
           show={this.state.showNewDialog}
-          onHide={this.hideNewDialog}
+          onSubmit={() => {
+            this.analysisLoaded();
+            this.switchPage(<SongStructurePage file={this.state.src} />);
+            this.hideNewDialog();
+          }}
+          onCancel={() => {
+            this.hideNewDialog();
+          }}
         >
-          <p>Create new Analysis</p>
+          <Form>
+            <Form.Group controlId="title">
+              <Form.Label>Project title</Form.Label>
+              <Form.Control type="text" placeholder="Enter title" />
+              <Form.Text className="text-muted">
+                This title will be used for the new analysis project.
+              </Form.Text>
+            </Form.Group>
+
+            <Form.Group controlId="file">
+              <Form.Label>Song file</Form.Label>
+              <br />
+              <FileInput callback={this.switchSong}></FileInput>
+              <Form.Text className="text-muted">
+                Please select a MP3 file as basis for your analysis.
+              </Form.Text>
+            </Form.Group>
+          </Form>
         </Dialog>
 
         <Dialog
           title="Open existing Analysis"
           show={this.state.showOpenDialog}
-          onHide={this.hideOpenDialog}
+          onCancel={this.hideOpenDialog}
         >
           <p>Open existing Analysis</p>
         </Dialog>
@@ -102,7 +133,7 @@ class App extends React.Component {
         <Dialog
           title="Save Analysis"
           show={this.state.showSaveDialog}
-          onHide={this.hideSaveDialog}
+          onCancel={this.hideSaveDialog}
         >
           <p>Save Analysis</p>
         </Dialog>
@@ -110,7 +141,7 @@ class App extends React.Component {
         <Dialog
           title="Preferences"
           show={this.state.showPreferencesDialog}
-          onHide={this.hidePreferencesDialog}
+          onCancel={this.hidePreferencesDialog}
         >
           <p>Save Analysis</p>
         </Dialog>
@@ -118,7 +149,7 @@ class App extends React.Component {
         <Dialog
           title="Help"
           show={this.state.showHelpDialog}
-          onHide={this.hideHelpDialog}
+          onCancel={this.hideHelpDialog}
         >
           <p>Help</p>
         </Dialog>
@@ -163,52 +194,53 @@ class App extends React.Component {
             </Nav>
           </Navbar.Collapse>
         </Navbar>
-
         <div className="d-flex" id="wrapper">
-          <div className="bg-light border-right" id="sidebar-wrapper">
-            <ListGroup variant="flush">
-              <ListGroup.Item
-                action
-                onClick={() =>
-                  this.switchPage(<SongStructurePage file={this.state.src} />)
-                }
-              >
-                Song Structure
-              </ListGroup.Item>
-              <ListGroup.Item
-                action
-                onClick={() => this.switchPage(<HarmonyPage />)}
-              >
-                Harmony
-              </ListGroup.Item>
-              <ListGroup.Item
-                action
-                onClick={() => this.switchPage(<DrumPage />)}
-              >
-                Drum Pattern
-              </ListGroup.Item>
-              <ListGroup.Item
-                action
-                onClick={() => this.switchPage(<StrummingPage />)}
-              >
-                Strumming Pattern
-              </ListGroup.Item>
-              <ListGroup.Item
-                action
-                onClick={() => this.switchPage(<PrintPage />)}
-              >
-                Print Song
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <audio id="audio" controls>
-                  {this.state.src !== "" && (
-                    <source src={this.state.src} type="audio/mpeg" />
-                  )}
-                  Your browser does not support the audio element.
-                </audio>
-              </ListGroup.Item>
-            </ListGroup>
-          </div>
+          {this.state.analysisStarted ? (
+            <div className="bg-light border-right" id="sidebar-wrapper">
+              <ListGroup variant="flush">
+                <ListGroup.Item
+                  action
+                  onClick={() =>
+                    this.switchPage(<SongStructurePage file={this.state.src} />)
+                  }
+                >
+                  Song Structure
+                </ListGroup.Item>
+                <ListGroup.Item
+                  action
+                  onClick={() => this.switchPage(<HarmonyPage />)}
+                >
+                  Harmony
+                </ListGroup.Item>
+                <ListGroup.Item
+                  action
+                  onClick={() => this.switchPage(<DrumPage />)}
+                >
+                  Drum Pattern
+                </ListGroup.Item>
+                <ListGroup.Item
+                  action
+                  onClick={() => this.switchPage(<StrummingPage />)}
+                >
+                  Strumming Pattern
+                </ListGroup.Item>
+                <ListGroup.Item
+                  action
+                  onClick={() => this.switchPage(<PrintPage />)}
+                >
+                  Print Song
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <audio id="audio" controls>
+                    {this.state.src !== "" && (
+                      <source src={this.state.src} type="audio/mpeg" />
+                    )}
+                    Your browser does not support the audio element.
+                  </audio>
+                </ListGroup.Item>
+              </ListGroup>
+            </div>
+          ) : null}
 
           <div id="page-content-wrapper">
             <div className="container-fluid">{this.state.currentPage}</div>
