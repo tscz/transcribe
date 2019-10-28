@@ -1,4 +1,5 @@
 import React from "react";
+import Page from "./Page";
 
 class ImportPage extends React.Component<
   { callback: (file: string) => void },
@@ -34,13 +35,15 @@ class ImportPage extends React.Component<
 
   render() {
     return (
-      <input
-        id="audio_file"
-        type="file"
-        accept="audio/*"
-        ref={this.fileInput}
-        onChange={() => this.handleChange()}
-      ></input>
+      <Page header="Import Song">
+        <input
+          id="audio_file"
+          type="file"
+          accept="audio/*"
+          ref={this.fileInput}
+          onChange={() => this.handleChange()}
+        ></input>
+      </Page>
     );
   }
 }

@@ -1,8 +1,13 @@
 import React from "react";
+import Page from "./Page";
 
 class PrintPage extends React.Component {
   render() {
-    return <p>PrintPage</p>;
+    return (
+      <Page header="Print Song">
+        <p>PrintPage</p>
+      </Page>
+    );
   }
 }
 
