@@ -5,15 +5,15 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import "./App.css";
-import Dialog from "./dialogs/Dialog";
-import DrumPage from "./pages/DrumPage";
-import HarmonyPage from "./pages/HarmonyPage";
-import PrintPage from "./pages/PrintPage";
-import SongStructurePage from "./pages/SongStructurePage";
-import StrummingPage from "./pages/StrummingPage";
-import DefaultPage from "./pages/DefaultPage";
-import FileInput from "./components/FileInput";
+import "./app.css";
+import Dialog from "../../dialogs/dialog";
+import DrumPage from "../../pages/drumPage";
+import HarmonyPage from "../../pages/harmonyPage";
+import PrintPage from "../../pages/printPage";
+import SongStructurePage from "../../pages/songStructurePage";
+import StrummingPage from "../../pages/strummingPage";
+import DefaultPage from "../../pages/defaultPage";
+import MusicFileInput from "../musicFileInput/musicFileInput";
 
 class App extends React.Component {
   switchSong = (file: File, fileUrl: string) => {
@@ -115,7 +115,7 @@ class App extends React.Component {
             <Form.Group controlId="file">
               <Form.Label>Song file</Form.Label>
               <br />
-              <FileInput callback={this.switchSong}></FileInput>
+              <MusicFileInput callback={this.switchSong}></MusicFileInput>
               <Form.Text className="text-muted">
                 Please select a MP3 file as basis for your analysis.
               </Form.Text>
