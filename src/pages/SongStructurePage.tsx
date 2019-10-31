@@ -1,6 +1,6 @@
 import React from "react";
-import Wave from "../components/Wave";
-import Page from "./Page";
+import Wave from "../components/wave/wave";
+import Page from "./page";
 
 class SongStructurePage extends React.Component<{ url: string }, {}> {
   render() {

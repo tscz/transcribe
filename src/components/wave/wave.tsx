@@ -1,10 +1,13 @@
 import Peaks, { PeaksInstance } from "peaks.js";
 import React, { Component } from "react";
 import Button from "react-bootstrap/Button";
-
-class Wave extends Component<{ url: string }, {}> {
+export default class Wave extends Component<
+  {
+    url: string;
+  },
+  {}
+> {
   state = {};
-
   componentDidMount() {
     console.log("initWave()");
     this.initWave();
@@ -73,16 +76,13 @@ class Wave extends Component<{ url: string }, {}> {
       </div>
     );
   }
-
   initWave() {
     var renderSegments = function(peaks: PeaksInstance) {
       var segmentsContainer = document.getElementById("segments");
       var segments = peaks.segments.getSegments();
       var html = "";
-
       for (var i = 0; i < segments.length; i++) {
         var segment = segments[i];
-
         var row =
           "<tr>" +
           "<td>" +
@@ -107,25 +107,19 @@ class Wave extends Component<{ url: string }, {}> {
           '" data-action="remove-segment" data-id="' +
           segment.id +
           '">Remove</a></td></tr>';
-
         html += row;
       }
-
       segmentsContainer!.querySelector("tbody")!.innerHTML = html;
-
       if (html.length) {
         segmentsContainer!.classList.remove("hide");
       }
     };
-
     var renderPoints = function(peaks: PeaksInstance) {
       var pointsContainer = document.getElementById("points");
       var points = peaks.points.getPoints();
       var html = "";
-
       for (var i = 0; i < points.length; i++) {
         var point = points[i];
-
         var row =
           "<tr>" +
           "<td>" +
@@ -142,25 +136,18 @@ class Wave extends Component<{ url: string }, {}> {
           '" data-action="remove-point" data-id="' +
           point.id +
           '">Remove</a></td></tr>';
-
         html += row;
       }
-
       pointsContainer!.querySelector!("tbody")!.innerHTML = html;
-
       if (html.length) {
         pointsContainer!.classList.remove("hide");
       }
     };
-
     var AudioContext =
       (window as any).AudioContext || (window as any).webkitAudioContext;
     var audioContext = new AudioContext();
-
     var audioElement: Element = document!.getElementById("audio")!;
-
     (audioElement as HTMLAudioElement).src = this.props.url;
-
     var options = {
       containers: {
         zoomview: document!.getElementById("zoomview-container")!,
@@ -177,22 +164,18 @@ class Wave extends Component<{ url: string }, {}> {
       showPlayheadTime: true,
       zoomLevels: [128, 256, 512, 1024, 2048, 4096]
     };
-
     Peaks.init(options, function(err, peaksInstance) {
       console.log("Peaks instance ready");
-
       document!
         .querySelector('[data-action="zoom-in"]')!
         .addEventListener("click", function() {
           peaksInstance!.zoom.zoomIn();
         });
-
       document!
         .querySelector('[data-action="zoom-out"]')!
         .addEventListener("click", function() {
           peaksInstance!.zoom.zoomOut();
         });
-
       document!
         .querySelector('button[data-action="add-segment"]')!
         .addEventListener("click", function() {
@@ -203,7 +186,6 @@ class Wave extends Component<{ url: string }, {}> {
             editable: true
           });
         });
-
       document!
         .querySelector('button[data-action="add-point"]')!
         .addEventListener("click", function() {
@@ -213,21 +195,18 @@ class Wave extends Component<{ url: string }, {}> {
             editable: true
           });
         });
-
       document!
         .querySelector('button[data-action="log-data"]')!
         .addEventListener("click", function(event) {
           renderSegments(peaksInstance!);
           renderPoints(peaksInstance!);
         });
-
       document!
         .querySelector("body")!
         .addEventListener("click", function(event) {
           var element = event.target as HTMLBodyElement;
           var action = element!.getAttribute("data-action");
           var id = element.getAttribute("data-id");
-
           if (action === "play-segment") {
             var segment = peaksInstance!.segments.getSegment(id!);
             peaksInstance!.player.playSegment(segment!);
@@ -237,34 +216,25 @@ class Wave extends Component<{ url: string }, {}> {
             peaksInstance!.segments.removeById(id!);
           }
         });
-
       // Points mouse events
-
       peaksInstance!.on("points.mouseenter", function(point) {
         console.log("points.mouseenter:", point);
       });
-
       peaksInstance!.on("points.mouseleave", function(point) {
         console.log("points.mouseleave:", point);
       });
-
       peaksInstance!.on("points.dblclick", function(point) {
         console.log("points.dblclick:", point);
       });
-
       peaksInstance!.on("points.dragstart", function(point) {
         console.log("points.dragstart:", point);
       });
-
       peaksInstance!.on("points.dragmove", function(point) {
         console.log("points.dragmove:", point);
       });
-
       peaksInstance!.on("points.dragend", function(point) {
         console.log("points.dragend:", point);
       });
     });
   }
 }
-
-export default Wave;

@@ -1,5 +1,5 @@
 import React from "react";
-import Page from "./Page";
+import Page from "./page";
 
 class DrumPage extends React.Component {
   render() {
