@@ -1,12 +1,18 @@
 import React from "react";
-import Page from "./page";
+import View from "../views/view";
 
 class DrumPage extends React.Component {
   render() {
     return (
-      <Page header="Drum Pattern">
-        <p>DrumPage</p>
-      </Page>
+      <View
+        header="Drums"
+        body={
+          <p>
+            In this section you'll be able to transcribe the drum part. Please
+            come back later.
+          </p>
+        }
+      ></View>
     );
   }
 }

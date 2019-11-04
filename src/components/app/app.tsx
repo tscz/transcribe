@@ -9,7 +9,7 @@ import DrumPage from "../../pages/drumPage";
 import HarmonyPage from "../../pages/harmonyPage";
 import PrintPage from "../../pages/printPage";
 import StructurePage from "../../pages/structurePage";
-import StrummingPage from "../../pages/strummingPage";
+import GuitarPage from "../../pages/guitarPage";
 import MusicFileInput from "../musicFileInput/musicFileInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -244,7 +244,7 @@ class App extends React.Component {
           </Toggle>
 
           <Toggle show={this.state.visibility[this.guitarPage]}>
-            <StrummingPage />
+            <GuitarPage />
           </Toggle>
 
           <Toggle show={this.state.visibility[this.drumPage]}>
