@@ -8,7 +8,7 @@ import Dialog from "../../dialogs/dialog";
 import DrumPage from "../../pages/drumPage";
 import HarmonyPage from "../../pages/harmonyPage";
 import PrintPage from "../../pages/printPage";
-import SongStructurePage from "../../pages/songStructurePage";
+import StructurePage from "../../pages/structurePage";
 import StrummingPage from "../../pages/strummingPage";
 import MusicFileInput from "../musicFileInput/musicFileInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,6 +17,7 @@ import {
   faFolderOpen,
   faSave
 } from "@fortawesome/free-solid-svg-icons";
+import DefaultPage from "../../pages/defaultPage";
 
 class App extends React.Component {
   switchSong = (file: File, fileUrl: string) => {
@@ -206,28 +207,36 @@ class App extends React.Component {
                 {" "}
                 <FontAwesomeIcon icon={faSave} />
               </Nav.Link>
-              <Nav.Link onClick={() => this.switchPage(this.structurePage)}>
-                Structure
-              </Nav.Link>
-              <Nav.Link onClick={() => this.switchPage(this.harmonyPage)}>
-                Harmony
-              </Nav.Link>
-              <Nav.Link onClick={() => this.switchPage(this.guitarPage)}>
-                Guitar
-              </Nav.Link>
-              <Nav.Link onClick={() => this.switchPage(this.drumPage)}>
-                Drum
-              </Nav.Link>
-              <Nav.Link onClick={() => this.switchPage(this.printPage)}>
-                Print
-              </Nav.Link>
+              {this.state.analysisStarted && (
+                <>
+                  <Nav.Link onClick={() => this.switchPage(this.structurePage)}>
+                    Structure
+                  </Nav.Link>
+                  <Nav.Link onClick={() => this.switchPage(this.harmonyPage)}>
+                    Harmony
+                  </Nav.Link>
+                  <Nav.Link onClick={() => this.switchPage(this.guitarPage)}>
+                    Guitar
+                  </Nav.Link>
+                  <Nav.Link onClick={() => this.switchPage(this.drumPage)}>
+                    Drum
+                  </Nav.Link>
+                  <Nav.Link onClick={() => this.switchPage(this.printPage)}>
+                    Print
+                  </Nav.Link>
+                </>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Navbar>
 
         <div id="page-content-wrapper">
+          <Toggle show={this.state.visibility[this.defaultPage]}>
+            <DefaultPage />
+          </Toggle>
+
           <Toggle show={this.state.visibility[this.structurePage]}>
-            <SongStructurePage url={this.state.fileUrl} />
+            <StructurePage url={this.state.fileUrl} />
           </Toggle>
 
           <Toggle show={this.state.visibility[this.harmonyPage]}>
