@@ -2,7 +2,7 @@ import React from "react";
 import Page from "./page";
 import WaveView from "../views/waveView";
 
-class SongStructurePage extends React.Component<{ url: string }, {}> {
+class StructurePage extends React.Component<{ url: string }, {}> {
   render() {
     return (
       <>
@@ -14,4 +14,4 @@ class SongStructurePage extends React.Component<{ url: string }, {}> {
   }
 }
 
-export default SongStructurePage;
+export default StructurePage;
