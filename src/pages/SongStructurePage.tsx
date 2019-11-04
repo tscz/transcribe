@@ -1,13 +1,13 @@
 import React from "react";
-import Wave from "../components/wave/wave";
 import Page from "./page";
+import WaveView from "../views/waveView";
 
 class SongStructurePage extends React.Component<{ url: string }, {}> {
   render() {
     return (
       <>
         <Page header="Song Structure">
-          {this.props.url ? <Wave url={this.props.url} /> : null}
+          {this.props.url ? <WaveView url={this.props.url} /> : null}
         </Page>
       </>
     );

@@ -1,10 +1,8 @@
 import FileSaver from "file-saver";
-import React, { ReactElement } from "react";
-import ListGroup from "react-bootstrap/ListGroup";
+import React from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
-import NavDropdown from "react-bootstrap/NavDropdown";
 import "./app.css";
 import Dialog from "../../dialogs/dialog";
 import DrumPage from "../../pages/drumPage";
@@ -12,7 +10,6 @@ import HarmonyPage from "../../pages/harmonyPage";
 import PrintPage from "../../pages/printPage";
 import SongStructurePage from "../../pages/songStructurePage";
 import StrummingPage from "../../pages/strummingPage";
-import DefaultPage from "../../pages/defaultPage";
 import MusicFileInput from "../musicFileInput/musicFileInput";
 
 class App extends React.Component {
@@ -20,12 +17,29 @@ class App extends React.Component {
     this.setState({ file: file, fileUrl: fileUrl });
   };
 
+  tempSwitchSong = (file: File | null, fileUrl: string) => {
+    this.tempFile = file;
+    this.tempFileUrl = fileUrl;
+  };
+
   analysisLoaded = () => {
     this.setState({ analysisStarted: true });
   };
 
+  tempFile: File | null = null;
+  tempFileUrl: string = "";
+
+  readonly defaultPage = 0;
+  readonly structurePage = 1;
+  readonly harmonyPage = 2;
+  readonly drumPage = 3;
+  readonly guitarPage = 4;
+  readonly printPage = 5;
+  readonly initialVisibility = [false, false, false, false, false, false];
+
   state = {
-    currentPage: <DefaultPage />,
+    visibility: [true, false, false, false, false, false],
+    currentPage: this.defaultPage,
     fileUrl: "",
     file: null,
     showNewDialog: false,
@@ -82,8 +96,11 @@ class App extends React.Component {
     this.setState({ showHelpDialog: false });
   };
 
-  switchPage(page: ReactElement) {
-    this.setState({ currentPage: page });
+  switchPage(page: number) {
+    let nextVisibility = [...this.initialVisibility];
+    nextVisibility[page] = true;
+
+    this.setState({ visibility: nextVisibility, currentPage: page });
   }
 
   render() {
@@ -95,8 +112,9 @@ class App extends React.Component {
           title="Create new Analysis"
           show={this.state.showNewDialog}
           onSubmit={() => {
+            this.switchSong(this.tempFile!, this.tempFileUrl);
             this.analysisLoaded();
-            this.switchPage(<SongStructurePage url={this.state.fileUrl} />);
+            this.switchPage(this.structurePage);
             this.hideNewDialog();
           }}
           onCancel={() => {
@@ -115,7 +133,7 @@ class App extends React.Component {
             <Form.Group controlId="file">
               <Form.Label>Song file</Form.Label>
               <br />
-              <MusicFileInput callback={this.switchSong}></MusicFileInput>
+              <MusicFileInput callback={this.tempSwitchSong}></MusicFileInput>
               <Form.Text className="text-muted">
                 Please select a MP3 file as basis for your analysis.
               </Form.Text>
@@ -166,96 +184,58 @@ class App extends React.Component {
           sticky="top"
           className="navbar navbar-expand-lg navbar-light bg-light border-bottom"
         >
-          <Navbar.Brand
-            onClick={(event: any) => {
-              document!.querySelector("#wrapper")!.classList.toggle("toggled");
-            }}
-          >
-            Transcribe
-          </Navbar.Brand>
+          <Navbar.Brand>Transcribe</Navbar.Brand>
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <NavDropdown title="File" id="basic-nav-dropdown">
-              <NavDropdown.Item onClick={this.showNewDialog}>
-                New
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item onClick={this.showOpenDialog}>
-                Open ...
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item onClick={this.showSaveDialog}>
-                Save as ...
-              </NavDropdown.Item>
-            </NavDropdown>
-            <NavDropdown title="Preferences" id="basic-nav-dropdown">
-              <NavDropdown.Item onClick={this.showPreferencesDialog}>
-                Preferences...
-              </NavDropdown.Item>
-            </NavDropdown>
             <Nav className="mr-auto">
-              <Nav.Link onClick={this.showHelpDialog}>Help</Nav.Link>
+              <Nav.Link onClick={this.showNewDialog}>N</Nav.Link>
+              <Nav.Link onClick={this.showOpenDialog}>O</Nav.Link>
+              <Nav.Link onClick={this.showSaveDialog}>S</Nav.Link>
+              <Nav.Link onClick={() => this.switchPage(this.structurePage)}>
+                Structure
+              </Nav.Link>
+              <Nav.Link onClick={() => this.switchPage(this.harmonyPage)}>
+                Harmony
+              </Nav.Link>
+              <Nav.Link onClick={() => this.switchPage(this.guitarPage)}>
+                Guitar
+              </Nav.Link>
+              <Nav.Link onClick={() => this.switchPage(this.drumPage)}>
+                Drum
+              </Nav.Link>
+              <Nav.Link onClick={() => this.switchPage(this.printPage)}>
+                Print
+              </Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
-        <div className="d-flex" id="wrapper">
-          {this.state.analysisStarted ? (
-            <div className="bg-light border-right" id="sidebar-wrapper">
-              <ListGroup variant="flush">
-                <ListGroup.Item
-                  action
-                  onClick={() =>
-                    this.switchPage(
-                      <SongStructurePage url={this.state.fileUrl} />
-                    )
-                  }
-                >
-                  Song Structure
-                </ListGroup.Item>
-                <ListGroup.Item
-                  action
-                  onClick={() => this.switchPage(<HarmonyPage />)}
-                >
-                  Harmony
-                </ListGroup.Item>
-                <ListGroup.Item
-                  action
-                  onClick={() => this.switchPage(<DrumPage />)}
-                >
-                  Drum Pattern
-                </ListGroup.Item>
-                <ListGroup.Item
-                  action
-                  onClick={() => this.switchPage(<StrummingPage />)}
-                >
-                  Strumming Pattern
-                </ListGroup.Item>
-                <ListGroup.Item
-                  action
-                  onClick={() => this.switchPage(<PrintPage />)}
-                >
-                  Print Song
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <audio id="audio" controls>
-                    {this.state.fileUrl ? (
-                      <source src={this.state.fileUrl} type="audio/mpeg" />
-                    ) : null}
-                    Your browser does not support the audio element.
-                  </audio>
-                </ListGroup.Item>
-              </ListGroup>
-            </div>
-          ) : null}
 
-          <div id="page-content-wrapper">
-            <div className="container-fluid">{this.state.currentPage}</div>
-          </div>
+        <div id="page-content-wrapper">
+          <Toggle show={this.state.visibility[this.structurePage]}>
+            <SongStructurePage url={this.state.fileUrl} />
+          </Toggle>
+
+          <Toggle show={this.state.visibility[this.harmonyPage]}>
+            <HarmonyPage />
+          </Toggle>
+
+          <Toggle show={this.state.visibility[this.guitarPage]}>
+            <StrummingPage />
+          </Toggle>
+
+          <Toggle show={this.state.visibility[this.drumPage]}>
+            <DrumPage />
+          </Toggle>
+
+          <Toggle show={this.state.visibility[this.printPage]}>
+            <PrintPage />
+          </Toggle>
         </div>
       </>
     );
   }
+
   save(): void {
     let analysis: any = this.state;
 
@@ -270,6 +250,14 @@ class App extends React.Component {
       FileSaver.saveAs(content, filename);
     });
     reader.readAsText((this.state.file as unknown) as Blob);
+  }
+}
+
+function Toggle(props: any) {
+  if (props.show) {
+    return <div style={{ display: "inline" }}>{props.children}</div>;
+  } else {
+    return <div style={{ display: "none" }}>{props.children}</div>;
   }
 }
 
