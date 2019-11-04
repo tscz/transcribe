@@ -1,14 +1,14 @@
 import React from "react";
 import View from "../views/view";
 
-class HarmonyPage extends React.Component {
+class GuitarPage extends React.Component {
   render() {
     return (
       <View
-        header="Harmony"
+        header="Strumming"
         body={
           <p>
-            In this section you'll be able to transcribe the harmony. Please
+            In this section you'll be able to transcribe the guitar part. Please
             come back later.
           </p>
         }
@@ -17,4 +17,4 @@ class HarmonyPage extends React.Component {
   }
 }
 
-export default HarmonyPage;
+export default GuitarPage;
