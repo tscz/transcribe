@@ -11,6 +11,12 @@ import PrintPage from "../../pages/printPage";
 import SongStructurePage from "../../pages/songStructurePage";
 import StrummingPage from "../../pages/strummingPage";
 import MusicFileInput from "../musicFileInput/musicFileInput";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFile,
+  faFolderOpen,
+  faSave
+} from "@fortawesome/free-solid-svg-icons";
 
 class App extends React.Component {
   switchSong = (file: File, fileUrl: string) => {
@@ -180,7 +186,7 @@ class App extends React.Component {
         <Navbar
           bg="dark"
           variant="dark"
-          expand="lg"
+          expand="sm"
           sticky="top"
           className="navbar navbar-expand-lg navbar-light bg-light border-bottom"
         >
@@ -189,9 +195,17 @@ class App extends React.Component {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
-              <Nav.Link onClick={this.showNewDialog}>N</Nav.Link>
-              <Nav.Link onClick={this.showOpenDialog}>O</Nav.Link>
-              <Nav.Link onClick={this.showSaveDialog}>S</Nav.Link>
+              <Nav.Link onClick={this.showNewDialog}>
+                <FontAwesomeIcon icon={faFile} />
+              </Nav.Link>
+              <Nav.Link onClick={this.showOpenDialog}>
+                {" "}
+                <FontAwesomeIcon icon={faFolderOpen} />
+              </Nav.Link>
+              <Nav.Link onClick={this.showSaveDialog}>
+                {" "}
+                <FontAwesomeIcon icon={faSave} />
+              </Nav.Link>
               <Nav.Link onClick={() => this.switchPage(this.structurePage)}>
                 Structure
               </Nav.Link>

@@ -4,6 +4,9 @@
     "private": true,
     "homepage": "http://tscz.github.io/transcribe",
     "dependencies": {
+        "@fortawesome/fontawesome-svg-core": "^1.2.25",
+        "@fortawesome/free-solid-svg-icons": "^5.11.2",
+        "@fortawesome/react-fontawesome": "^0.1.7",
         "@types/howler": "^2.1.1",
         "@types/jest": "^24.0.19",
         "@types/node": "^12.11.5",
