@@ -1,7 +1,12 @@
-import Peaks, { PeaksInstance } from "peaks.js";
+import Peaks from "peaks.js";
 import React, { Component } from "react";
-import Button from "react-bootstrap/Button";
+
 export default class Wave extends Component<{ url: string }, {}> {
+  componentDidMount() {
+    console.log("mountWave()");
+    this.initWave();
+  }
+
   componentDidUpdate() {
     console.log("initWave()");
     this.initWave();
@@ -12,7 +17,7 @@ export default class Wave extends Component<{ url: string }, {}> {
   }
 
   render() {
-    console.log("this.props.src=" + this.props.url);
+    console.log("renderWave()");
     return (
       <div>
         <div id="waveform-container">
@@ -45,6 +50,7 @@ export default class Wave extends Component<{ url: string }, {}> {
       showPlayheadTime: true,
       zoomLevels: [128, 256, 512, 1024, 2048, 4096]
     };
+
     Peaks.init(options, function(err, peaksInstance) {
       console.log("Peaks instance ready");
     });
