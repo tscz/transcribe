@@ -18,8 +18,14 @@ import {
   faSave
 } from "@fortawesome/free-solid-svg-icons";
 import DefaultPage from "../../pages/defaultPage";
+import { connect } from "react-redux";
+import { switchPage } from "../../redux/actions";
+import { PAGES } from "../../constants";
 
-class App extends React.Component {
+class App extends React.Component<
+  { currentPage: string; switchPage: (page: string) => void },
+  {}
+> {
   switchSong = (file: File, fileUrl: string) => {
     this.setState({ file: file, fileUrl: fileUrl });
   };
@@ -36,17 +42,7 @@ class App extends React.Component {
   tempFile: File | null = null;
   tempFileUrl: string = "";
 
-  readonly defaultPage = 0;
-  readonly structurePage = 1;
-  readonly harmonyPage = 2;
-  readonly drumPage = 3;
-  readonly guitarPage = 4;
-  readonly printPage = 5;
-  readonly initialVisibility = [false, false, false, false, false, false];
-
   state = {
-    visibility: [true, false, false, false, false, false],
-    currentPage: this.defaultPage,
     fileUrl: "",
     file: null,
     showNewDialog: false,
@@ -103,13 +99,6 @@ class App extends React.Component {
     this.setState({ showHelpDialog: false });
   };
 
-  switchPage(page: number) {
-    let nextVisibility = [...this.initialVisibility];
-    nextVisibility[page] = true;
-
-    this.setState({ visibility: nextVisibility, currentPage: page });
-  }
-
   render() {
     console.log("render App with src=" + this.state.fileUrl);
 
@@ -121,7 +110,7 @@ class App extends React.Component {
           onSubmit={() => {
             this.switchSong(this.tempFile!, this.tempFileUrl);
             this.analysisLoaded();
-            this.switchPage(this.structurePage);
+            this.props.switchPage(PAGES.STRUCTURE);
             this.hideNewDialog();
           }}
           onCancel={() => {
@@ -209,19 +198,23 @@ class App extends React.Component {
               </Nav.Link>
               {this.state.analysisStarted && (
                 <>
-                  <Nav.Link onClick={() => this.switchPage(this.structurePage)}>
+                  <Nav.Link
+                    onClick={() => this.props.switchPage(PAGES.STRUCTURE)}
+                  >
                     Structure
                   </Nav.Link>
-                  <Nav.Link onClick={() => this.switchPage(this.harmonyPage)}>
+                  <Nav.Link
+                    onClick={() => this.props.switchPage(PAGES.HARMONY)}
+                  >
                     Harmony
                   </Nav.Link>
-                  <Nav.Link onClick={() => this.switchPage(this.guitarPage)}>
+                  <Nav.Link onClick={() => this.props.switchPage(PAGES.GUITAR)}>
                     Guitar
                   </Nav.Link>
-                  <Nav.Link onClick={() => this.switchPage(this.drumPage)}>
+                  <Nav.Link onClick={() => this.props.switchPage(PAGES.DRUM)}>
                     Drum
                   </Nav.Link>
-                  <Nav.Link onClick={() => this.switchPage(this.printPage)}>
+                  <Nav.Link onClick={() => this.props.switchPage(PAGES.PRINT)}>
                     Print
                   </Nav.Link>
                 </>
@@ -231,27 +224,27 @@ class App extends React.Component {
         </Navbar>
 
         <div id="page-content-wrapper">
-          <Toggle show={this.state.visibility[this.defaultPage]}>
+          <Toggle show={this.props.currentPage === PAGES.DEFAULT}>
             <DefaultPage />
           </Toggle>
 
-          <Toggle show={this.state.visibility[this.structurePage]}>
+          <Toggle show={this.props.currentPage === PAGES.STRUCTURE}>
             <StructurePage url={this.state.fileUrl} />
           </Toggle>
 
-          <Toggle show={this.state.visibility[this.harmonyPage]}>
+          <Toggle show={this.props.currentPage === PAGES.HARMONY}>
             <HarmonyPage />
           </Toggle>
 
-          <Toggle show={this.state.visibility[this.guitarPage]}>
+          <Toggle show={this.props.currentPage === PAGES.GUITAR}>
             <GuitarPage />
           </Toggle>
 
-          <Toggle show={this.state.visibility[this.drumPage]}>
+          <Toggle show={this.props.currentPage === PAGES.DRUM}>
             <DrumPage />
           </Toggle>
 
-          <Toggle show={this.state.visibility[this.printPage]}>
+          <Toggle show={this.props.currentPage === PAGES.PRINT}>
             <PrintPage />
           </Toggle>
         </div>
@@ -284,4 +277,17 @@ function Toggle(props: any) {
   }
 }
 
-export default App;
+const mapStateToProps = (state: any) => {
+  return {
+    currentPage: state.currentPage
+  };
+};
+
+const mapDispatchToProps = {
+  switchPage
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
