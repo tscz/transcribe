@@ -11,6 +11,7 @@
         "@types/jest": "^24.0.21",
         "@types/node": "^12.12.5",
         "@types/react-dom": "^16.9.3",
+        "@types/react-redux": "^7.1.5",
         "bootstrap": "^4.3.1",
         "file-saver": "^2.0.2",
         "howler": "^2.1.2",
@@ -20,7 +21,10 @@
         "react-bootstrap-table-next": "^3.2.1",
         "react-bootstrap-table2-editor": "^1.4.0",
         "react-dom": "^16.11.0",
+        "react-redux": "^7.1.1",
         "react-scripts": "3.2.0",
+        "redux": "^4.0.4",
+        "redux-devtools-extension": "^2.13.8",
         "tslint": "^5.20.0",
         "typescript": "3.6.4",
         "waveform-data": "^3.1.0"
