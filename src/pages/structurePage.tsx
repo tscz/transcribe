@@ -56,7 +56,6 @@ class StructurePage extends React.Component<
                         color: "rgba(255, 161, 39, 1)",
                         labelText: "This is a segment created via Redux"
                       });
-                      console.log("addSegment");
                     }}
                   />
                 </>

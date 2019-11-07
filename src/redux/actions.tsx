@@ -15,7 +15,6 @@ export const initPeaks = (peaksInstance: PeaksInstance) => ({
 });
 
 export const addSegment = (segment: SegmentAddOptions) => {
-  console.log("addSegment invoked with: " + JSON.stringify(segment));
   return {
     type: SEGMENT_ADD,
     payload: { segment }
