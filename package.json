@@ -10,12 +10,12 @@
         "@types/howler": "^2.1.1",
         "@types/jest": "^24.0.22",
         "@types/node": "^12.12.6",
-        "@types/react-dom": "^16.9.3",
+        "@types/react-dom": "^16.9.4",
         "@types/react-redux": "^7.1.5",
         "bootstrap": "^4.3.1",
         "file-saver": "^2.0.2",
         "howler": "^2.1.2",
-        "peaks.js": "^0.14.2",
+        "peaks.js": "^0.14.4",
         "react": "^16.11.0",
         "react-bootstrap": "^1.0.0-beta.14",
         "react-bootstrap-table-next": "^3.2.1",
@@ -26,8 +26,7 @@
         "redux": "^4.0.4",
         "redux-devtools-extension": "^2.13.8",
         "tslint": "^5.20.1",
-        "typescript": "^3.7.2",
-        "waveform-data": "^3.1.0"
+        "typescript": "^3.7.2"
     },
     "scripts": {
         "start": "react-scripts start",
