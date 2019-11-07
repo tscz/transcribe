@@ -1,6 +1,8 @@
 import { SWITCH_PAGE } from "./actionTypes";
 import { PEAKS_INIT } from "./actionTypes";
-import { PeaksInstance } from "peaks.js";
+import { SEGMENT_ADD, SEGMENT_REMOVE, SEGMENT_UPDATE } from "./actionTypes";
+
+import { PeaksInstance, SegmentAddOptions, Segment } from "peaks.js";
 
 export const switchPage = (page: String) => ({
   type: SWITCH_PAGE,
@@ -10,4 +12,22 @@ export const switchPage = (page: String) => ({
 export const initPeaks = (peaksInstance: PeaksInstance) => ({
   type: PEAKS_INIT,
   payload: { peaksInstance }
+});
+
+export const addSegment = (segment: SegmentAddOptions) => {
+  console.log("addSegment invoked with: " + JSON.stringify(segment));
+  return {
+    type: SEGMENT_ADD,
+    payload: { segment }
+  };
+};
+
+export const updateSegment = (segment: Segment) => ({
+  type: SEGMENT_UPDATE,
+  payload: { segment }
+});
+
+export const removeSegment = (id: string) => ({
+  type: SEGMENT_REMOVE,
+  payload: { id }
 });

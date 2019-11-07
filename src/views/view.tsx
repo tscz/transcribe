@@ -1,8 +1,6 @@
 import React, { Component, ReactElement } from "react";
 
 import Card from "react-bootstrap/Card";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearchPlus, faSearchMinus } from "@fortawesome/free-solid-svg-icons";
 
 class View extends Component<
   { header: ReactElement | String; body: ReactElement },

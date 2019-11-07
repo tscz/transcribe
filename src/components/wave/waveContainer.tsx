@@ -1,34 +1,40 @@
-import Peaks, { PeaksInstance } from "peaks.js";
+import Peaks, { PeaksInstance, SegmentAddOptions } from "peaks.js";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { initPeaks } from "../../redux/actions";
+import WaveView from "./waveView";
 
-class Wave extends Component<
-  { url: string; initPeaks: (instance: PeaksInstance) => void },
+class WaveContainer extends Component<
+  {
+    url: string;
+    peaksInstance?: PeaksInstance;
+    initPeaks: (instance: PeaksInstance) => void;
+    segments?: SegmentAddOptions[];
+  },
   {}
 > {
   componentDidMount() {
-    console.log("mountWave()");
     this.initWave();
   }
 
   componentDidUpdate() {
-    console.log("initWave()");
-    this.initWave();
-  }
+    console.log(
+      "WaveContainer update with segments:" +
+        JSON.stringify(this.props.segments) +
+        " and this.props.peaksInstance=" +
+        this.props.peaksInstance
+    );
 
-  shouldComponentUpdate(nextProps: any, nextState: any) {
-    return nextProps.url !== this.props.url;
+    if (this.props.segments && this.props.peaksInstance) {
+      this.props.peaksInstance.segments.removeAll();
+      this.props.peaksInstance.segments.add(this.props.segments);
+    }
   }
 
   render() {
-    console.log("renderWave()");
     return (
       <div>
-        <div id="waveform-container">
-          <div id="zoomview-container"></div>
-          <div id="overview-container"></div>
-        </div>
+        <WaveView url={this.props.url} />
       </div>
     );
   }
@@ -72,7 +78,8 @@ class Wave extends Component<
 
 const mapStateToProps = (state: any) => {
   return {
-    peaksInstance: state.peaksInstance
+    peaksInstance: state.peaks,
+    segments: state.segments
   };
 };
 
@@ -83,4 +90,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Wave);
+)(WaveContainer);
