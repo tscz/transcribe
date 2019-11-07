@@ -58,12 +58,6 @@ class App extends React.Component<
     analysisStarted: false
   };
 
-  constructor(props: any) {
-    super(props);
-
-    console.log("1=" + this + typeof this);
-  }
-
   showNewDialog = () => {
     this.setState({ showNewDialog: true });
   };
@@ -105,8 +99,6 @@ class App extends React.Component<
   };
 
   render() {
-    console.log("render App with src=" + this.state.fileUrl);
-
     return (
       <>
         <Dialog

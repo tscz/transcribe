@@ -18,13 +18,6 @@ class WaveContainer extends Component<
   }
 
   componentDidUpdate() {
-    console.log(
-      "WaveContainer update with segments:" +
-        JSON.stringify(this.props.segments) +
-        " and this.props.peaksInstance=" +
-        this.props.peaksInstance
-    );
-
     if (this.props.segments && this.props.peaksInstance) {
       this.props.peaksInstance.segments.removeAll();
       this.props.peaksInstance.segments.add(this.props.segments);
@@ -64,12 +57,10 @@ class WaveContainer extends Component<
     };
 
     let savePeaksInstanceInGlobalState = (instance: PeaksInstance) => {
-      console.log("initPeaks=" + this.props.initPeaks);
       this.props.initPeaks(instance);
     };
 
     Peaks.init(options, function(err, peaksInstance) {
-      console.log("Peaks instance ready");
       if (peaksInstance !== undefined)
         savePeaksInstanceInGlobalState(peaksInstance);
     });

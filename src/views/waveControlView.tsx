@@ -1,9 +1,4 @@
 import React, { Component } from "react";
-import Table from "react-bootstrap/Table";
-import DropdownButton from "react-bootstrap/DropdownButton";
-import Dropdown from "react-bootstrap/Dropdown";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMinus } from "@fortawesome/free-solid-svg-icons";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 //@ts-ignore
 import BootstrapTable from "react-bootstrap-table-next";
