@@ -21,9 +21,14 @@ import DefaultPage from "../../pages/defaultPage";
 import { connect } from "react-redux";
 import { switchPage } from "../../redux/actions";
 import { PAGES } from "../../constants";
+import { PeaksInstance } from "peaks.js";
 
 class App extends React.Component<
-  { currentPage: string; switchPage: (page: string) => void },
+  {
+    currentPage: string;
+    switchPage: (page: string) => void;
+    peaksInstance: PeaksInstance;
+  },
   {}
 > {
   switchSong = (file: File, fileUrl: string) => {
@@ -279,7 +284,8 @@ function Toggle(props: any) {
 
 const mapStateToProps = (state: any) => {
   return {
-    currentPage: state.currentPage
+    currentPage: state.currentPage,
+    peaksInstance: state.peaksInstance
   };
 };
 
