@@ -1,7 +1,12 @@
-import Peaks from "peaks.js";
+import Peaks, { PeaksInstance } from "peaks.js";
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { initPeaks } from "../../redux/actions";
 
-export default class Wave extends Component<{ url: string }, {}> {
+class Wave extends Component<
+  { url: string; initPeaks: (instance: PeaksInstance) => void },
+  {}
+> {
   componentDidMount() {
     console.log("mountWave()");
     this.initWave();
@@ -27,6 +32,7 @@ export default class Wave extends Component<{ url: string }, {}> {
       </div>
     );
   }
+
   initWave() {
     var AudioContext =
       (window as any).AudioContext || (window as any).webkitAudioContext;
@@ -51,8 +57,30 @@ export default class Wave extends Component<{ url: string }, {}> {
       zoomLevels: [128, 256, 512, 1024, 2048, 4096]
     };
 
+    let savePeaksInstanceInGlobalState = (instance: PeaksInstance) => {
+      console.log("initPeaks=" + this.props.initPeaks);
+      this.props.initPeaks(instance);
+    };
+
     Peaks.init(options, function(err, peaksInstance) {
       console.log("Peaks instance ready");
+      if (peaksInstance !== undefined)
+        savePeaksInstanceInGlobalState(peaksInstance);
     });
   }
 }
+
+const mapStateToProps = (state: any) => {
+  return {
+    peaksInstance: state.peaksInstance
+  };
+};
+
+const mapDispatchToProps = {
+  initPeaks
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Wave);
