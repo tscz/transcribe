@@ -285,7 +285,7 @@ function Toggle(props: any) {
 const mapStateToProps = (state: any) => {
   return {
     currentPage: state.currentPage,
-    peaksInstance: state.peaksInstance
+    peaksInstance: state.peaks
   };
 };
 
