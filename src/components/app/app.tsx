@@ -1,4 +1,4 @@
-import FileSaver from "file-saver";
+import { saveAs } from "file-saver";
 import React from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -12,6 +12,7 @@ import StructurePage from "../../pages/structurePage";
 import GuitarPage from "../../pages/guitarPage";
 import MusicFileInput from "../musicFileInput/musicFileInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import JSZip from "jszip";
 import {
   faFile,
   faFolderOpen,
@@ -22,6 +23,7 @@ import { connect } from "react-redux";
 import { switchPage } from "../../redux/actions";
 import { PAGES } from "../../constants";
 import { PeaksInstance } from "peaks.js";
+import store from "../../redux/store";
 
 class App extends React.Component<
   {
@@ -250,19 +252,17 @@ class App extends React.Component<
   }
 
   save(): void {
-    let analysis: any = this.state;
+    let analysis: any = Object.assign({}, this.state);
+    analysis.globalstate = store.getState().segments;
 
-    var reader = new FileReader();
-    reader.addEventListener("loadend", function() {
-      analysis.mp3 = reader.result;
+    let zip = new JSZip();
+    zip.file("analyis.json", JSON.stringify(analysis));
+    zip.file("song.mp3", (this.state.file as unknown) as Blob);
 
-      var content = new Blob([JSON.stringify(analysis)], {
-        type: "text/plain;charset=utf-8"
-      });
-      let filename = "analysis.txt";
-      FileSaver.saveAs(content, filename);
+    zip.generateAsync({ type: "blob" }).then(function(content) {
+      // see FileSaver.js
+      saveAs(content, "project.zip");
     });
-    reader.readAsText((this.state.file as unknown) as Blob);
   }
 }
 
