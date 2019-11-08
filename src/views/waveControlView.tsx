@@ -50,8 +50,9 @@ export default class WaveControlView extends Component<{ url: string }, {}> {
     }
   ];
 
-  jobs = [
+  segments = [
     {
+      id: "1",
       start: "00:00",
       end: "00:03",
       section: "undefined",
@@ -70,7 +71,7 @@ export default class WaveControlView extends Component<{ url: string }, {}> {
         </audio>
         <BootstrapTable
           keyField="id"
-          data={this.jobs}
+          data={this.segments}
           columns={this.columns}
           cellEdit={cellEditFactory({ mode: "click", blurToSave: true })}
         />

@@ -17,7 +17,16 @@ class WaveContainer extends Component<
     this.initWave();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps: any) {
+    if (prevProps.url !== this.props.url) {
+      if (
+        this.props.peaksInstance !== null &&
+        this.props.peaksInstance !== undefined
+      )
+        this.props.peaksInstance.destroy();
+      this.initWave();
+    }
+
     if (this.props.segments && this.props.peaksInstance) {
       this.props.peaksInstance.segments.removeAll();
       this.props.peaksInstance.segments.add(this.props.segments);
@@ -25,6 +34,7 @@ class WaveContainer extends Component<
   }
 
   render() {
+    console.log("render waveContainer");
     return (
       <div>
         <WaveView url={this.props.url} />

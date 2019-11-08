@@ -25,6 +25,7 @@ class StructurePage extends React.Component<
   {}
 > {
   render() {
+    console.log("render structurePage");
     return (
       <Container fluid={true}>
         <Row>

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 export default class WaveView extends Component<
   {
     url: string;
@@ -10,6 +11,7 @@ export default class WaveView extends Component<
   }
 
   render() {
+    console.log("render waveView with url=" + this.props.url);
     return (
       <div>
         <div id="waveform-container">

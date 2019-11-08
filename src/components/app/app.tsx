@@ -34,6 +34,7 @@ class App extends React.Component<
   {}
 > {
   switchSong = (file: File, fileUrl: string) => {
+    console.log("switchSong(file=" + file + ",fileUrl=" + fileUrl + ")");
     this.setState({ file: file, fileUrl: fileUrl });
   };
 
@@ -101,6 +102,7 @@ class App extends React.Component<
   };
 
   render() {
+    console.log("render app");
     return (
       <>
         <Dialog
