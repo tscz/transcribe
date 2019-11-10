@@ -4,7 +4,9 @@ import { Page, ProjectActionTypes, ProjectState } from "./types";
 
 export const initialState: ProjectState = {
   currentPage: Page.DEFAULT,
-  peaks: null
+  peaks: null,
+  title: "",
+  audioUrl: ""
 };
 
 const reducer: Reducer<ProjectState> = (state = initialState, action) => {
@@ -15,7 +17,13 @@ const reducer: Reducer<ProjectState> = (state = initialState, action) => {
     case ProjectActionTypes.PEAKS_INIT: {
       return { ...state, peaks: action.payload.peaksInstance };
     }
-
+    case ProjectActionTypes.CREATE: {
+      return {
+        ...state,
+        title: action.payload.title,
+        audioUrl: action.payload.audioUrl
+      };
+    }
     default: {
       return state;
     }
