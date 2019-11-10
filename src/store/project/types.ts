@@ -1,7 +1,5 @@
 import { PeaksInstance } from "peaks.js";
 
-import { Page } from "../../constants";
-
 export interface ProjectState {
   readonly currentPage: Page;
   readonly peaks: PeaksInstance | null;
@@ -13,4 +11,13 @@ export enum ProjectActionTypes {
   SEGMENT_ADD = "SEGMENT_ADD",
   SEGMENT_REMOVE = "SEGMENT_REMOVE",
   SEGMENT_UPDATE = "SEGMENT_UPDATE"
+}
+
+export enum Page {
+  DEFAULT = "default",
+  STRUCTURE = "structure",
+  HARMONY = "harmony",
+  GUITAR = "guitar",
+  DRUM = "drum",
+  PRINT = "print"
 }

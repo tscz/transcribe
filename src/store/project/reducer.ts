@@ -1,7 +1,6 @@
 import { Reducer } from "redux";
 
-import { Page } from "../../constants";
-import { ProjectActionTypes, ProjectState } from "./types";
+import { Page, ProjectActionTypes, ProjectState } from "./types";
 
 export const initialState: ProjectState = {
   currentPage: Page.DEFAULT,

@@ -20,6 +20,9 @@ const reducer: Reducer<AnalysisState> = (state = initialState, action) => {
     case AnalysisActionTypes.SEGMENT_UPDATE: {
       return state;
     }
+    case AnalysisActionTypes.RESET: {
+      return initialState;
+    }
     default: {
       return state;
     }

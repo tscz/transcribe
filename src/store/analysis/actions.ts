@@ -21,3 +21,8 @@ export const removeSegment = (id: string) => ({
   type: AnalysisActionTypes.SEGMENT_REMOVE,
   payload: { id }
 });
+
+/** Reset a song analysis. */
+export const reset = () => ({
+  type: AnalysisActionTypes.RESET
+});
