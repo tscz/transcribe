@@ -8,7 +8,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
-import React from "react";
+import React, { FunctionComponent } from "react";
 import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -255,8 +255,10 @@ class App extends React.Component<AllProps> {
   }
 
   save(): void {
-    let analysis: any = Object.assign({}, this.state);
-    analysis.globalstate = store.getState().segments;
+    let analysis: ApplicationState = Object.assign(
+      {},
+      { ...store.getState(), peaks: null }
+    );
 
     let zip = new JSZip();
     zip.file("analyis.json", JSON.stringify(analysis));
@@ -269,13 +271,13 @@ class App extends React.Component<AllProps> {
   }
 }
 
-function Toggle(props: any) {
+const Toggle: FunctionComponent<{ show: boolean }> = props => {
   if (props.show) {
     return <div style={{ display: "inline" }}>{props.children}</div>;
   } else {
     return <div style={{ display: "none" }}>{props.children}</div>;
   }
-}
+};
 
 const mapStateToProps = ({ project }: ApplicationState) => {
   return {

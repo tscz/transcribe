@@ -1,14 +1,12 @@
 import React, { Component, ReactElement } from "react";
 import Card from "react-bootstrap/Card";
 
-class View extends Component<
-  { header: ReactElement | String; body: ReactElement },
-  {}
-> {
-  constructor(props: any) {
-    super(props);
-    this.state = {};
-  }
+interface Props {
+  header: ReactElement | String;
+  body: ReactElement;
+}
+
+class View extends Component<Props> {
   render() {
     return (
       <Card style={{ margin: "30px" }}>

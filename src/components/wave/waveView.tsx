@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 
-export default class WaveView extends Component<
-  {
-    url: string;
-  },
-  {}
-> {
-  shouldComponentUpdate(nextProps: any, nextState: any) {
+interface Props {
+  url: string;
+}
+
+export default class WaveView extends Component<Props> {
+  shouldComponentUpdate(nextProps: Props) {
     return nextProps.url !== this.props.url;
   }
 
