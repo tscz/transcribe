@@ -13,3 +13,9 @@ export const initPeaks = (peaksInstance: PeaksInstance) => ({
   type: ProjectActionTypes.PEAKS_INIT,
   payload: { peaksInstance }
 });
+
+/** Create a new project. */
+export const createProject = (title: string, audioUrl: string) => ({
+  type: ProjectActionTypes.CREATE,
+  payload: { title: title, audioUrl: audioUrl }
+});

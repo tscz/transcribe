@@ -6,15 +6,14 @@ import {
   faSave
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { saveAs } from "file-saver";
 import JSZip from "jszip";
+import { PeaksInstance } from "peaks.js";
 import React, { FunctionComponent } from "react";
-import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { connect } from "react-redux";
 
-import Dialog from "../../dialogs/dialog";
+import DialogManagement from "../../dialog/dialogManagement";
 import DefaultPage from "../../pages/defaultPage";
 import DrumPage from "../../pages/drumPage";
 import GuitarPage from "../../pages/guitarPage";
@@ -22,162 +21,32 @@ import HarmonyPage from "../../pages/harmonyPage";
 import PrintPage from "../../pages/printPage";
 import StructurePage from "../../pages/structurePage";
 import { reset } from "../../store/analysis/actions";
+import { openDialog } from "../../store/dialog/actions";
+import { DialogType } from "../../store/dialog/types";
 import { switchPage } from "../../store/project/actions";
-import { Page, ProjectState } from "../../store/project/types";
+import { Page } from "../../store/project/types";
 import store, { ApplicationState } from "../../store/store";
-import MusicFileInput from "../musicFileInput/musicFileInput";
 
-interface PropsFromState extends ProjectState {}
+interface PropsFromState {
+  currentPage: Page;
+  peaks: PeaksInstance | null;
+  audioUrl: string;
+}
 
 interface PropsFromDispatch {
   switchPage: typeof switchPage;
   reset: typeof reset;
+  openDialog: typeof openDialog;
 }
 
 type AllProps = PropsFromState & PropsFromDispatch;
 
 class App extends React.Component<AllProps> {
-  switchSong = (file: File, fileUrl: string) => {
-    console.log("switchSong(file=" + file + ",fileUrl=" + fileUrl + ")");
-    this.setState({ file: file, fileUrl: fileUrl });
-  };
-
-  tempSwitchSong = (file: File | null, fileUrl: string) => {
-    this.tempFile = file;
-    this.tempFileUrl = fileUrl;
-  };
-
-  analysisLoaded = () => {
-    this.setState({ analysisStarted: true });
-  };
-
-  tempFile: File | null = null;
-  tempFileUrl: string = "";
-
-  state = {
-    fileUrl: "",
-    file: null,
-    showNewDialog: false,
-    showOpenDialog: false,
-    showSaveDialog: false,
-    showPreferencesDialog: false,
-    showHelpDialog: false,
-    analysisStarted: false
-  };
-
-  showNewDialog = () => {
-    this.setState({ showNewDialog: true });
-  };
-
-  showOpenDialog = () => {
-    this.setState({ showOpenDialog: true });
-  };
-
-  showSaveDialog = () => {
-    this.setState({ showSaveDialog: true });
-  };
-
-  showPreferencesDialog = () => {
-    this.setState({ showPreferencesDialog: true });
-  };
-
-  showHelpDialog = () => {
-    this.setState({ showHelpDialog: true });
-  };
-
-  hideNewDialog = () => {
-    this.setState({ showNewDialog: false });
-  };
-
-  hideOpenDialog = () => {
-    this.setState({ showOpenDialog: false });
-  };
-
-  hideSaveDialog = () => {
-    this.setState({ showSaveDialog: false });
-  };
-
-  hidePreferencesDialog = () => {
-    this.setState({ showPreferencesDialog: false });
-  };
-
-  hideHelpDialog = () => {
-    this.setState({ showHelpDialog: false });
-  };
-
   render() {
     console.log("render app");
     return (
       <>
-        <Dialog
-          title="Create new Analysis"
-          show={this.state.showNewDialog}
-          onSubmit={() => {
-            this.switchSong(this.tempFile!, this.tempFileUrl);
-            this.analysisLoaded();
-            this.props.reset();
-            this.props.switchPage(Page.STRUCTURE);
-            this.hideNewDialog();
-          }}
-          onCancel={() => {
-            this.hideNewDialog();
-          }}
-        >
-          <Form>
-            <Form.Group controlId="title">
-              <Form.Label>Project title</Form.Label>
-              <Form.Control type="text" placeholder="Enter title" />
-              <Form.Text className="text-muted">
-                This title will be used for the new analysis project.
-              </Form.Text>
-            </Form.Group>
-
-            <Form.Group controlId="file">
-              <Form.Label>Song file</Form.Label>
-              <br />
-              <MusicFileInput callback={this.tempSwitchSong}></MusicFileInput>
-              <Form.Text className="text-muted">
-                Please select a MP3 file as basis for your analysis.
-              </Form.Text>
-            </Form.Group>
-          </Form>
-        </Dialog>
-
-        <Dialog
-          title="Open existing Analysis"
-          show={this.state.showOpenDialog}
-          onCancel={this.hideOpenDialog}
-        >
-          <p>Open existing Analysis</p>
-        </Dialog>
-
-        <Dialog
-          title="Save Analysis"
-          show={this.state.showSaveDialog}
-          onCancel={this.hideSaveDialog}
-          onSubmit={() => {
-            this.save();
-            this.hideSaveDialog();
-          }}
-        >
-          <p>Save Analysis</p>
-        </Dialog>
-
-        <Dialog
-          title="Preferences"
-          show={this.state.showPreferencesDialog}
-          onCancel={this.hidePreferencesDialog}
-        >
-          <p>Save Analysis</p>
-        </Dialog>
-
-        <Dialog
-          title="Help"
-          show={this.state.showHelpDialog}
-          onCancel={this.hideHelpDialog}
-        >
-          <p>Help</p>
-        </Dialog>
+        <DialogManagement />
 
         <Navbar
           bg="dark"
@@ -191,18 +60,18 @@ class App extends React.Component<AllProps> {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
-              <Nav.Link onClick={this.showNewDialog}>
+              <Nav.Link onClick={() => this.props.openDialog(DialogType.NEW)}>
                 <FontAwesomeIcon icon={faFile} />
               </Nav.Link>
-              <Nav.Link onClick={this.showOpenDialog}>
+              <Nav.Link onClick={() => this.props.openDialog(DialogType.OPEN)}>
                 {" "}
                 <FontAwesomeIcon icon={faFolderOpen} />
               </Nav.Link>
-              <Nav.Link onClick={this.showSaveDialog}>
+              <Nav.Link onClick={() => this.props.openDialog(DialogType.SAVE)}>
                 {" "}
                 <FontAwesomeIcon icon={faSave} />
               </Nav.Link>
-              {this.state.analysisStarted && (
+              {this.props.audioUrl !== "" && (
                 <>
                   <Nav.Link
                     onClick={() => this.props.switchPage(Page.STRUCTURE)}
@@ -233,7 +102,7 @@ class App extends React.Component<AllProps> {
           </Toggle>
 
           <Toggle show={this.props.currentPage === Page.STRUCTURE}>
-            <StructurePage url={this.state.fileUrl} />
+            <StructurePage url={this.props.audioUrl} />
           </Toggle>
 
           <Toggle show={this.props.currentPage === Page.HARMONY}>
@@ -255,22 +124,6 @@ class App extends React.Component<AllProps> {
       </>
     );
   }
-
-  save(): void {
-    let analysis: ApplicationState = Object.assign(
-      {},
-      { ...store.getState(), peaks: null }
-    );
-
-    let zip = new JSZip();
-    zip.file("analyis.json", JSON.stringify(analysis));
-    zip.file("song.mp3", (this.state.file as unknown) as Blob);
-
-    zip.generateAsync({ type: "blob" }).then(function(content) {
-      // see FileSaver.js
-      saveAs(content, "project.zip");
-    });
-  }
 }
 
 const Toggle: FunctionComponent<{ show: boolean }> = props => {
@@ -281,16 +134,18 @@ const Toggle: FunctionComponent<{ show: boolean }> = props => {
   }
 };
 
-const mapStateToProps = ({ project }: ApplicationState) => {
+const mapStateToProps = ({ project, dialog }: ApplicationState) => {
   return {
     currentPage: project.currentPage,
-    peaks: project.peaks
+    peaks: project.peaks,
+    audioUrl: project.audioUrl
   };
 };
 
 const mapDispatchToProps = {
   switchPage,
-  reset
+  reset,
+  openDialog
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
