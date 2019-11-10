@@ -10,5 +10,6 @@ export interface AnalysisState {
 export enum AnalysisActionTypes {
   SEGMENT_ADD = "SEGMENT_ADD",
   SEGMENT_REMOVE = "SEGMENT_REMOVE",
-  SEGMENT_UPDATE = "SEGMENT_UPDATE"
+  SEGMENT_UPDATE = "SEGMENT_UPDATE",
+  RESET = "ANALYSIS_RESET"
 }

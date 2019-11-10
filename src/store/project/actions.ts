@@ -1,7 +1,6 @@
 import { PeaksInstance } from "peaks.js";
 
-import { Page } from "../../constants";
-import { ProjectActionTypes } from "./types";
+import { Page, ProjectActionTypes } from "./types";
 
 /** Switch to the given Page. */
 export const switchPage = (page: Page) => ({

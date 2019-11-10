@@ -14,7 +14,6 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { connect } from "react-redux";
 
-import { Page } from "../../constants";
 import Dialog from "../../dialogs/dialog";
 import DefaultPage from "../../pages/defaultPage";
 import DrumPage from "../../pages/drumPage";
@@ -22,8 +21,9 @@ import GuitarPage from "../../pages/guitarPage";
 import HarmonyPage from "../../pages/harmonyPage";
 import PrintPage from "../../pages/printPage";
 import StructurePage from "../../pages/structurePage";
+import { reset } from "../../store/analysis/actions";
 import { switchPage } from "../../store/project/actions";
-import { ProjectState } from "../../store/project/types";
+import { Page, ProjectState } from "../../store/project/types";
 import store, { ApplicationState } from "../../store/store";
 import MusicFileInput from "../musicFileInput/musicFileInput";
 
@@ -31,6 +31,7 @@ interface PropsFromState extends ProjectState {}
 
 interface PropsFromDispatch {
   switchPage: typeof switchPage;
+  reset: typeof reset;
 }
 
 type AllProps = PropsFromState & PropsFromDispatch;
@@ -114,6 +115,7 @@ class App extends React.Component<AllProps> {
           onSubmit={() => {
             this.switchSong(this.tempFile!, this.tempFileUrl);
             this.analysisLoaded();
+            this.props.reset();
             this.props.switchPage(Page.STRUCTURE);
             this.hideNewDialog();
           }}
@@ -287,7 +289,8 @@ const mapStateToProps = ({ project }: ApplicationState) => {
 };
 
 const mapDispatchToProps = {
-  switchPage
+  switchPage,
+  reset
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
