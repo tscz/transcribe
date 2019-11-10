@@ -5,7 +5,7 @@ import {
   faSearchPlus
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PeaksInstance, SegmentAddOptions } from "peaks.js";
+import { PeaksInstance } from "peaks.js";
 import React from "react";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
@@ -13,18 +13,26 @@ import Row from "react-bootstrap/Row";
 import { connect } from "react-redux";
 
 import WaveContainer from "../components/wave/waveContainer";
-import { addSegment } from "../redux/actions";
+import { addSegment } from "../store/analysis/actions";
+import { ApplicationState } from "../store/store";
 import View from "../views/view";
 import WaveControlView from "../views/waveControlView";
 
-class StructurePage extends React.Component<
-  {
-    url: string;
-    peaksInstance: PeaksInstance;
-    addSegment: (segment: SegmentAddOptions) => void;
-  },
-  {}
-> {
+interface PropsFromState {
+  peaks: PeaksInstance | null;
+}
+
+interface PropsFromDispatch {
+  addSegment: typeof addSegment;
+}
+
+interface Props {
+  url: string;
+}
+
+type AllProps = PropsFromState & PropsFromDispatch & Props;
+
+class StructurePage extends React.Component<AllProps> {
   render() {
     console.log("render structurePage");
     return (
@@ -38,12 +46,12 @@ class StructurePage extends React.Component<
                   <FontAwesomeIcon
                     className="fa-pull-right"
                     icon={faSearchMinus}
-                    onClick={() => this.props.peaksInstance.zoom.zoomOut()}
+                    onClick={() => this.props.peaks!.zoom.zoomOut()}
                   />
                   <FontAwesomeIcon
                     className="fa-pull-right"
                     icon={faSearchPlus}
-                    onClick={() => this.props.peaksInstance.zoom.zoomIn()}
+                    onClick={() => this.props.peaks!.zoom.zoomIn()}
                   />
                   <FontAwesomeIcon className="fa-pull-right" icon={faMinus} />
                   <FontAwesomeIcon
@@ -51,9 +59,8 @@ class StructurePage extends React.Component<
                     icon={faPlus}
                     onClick={() => {
                       this.props.addSegment({
-                        startTime: this.props.peaksInstance.player.getCurrentTime(),
-                        endTime:
-                          this.props.peaksInstance.player.getCurrentTime() + 10,
+                        startTime: this.props.peaks!.player.getCurrentTime(),
+                        endTime: this.props.peaks!.player.getCurrentTime() + 10,
                         editable: true,
                         color: "rgba(255, 161, 39, 1)",
                         labelText: "This is a segment created via Redux"
@@ -85,9 +92,9 @@ class StructurePage extends React.Component<
   }
 }
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = ({ project }: ApplicationState) => {
   return {
-    peaksInstance: state.peaks
+    peaks: project.peaks
   };
 };
 

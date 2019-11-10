@@ -1,35 +1,41 @@
 import Peaks, { PeaksInstance, SegmentAddOptions } from "peaks.js";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { initPeaks } from "../../redux/actions";
+
+import { initPeaks } from "../../store/project/actions";
+import { ApplicationState } from "../../store/store";
 import WaveView from "./waveView";
 
-class WaveContainer extends Component<
-  {
-    url: string;
-    peaksInstance?: PeaksInstance;
-    initPeaks: (instance: PeaksInstance) => void;
-    segments?: SegmentAddOptions[];
-  },
-  {}
-> {
+interface PropsFromState {
+  peaks: PeaksInstance | null;
+  segments: SegmentAddOptions[];
+}
+
+interface PropsFromDispatch {
+  initPeaks: typeof initPeaks;
+}
+
+interface Props {
+  url: string;
+}
+
+type AllProps = PropsFromState & PropsFromDispatch & Props;
+
+class WaveContainer extends Component<AllProps> {
   componentDidMount() {
     this.initWave();
   }
 
   componentDidUpdate(prevProps: any) {
     if (prevProps.url !== this.props.url) {
-      if (
-        this.props.peaksInstance !== null &&
-        this.props.peaksInstance !== undefined
-      )
-        this.props.peaksInstance.destroy();
+      if (this.props.peaks !== null && this.props.peaks !== undefined)
+        this.props.peaks.destroy();
       this.initWave();
     }
 
-    if (this.props.segments && this.props.peaksInstance) {
-      this.props.peaksInstance.segments.removeAll();
-      this.props.peaksInstance.segments.add(this.props.segments);
+    if (this.props.segments && this.props.peaks) {
+      this.props.peaks.segments.removeAll();
+      this.props.peaks.segments.add(this.props.segments);
     }
   }
 
@@ -66,21 +72,20 @@ class WaveContainer extends Component<
       zoomLevels: [128, 256, 512, 1024, 2048, 4096]
     };
 
-    let savePeaksInstanceInGlobalState = (instance: PeaksInstance) => {
+    let savepeaksInGlobalState = (instance: PeaksInstance) => {
       this.props.initPeaks(instance);
     };
 
-    Peaks.init(options, function(err, peaksInstance) {
-      if (peaksInstance !== undefined)
-        savePeaksInstanceInGlobalState(peaksInstance);
+    Peaks.init(options, function(err, peaks) {
+      if (peaks !== undefined) savepeaksInGlobalState(peaks);
     });
   }
 }
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = ({ project, analysis }: ApplicationState) => {
   return {
-    peaksInstance: state.peaks,
-    segments: state.segments
+    peaks: project.peaks,
+    segments: analysis.segments
   };
 };
 
@@ -88,7 +93,4 @@ const mapDispatchToProps = {
   initPeaks
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WaveContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(WaveContainer);

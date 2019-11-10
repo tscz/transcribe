@@ -8,8 +8,8 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 
 import App from "./components/app/app";
-import store from "./redux/store";
 import * as serviceWorker from "./serviceWorker";
+import store from "./store/store";
 
 ReactDOM.render(
   <Provider store={store}>
