@@ -26,7 +26,7 @@ class WaveContainer extends Component<AllProps> {
     this.initWave();
   }
 
-  componentDidUpdate(prevProps: any) {
+  componentDidUpdate(prevProps: AllProps) {
     if (prevProps.url !== this.props.url) {
       if (this.props.peaks !== null && this.props.peaks !== undefined)
         this.props.peaks.destroy();
@@ -49,9 +49,11 @@ class WaveContainer extends Component<AllProps> {
   }
 
   initWave() {
+    // Create AudioContext dummy class for iOS audiocontext support
     var AudioContext =
       (window as any).AudioContext || (window as any).webkitAudioContext;
     var audioContext = new AudioContext();
+
     var audioElement: Element = document!.getElementById("audio")!;
     (audioElement as HTMLAudioElement).src = this.props.url;
 

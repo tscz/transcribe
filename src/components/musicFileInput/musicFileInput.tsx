@@ -1,26 +1,33 @@
 import React from "react";
 
-export default class MusicFileInput extends React.Component<
-  {
-    callback: (file: File, fileUrl: string) => void;
-  },
-  {}
-> {
-  state = {
-    file: ""
+interface Props {
+  callback: (file: File, fileUrl: string) => void;
+}
+
+interface State {
+  file: File | null;
+}
+
+export default class MusicFileInput extends React.Component<Props, State> {
+  state: State = {
+    file: null
   };
+
   fileInput: React.RefObject<HTMLInputElement>;
-  constructor(props: any) {
+
+  constructor(props: Props) {
     super(props);
     this.fileInput = React.createRef();
   }
+
   handleChange = () => {
     var file = this.fileInput.current!.files![0];
     var fileURL = window.URL.createObjectURL(file);
 
-    this.setState({ file: file, fileUrl: fileURL });
+    this.setState({ file: file });
     this.props.callback(file, fileURL);
   };
+
   render() {
     return (
       <input

@@ -2,14 +2,14 @@ import React, { Component } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
-class Dialog extends Component<
-  { title: string; show: boolean; onCancel: () => void; onSubmit?: () => void },
-  {}
-> {
-  constructor(props: any) {
-    super(props);
-    this.state = {};
-  }
+interface Props {
+  title: string;
+  show: boolean;
+  onCancel: () => void;
+  onSubmit?: () => void;
+}
+
+class Dialog extends Component<Props> {
   render() {
     return (
       <Modal show={this.props.show} onHide={this.props.onCancel}>
