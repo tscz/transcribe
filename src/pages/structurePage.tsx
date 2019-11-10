@@ -1,20 +1,21 @@
+import {
+  faMinus,
+  faPlus,
+  faSearchMinus,
+  faSearchPlus
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { PeaksInstance, SegmentAddOptions } from "peaks.js";
 import React from "react";
-import View from "../views/view";
-import WaveContainer from "../components/wave/waveContainer";
-import WaveControlView from "../views/waveControlView";
+import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSearchMinus,
-  faSearchPlus,
-  faPlus,
-  faMinus
-} from "@fortawesome/free-solid-svg-icons";
-import { PeaksInstance, SegmentAddOptions } from "peaks.js";
 import { connect } from "react-redux";
+
+import WaveContainer from "../components/wave/waveContainer";
 import { addSegment } from "../redux/actions";
+import View from "../views/view";
+import WaveControlView from "../views/waveControlView";
 
 class StructurePage extends React.Component<
   {
@@ -93,7 +94,4 @@ const mapStateToProps = (state: any) => {
 const mapDispatchToProps = {
   addSegment
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(StructurePage);
+export default connect(mapStateToProps, mapDispatchToProps)(StructurePage);

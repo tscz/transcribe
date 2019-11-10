@@ -1,29 +1,31 @@
-import { saveAs } from "file-saver";
-import React from "react";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import Form from "react-bootstrap/Form";
 import "./app.css";
-import Dialog from "../../dialogs/dialog";
-import DrumPage from "../../pages/drumPage";
-import HarmonyPage from "../../pages/harmonyPage";
-import PrintPage from "../../pages/printPage";
-import StructurePage from "../../pages/structurePage";
-import GuitarPage from "../../pages/guitarPage";
-import MusicFileInput from "../musicFileInput/musicFileInput";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import JSZip from "jszip";
+
 import {
   faFile,
   faFolderOpen,
   faSave
 } from "@fortawesome/free-solid-svg-icons";
-import DefaultPage from "../../pages/defaultPage";
-import { connect } from "react-redux";
-import { switchPage } from "../../redux/actions";
-import { PAGES } from "../../constants";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { saveAs } from "file-saver";
+import JSZip from "jszip";
 import { PeaksInstance } from "peaks.js";
+import React from "react";
+import Form from "react-bootstrap/Form";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import { connect } from "react-redux";
+
+import { PAGES } from "../../constants";
+import Dialog from "../../dialogs/dialog";
+import DefaultPage from "../../pages/defaultPage";
+import DrumPage from "../../pages/drumPage";
+import GuitarPage from "../../pages/guitarPage";
+import HarmonyPage from "../../pages/harmonyPage";
+import PrintPage from "../../pages/printPage";
+import StructurePage from "../../pages/structurePage";
+import { switchPage } from "../../redux/actions";
 import store from "../../redux/store";
+import MusicFileInput from "../musicFileInput/musicFileInput";
 
 class App extends React.Component<
   {
@@ -287,7 +289,4 @@ const mapDispatchToProps = {
   switchPage
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

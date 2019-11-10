@@ -1,4 +1,5 @@
 import React from "react";
+
 import View from "../views/view";
 
 class PrintPage extends React.Component {

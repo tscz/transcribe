@@ -1,8 +1,8 @@
+import { PeaksInstance, Segment, SegmentAddOptions } from "peaks.js";
+
 import { SWITCH_PAGE } from "./actionTypes";
 import { PEAKS_INIT } from "./actionTypes";
 import { SEGMENT_ADD, SEGMENT_REMOVE, SEGMENT_UPDATE } from "./actionTypes";
-
-import { PeaksInstance, SegmentAddOptions, Segment } from "peaks.js";
 
 export const switchPage = (page: String) => ({
   type: SWITCH_PAGE,

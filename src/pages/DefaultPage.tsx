@@ -1,4 +1,5 @@
 import React from "react";
+
 import View from "../views/view";
 
 class DefaultPage extends React.Component {

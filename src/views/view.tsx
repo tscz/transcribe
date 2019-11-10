@@ -1,5 +1,4 @@
 import React, { Component, ReactElement } from "react";
-
 import Card from "react-bootstrap/Card";
 
 class View extends Component<
