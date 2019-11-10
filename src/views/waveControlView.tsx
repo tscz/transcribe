@@ -1,5 +1,6 @@
-import React, { Component } from "react";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
+
+import React, { Component } from "react";
 //@ts-ignore
 import BootstrapTable from "react-bootstrap-table-next";
 //@ts-ignore

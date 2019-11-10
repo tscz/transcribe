@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-
-import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 
 class Dialog extends Component<
   { title: string; show: boolean; onCancel: () => void; onSubmit?: () => void },

@@ -1,6 +1,7 @@
 import { createStore } from "redux";
-import rootReducer from "./reducers";
 import { devToolsEnhancer } from "redux-devtools-extension";
+
+import rootReducer from "./reducers";
 
 export default createStore(
   rootReducer,
