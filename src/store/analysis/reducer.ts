@@ -3,21 +3,21 @@ import { Reducer } from "redux";
 import { AnalysisActionTypes, AnalysisState } from "./types";
 
 export const initialState: AnalysisState = {
-  segments: []
+  sections: []
 };
 
 const reducer: Reducer<AnalysisState> = (state = initialState, action) => {
   switch (action.type) {
-    case AnalysisActionTypes.SEGMENT_ADD: {
+    case AnalysisActionTypes.SECTION_ADD: {
       return {
         ...state,
-        segments: [...state.segments, action.payload.segment]
+        sections: [...state.sections, action.payload.section]
       };
     }
-    case AnalysisActionTypes.SEGMENT_REMOVE: {
+    case AnalysisActionTypes.SECTION_REMOVE: {
       return state;
     }
-    case AnalysisActionTypes.SEGMENT_UPDATE: {
+    case AnalysisActionTypes.SECTION_UPDATE: {
       return state;
     }
     case AnalysisActionTypes.RESET: {

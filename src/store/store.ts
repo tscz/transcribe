@@ -7,18 +7,22 @@ import { dialogReducer } from "./dialog/reducer";
 import { DialogState } from "./dialog/types";
 import { projectReducer } from "./project/reducer";
 import { ProjectState } from "./project/types";
+import { structureReducer } from "./structure/reducer";
+import { StructureState } from "./structure/types";
 
 /** The top-level application state object. */
 export interface ApplicationState {
   analysis: AnalysisState;
   dialog: DialogState;
   project: ProjectState;
+  structure: StructureState;
 }
 
 export const createRootReducer = combineReducers({
   analysis: analysisReducer,
   dialog: dialogReducer,
-  project: projectReducer
+  project: projectReducer,
+  structure: structureReducer
 });
 
 export default createStore(

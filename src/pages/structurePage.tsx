@@ -5,7 +5,6 @@ import {
   faSearchPlus
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PeaksInstance } from "peaks.js";
 import React from "react";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
@@ -13,17 +12,31 @@ import Row from "react-bootstrap/Row";
 import { connect } from "react-redux";
 
 import WaveContainer from "../components/wave/waveContainer";
-import { addSegment } from "../store/analysis/actions";
+import { addSection } from "../store/analysis/actions";
+import { Section, SectionType } from "../store/analysis/types";
 import { ApplicationState } from "../store/store";
+import {
+  endInit,
+  startInit,
+  zoomIn,
+  zoomOut
+} from "../store/structure/actions";
+import { LoadingStatus } from "../store/structure/types";
 import View from "../views/view";
 import WaveControlView from "../views/waveControlView";
 
 interface PropsFromState {
-  peaks: PeaksInstance | null;
+  sections: Section[];
+  zoom: number;
+  status: LoadingStatus;
 }
 
 interface PropsFromDispatch {
-  addSegment: typeof addSegment;
+  addSection: typeof addSection;
+  zoomIn: typeof zoomIn;
+  zoomOut: typeof zoomOut;
+  startInit: typeof startInit;
+  endInit: typeof endInit;
 }
 
 interface Props {
@@ -46,31 +59,43 @@ class StructurePage extends React.Component<AllProps> {
                   <FontAwesomeIcon
                     className="fa-pull-right"
                     icon={faSearchMinus}
-                    onClick={() => this.props.peaks!.zoom.zoomOut()}
+                    onClick={this.props.zoomOut}
                   />
                   <FontAwesomeIcon
                     className="fa-pull-right"
                     icon={faSearchPlus}
-                    onClick={() => this.props.peaks!.zoom.zoomIn()}
+                    onClick={this.props.zoomIn}
                   />
                   <FontAwesomeIcon className="fa-pull-right" icon={faMinus} />
                   <FontAwesomeIcon
                     className="fa-pull-right"
                     icon={faPlus}
                     onClick={() => {
-                      this.props.addSegment({
-                        startTime: this.props.peaks!.player.getCurrentTime(),
-                        endTime: this.props.peaks!.player.getCurrentTime() + 10,
+                      this.props.addSection({
+                        startTime: 0,
+                        endTime: 10,
                         editable: true,
                         color: "rgba(255, 161, 39, 1)",
-                        labelText: "This is a segment created via Redux"
+                        labelText: "This is a section created via Redux",
+                        type: SectionType.INTRO
                       });
                     }}
                   />
                 </>
               }
               body={
-                this.props.url ? <WaveContainer url={this.props.url} /> : <></>
+                this.props.url ? (
+                  <WaveContainer
+                    onLoad={peaks => {
+                      this.props.endInit();
+                    }}
+                    onLoadStart={() => this.props.startInit()}
+                    zoomLevel={this.props.zoom}
+                    status={this.props.status}
+                  />
+                ) : (
+                  <></>
+                )
               }
             ></View>
           </Col>
@@ -92,13 +117,19 @@ class StructurePage extends React.Component<AllProps> {
   }
 }
 
-const mapStateToProps = ({ project }: ApplicationState) => {
+const mapStateToProps = ({ analysis, structure }: ApplicationState) => {
   return {
-    peaks: project.peaks
+    sections: analysis.sections,
+    zoom: structure.zoom,
+    status: structure.status
   };
 };
 
 const mapDispatchToProps = {
-  addSegment
+  addSection,
+  zoomIn,
+  zoomOut,
+  startInit,
+  endInit
 };
 export default connect(mapStateToProps, mapDispatchToProps)(StructurePage);
