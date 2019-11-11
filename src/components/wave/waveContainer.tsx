@@ -1,41 +1,59 @@
-import Peaks, { PeaksInstance, SegmentAddOptions } from "peaks.js";
+import Peaks, { PeaksInstance } from "peaks.js";
 import React, { Component } from "react";
+import Spinner from "react-bootstrap/Spinner";
 import { connect } from "react-redux";
 
-import { initPeaks } from "../../store/project/actions";
+import { Section } from "../../store/analysis/types";
 import { ApplicationState } from "../../store/store";
+import { LoadingStatus, ZOOMLEVELS } from "../../store/structure/types";
 import WaveView from "./waveView";
 
 interface PropsFromState {
-  peaks: PeaksInstance | null;
-  segments: SegmentAddOptions[];
+  audioUrl: string;
+  sections: Section[];
 }
 
-interface PropsFromDispatch {
-  initPeaks: typeof initPeaks;
-}
+interface PropsFromDispatch {}
 
 interface Props {
-  url: string;
+  onLoad: (peaks: PeaksInstance) => void;
+  onLoadStart: () => void;
+  zoomLevel: number;
+  status: LoadingStatus;
 }
 
 type AllProps = PropsFromState & PropsFromDispatch & Props;
 
-class WaveContainer extends Component<AllProps> {
+interface State {
+  peaks: PeaksInstance | null;
+}
+
+class WaveContainer extends Component<AllProps, State> {
+  constructor(props: AllProps) {
+    super(props);
+
+    this.state = {
+      peaks: null
+    };
+  }
+
   componentDidMount() {
     this.initWave();
   }
 
   componentDidUpdate(prevProps: AllProps) {
-    if (prevProps.url !== this.props.url) {
-      if (this.props.peaks !== null && this.props.peaks !== undefined)
-        this.props.peaks.destroy();
+    console.log("props=" + JSON.stringify(this.props));
+
+    if (prevProps.audioUrl !== this.props.audioUrl) {
+      if (this.state.peaks) this.state.peaks.destroy();
       this.initWave();
     }
 
-    if (this.props.segments && this.props.peaks) {
-      this.props.peaks.segments.removeAll();
-      this.props.peaks.segments.add(this.props.segments);
+    if (this.props.sections && this.state.peaks) {
+      this.state.peaks.segments.removeAll();
+      this.state.peaks.segments.add(this.props.sections);
+
+      this.state.peaks.zoom.setZoom(this.props.zoomLevel);
     }
   }
 
@@ -43,7 +61,10 @@ class WaveContainer extends Component<AllProps> {
     console.log("render waveContainer");
     return (
       <div>
-        <WaveView url={this.props.url} />
+        {this.props.status !== LoadingStatus.INITIALIZED && (
+          <Spinner animation="border" />
+        )}
+        <WaveView url={this.props.audioUrl} />
       </div>
     );
   }
@@ -55,7 +76,7 @@ class WaveContainer extends Component<AllProps> {
     var audioContext = new AudioContext();
 
     var audioElement: Element = document!.getElementById("audio")!;
-    (audioElement as HTMLAudioElement).src = this.props.url;
+    (audioElement as HTMLAudioElement).src = this.props.audioUrl;
 
     var options = {
       containers: {
@@ -71,28 +92,35 @@ class WaveContainer extends Component<AllProps> {
       keyboard: true,
       pointMarkerColor: "#006eb0",
       showPlayheadTime: true,
-      zoomLevels: [128, 256, 512, 1024, 2048, 4096]
+      zoomLevels: ZOOMLEVELS
     };
 
-    let savepeaksInGlobalState = (instance: PeaksInstance) => {
-      this.props.initPeaks(instance);
+    let onLoadHandler = (instance: PeaksInstance) => {
+      this.props.onLoad(instance);
     };
 
+    let setPeaksInstance = (instance: PeaksInstance) => {
+      this.setState({ peaks: instance });
+    };
+
+    this.props.onLoadStart();
     Peaks.init(options, function(err, peaks) {
-      if (peaks !== undefined) savepeaksInGlobalState(peaks);
+      //TODO: Error handling
+      if (peaks !== undefined) {
+        onLoadHandler(peaks);
+        setPeaksInstance(peaks);
+      }
     });
   }
 }
 
 const mapStateToProps = ({ project, analysis }: ApplicationState) => {
   return {
-    peaks: project.peaks,
-    segments: analysis.segments
+    audioUrl: project.audioUrl,
+    sections: analysis.sections
   };
 };
 
-const mapDispatchToProps = {
-  initPeaks
-};
+const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(WaveContainer);

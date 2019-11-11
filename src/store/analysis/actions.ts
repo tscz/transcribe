@@ -1,24 +1,22 @@
-import { Segment, SegmentAddOptions } from "peaks.js";
+import { AnalysisActionTypes, Section } from "./types";
 
-import { AnalysisActionTypes } from "./types";
-
-/** Add a segment to a song analysis. */
-export const addSegment = (segment: SegmentAddOptions) => {
+/** Add a section to a song analysis. */
+export const addSection = (section: Section) => {
   return {
-    type: AnalysisActionTypes.SEGMENT_ADD,
-    payload: { segment }
+    type: AnalysisActionTypes.SECTION_ADD,
+    payload: { section: section }
   };
 };
 
-/** Update a segment from a song analysis. */
-export const updateSegment = (segment: Segment) => ({
-  type: AnalysisActionTypes.SEGMENT_UPDATE,
-  payload: { segment }
+/** Update a section from a song analysis. */
+export const updateSection = (section: Section) => ({
+  type: AnalysisActionTypes.SECTION_UPDATE,
+  payload: { section: section }
 });
 
-/** Remove a segment from a song analysis. */
-export const removeSegment = (id: string) => ({
-  type: AnalysisActionTypes.SEGMENT_REMOVE,
+/** Remove a section from a song analysis. */
+export const removeSection = (id: string) => ({
+  type: AnalysisActionTypes.SECTION_REMOVE,
   payload: { id }
 });
 

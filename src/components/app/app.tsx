@@ -6,8 +6,6 @@ import {
   faSave
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import JSZip from "jszip";
-import { PeaksInstance } from "peaks.js";
 import React, { FunctionComponent } from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -25,11 +23,10 @@ import { openDialog } from "../../store/dialog/actions";
 import { DialogType } from "../../store/dialog/types";
 import { switchPage } from "../../store/project/actions";
 import { Page } from "../../store/project/types";
-import store, { ApplicationState } from "../../store/store";
+import { ApplicationState } from "../../store/store";
 
 interface PropsFromState {
   currentPage: Page;
-  peaks: PeaksInstance | null;
   audioUrl: string;
 }
 
@@ -137,7 +134,6 @@ const Toggle: FunctionComponent<{ show: boolean }> = props => {
 const mapStateToProps = ({ project, dialog }: ApplicationState) => {
   return {
     currentPage: project.currentPage,
-    peaks: project.peaks,
     audioUrl: project.audioUrl
   };
 };
