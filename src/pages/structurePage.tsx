@@ -12,7 +12,7 @@ import Row from "react-bootstrap/Row";
 import { connect } from "react-redux";
 
 import WaveContainer from "../components/wave/waveContainer";
-import { addSection } from "../store/analysis/actions";
+import { addSection, setRythm } from "../store/analysis/actions";
 import { Section, SectionType } from "../store/analysis/types";
 import { ApplicationState } from "../store/store";
 import {
@@ -37,6 +37,7 @@ interface PropsFromDispatch {
   zoomOut: typeof zoomOut;
   startInit: typeof startInit;
   endInit: typeof endInit;
+  setRythm: typeof setRythm;
 }
 
 interface Props {
@@ -66,7 +67,17 @@ class StructurePage extends React.Component<AllProps> {
                     icon={faSearchPlus}
                     onClick={this.props.zoomIn}
                   />
-                  <FontAwesomeIcon className="fa-pull-right" icon={faMinus} />
+                  <FontAwesomeIcon
+                    className="fa-pull-right"
+                    icon={faMinus}
+                    onClick={() => {
+                      this.props.setRythm(
+                        8.42,
+                        { beatUnit: 4, beatsPerMeasure: 4 },
+                        97
+                      );
+                    }}
+                  />
                   <FontAwesomeIcon
                     className="fa-pull-right"
                     icon={faPlus}
@@ -130,6 +141,7 @@ const mapDispatchToProps = {
   zoomIn,
   zoomOut,
   startInit,
-  endInit
+  endInit,
+  setRythm
 };
 export default connect(mapStateToProps, mapDispatchToProps)(StructurePage);
