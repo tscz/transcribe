@@ -1,4 +1,4 @@
-import { AnalysisActionTypes, Section } from "./types";
+import { AnalysisActionTypes, Measure, Section, TimeSignature } from "./types";
 
 /** Add a section to a song analysis. */
 export const addSection = (section: Section) => {
@@ -23,4 +23,22 @@ export const removeSection = (id: string) => ({
 /** Reset a song analysis. */
 export const reset = () => ({
   type: AnalysisActionTypes.RESET
+});
+
+export const setLength = (length: number) => ({
+  type: AnalysisActionTypes.LENGTH_SET,
+  payload: { length }
+});
+
+export const setRythm = (
+  firstMeasureStart: number,
+  timeSignature: TimeSignature,
+  bpm: number
+) => ({
+  type: AnalysisActionTypes.RYTHM_UPDATE,
+  payload: {
+    firstMeasureStart,
+    timeSignature,
+    bpm
+  }
 });

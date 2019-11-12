@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import Spinner from "react-bootstrap/Spinner";
 import { connect } from "react-redux";
 
-import { Section } from "../../store/analysis/types";
+import { Measure, Section } from "../../store/analysis/types";
 import { ApplicationState } from "../../store/store";
 import { LoadingStatus, ZOOMLEVELS } from "../../store/structure/types";
 import WaveView from "./waveView";
@@ -11,6 +11,7 @@ import WaveView from "./waveView";
 interface PropsFromState {
   audioUrl: string;
   sections: Section[];
+  measures: Measure[];
 }
 
 interface PropsFromDispatch {}
@@ -52,6 +53,9 @@ class WaveContainer extends Component<AllProps, State> {
     if (this.props.sections && this.state.peaks) {
       this.state.peaks.segments.removeAll();
       this.state.peaks.segments.add(this.props.sections);
+
+      this.state.peaks.points.removeAll();
+      this.state.peaks.points.add(this.props.measures);
 
       this.state.peaks.zoom.setZoom(this.props.zoomLevel);
     }
@@ -117,7 +121,8 @@ class WaveContainer extends Component<AllProps, State> {
 const mapStateToProps = ({ project, analysis }: ApplicationState) => {
   return {
     audioUrl: project.audioUrl,
-    sections: analysis.sections
+    sections: analysis.sections,
+    measures: analysis.measures
   };
 };
 
