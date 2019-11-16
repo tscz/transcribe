@@ -1,6 +1,6 @@
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Peaks, { PeaksInstance } from "peaks.js";
 import React, { Component } from "react";
-import Spinner from "react-bootstrap/Spinner";
 import { connect } from "react-redux";
 
 import { Measure, Section } from "../../store/analysis/types";
@@ -66,7 +66,7 @@ class WaveContainer extends Component<AllProps, State> {
     return (
       <div>
         {this.props.status !== LoadingStatus.INITIALIZED && (
-          <Spinner animation="border" />
+          <CircularProgress />
         )}
         <WaveView url={this.props.audioUrl} />
       </div>

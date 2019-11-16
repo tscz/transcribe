@@ -1,7 +1,8 @@
+import FormControl from "@material-ui/core/FormControl";
+import TextField from "@material-ui/core/TextField";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
 import React, { Component, FunctionComponent, useState } from "react";
-import Form from "react-bootstrap/Form";
 import { connect } from "react-redux";
 
 import MusicFileInput from "../components/musicFileInput/musicFileInput";
@@ -11,7 +12,7 @@ import { DialogType } from "../store/dialog/types";
 import { createProject, switchPage } from "../store/project/actions";
 import { Page } from "../store/project/types";
 import store, { ApplicationState } from "../store/store";
-import Dialog from "./dialog";
+import Dialog2 from "./dialog";
 
 interface PropsFromState {
   type: DialogType;
@@ -64,16 +65,16 @@ class DialogManagement extends Component<AllProps> {
         );
       case DialogType.OPEN:
         return (
-          <Dialog
+          <Dialog2
             title="Open existing Analysis"
             onCancel={this.props.closeDialog}
           >
             <p>Open existing Analysis</p>
-          </Dialog>
+          </Dialog2>
         );
       case DialogType.SAVE:
         return (
-          <Dialog
+          <Dialog2
             title="Save Analysis"
             onCancel={this.props.closeDialog}
             onSubmit={() => {
@@ -82,7 +83,7 @@ class DialogManagement extends Component<AllProps> {
             }}
           >
             <p>Save Analysis</p>
-          </Dialog>
+          </Dialog2>
         );
       default:
         return null;
@@ -100,38 +101,29 @@ const NewDialog: FunctionComponent<{
   const handleChange = (event: any) => setTitle(event.target.value);
 
   return (
-    <Dialog
+    <Dialog2
       title="Create new Analysis"
       onSubmit={() => props.onSubmit(title, fileUrl)}
       onCancel={props.onCancel}
     >
-      <Form>
-        <Form.Group controlId="title">
-          <Form.Label>Project title</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter title"
-            onChange={handleChange}
-          />
-          <Form.Text className="text-muted">
-            This title will be used for the new analysis project.
-          </Form.Text>
-        </Form.Group>
-
-        <Form.Group controlId="file">
-          <Form.Label>Song file</Form.Label>
-          <br />
-          <MusicFileInput
-            callback={(file, fileUrl) => {
-              setFileUrl(fileUrl);
-            }}
-          ></MusicFileInput>
-          <Form.Text className="text-muted">
-            Please select a MP3 file as basis for your analysis.
-          </Form.Text>
-        </Form.Group>
-      </Form>
-    </Dialog>
+      <FormControl>
+        <TextField
+          id="title"
+          label="Project title"
+          defaultValue="This title will be used for the new analysis project."
+          margin="normal"
+          InputProps={{
+            readOnly: false
+          }}
+          variant="outlined"
+        />
+        <MusicFileInput
+          callback={(file, fileUrl) => {
+            setFileUrl(fileUrl);
+          }}
+        ></MusicFileInput>
+      </FormControl>
+    </Dialog2>
   );
 };
 

@@ -1,8 +1,5 @@
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./index.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./index.css";
-
+import CssBaseline from "@material-ui/core/CssBaseline";
+import { ThemeProvider } from "@material-ui/core/styles";
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
@@ -10,10 +7,15 @@ import { Provider } from "react-redux";
 import App from "./components/app/app";
 import * as serviceWorker from "./serviceWorker";
 import store from "./store/store";
+import theme from "./theme";
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <ThemeProvider theme={theme}>
+      {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+      <CssBaseline />
+      <App />
+    </ThemeProvider>
   </Provider>,
   document.getElementById("root")
 );

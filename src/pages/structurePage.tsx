@@ -1,14 +1,7 @@
-import {
-  faMinus,
-  faPlus,
-  faSearchMinus,
-  faSearchPlus
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Grid from "@material-ui/core/Grid";
+import IconButton from "@material-ui/core/IconButton";
+import AddIcon from "@material-ui/icons/Add";
 import React from "react";
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
 import { connect } from "react-redux";
 
 import WaveContainer from "../components/wave/waveContainer";
@@ -24,6 +17,7 @@ import {
 import { LoadingStatus } from "../store/structure/types";
 import View from "../views/view";
 import WaveControlView from "../views/waveControlView";
+import ContentLayout from "./contentLayout";
 
 interface PropsFromState {
   sections: Section[];
@@ -50,26 +44,31 @@ class StructurePage extends React.Component<AllProps> {
   render() {
     console.log("render structurePage");
     return (
-      <Container fluid={true}>
-        <Row>
-          <Col sm={8}>
-            <View
-              header={
-                <>
-                  Song Structure
-                  <FontAwesomeIcon
+      <ContentLayout
+        topLeft={
+          <View
+            header="Waveform"
+            actions={
+              <>
+                <audio id="audio" controls hidden>
+                  {this.props.url ? (
+                    <source src={this.props.url} type="audio/mpeg" />
+                  ) : null}
+                  Your browser does not support the audio element.
+                </audio>
+                <IconButton>
+                  <AddIcon
                     className="fa-pull-right"
-                    icon={faSearchMinus}
                     onClick={this.props.zoomOut}
                   />
-                  <FontAwesomeIcon
+                </IconButton>
+                <IconButton>
+                  <AddIcon onClick={this.props.zoomIn} />
+                </IconButton>
+
+                <IconButton>
+                  <AddIcon
                     className="fa-pull-right"
-                    icon={faSearchPlus}
-                    onClick={this.props.zoomIn}
-                  />
-                  <FontAwesomeIcon
-                    className="fa-pull-right"
-                    icon={faMinus}
                     onClick={() => {
                       this.props.setRythm(
                         8.42,
@@ -78,9 +77,10 @@ class StructurePage extends React.Component<AllProps> {
                       );
                     }}
                   />
-                  <FontAwesomeIcon
+                </IconButton>
+                <IconButton>
+                  <AddIcon
                     className="fa-pull-right"
-                    icon={faPlus}
                     onClick={() => {
                       this.props.addSection({
                         startTime: 0,
@@ -92,38 +92,34 @@ class StructurePage extends React.Component<AllProps> {
                       });
                     }}
                   />
-                </>
-              }
-              body={
-                this.props.url ? (
-                  <WaveContainer
-                    onLoad={peaks => {
-                      this.props.endInit();
-                    }}
-                    onLoadStart={() => this.props.startInit()}
-                    zoomLevel={this.props.zoom}
-                    status={this.props.status}
-                  />
-                ) : (
-                  <></>
-                )
-              }
-            ></View>
-          </Col>
-          <Col sm={4}>
-            <View
-              header={<>Outline</>}
-              body={
-                this.props.url ? (
-                  <WaveControlView url={this.props.url} />
-                ) : (
-                  <></>
-                )
-              }
-            ></View>
-          </Col>
-        </Row>
-      </Container>
+                </IconButton>
+              </>
+            }
+            body={
+              this.props.url ? (
+                <WaveContainer
+                  onLoad={peaks => {
+                    this.props.endInit();
+                  }}
+                  onLoadStart={() => this.props.startInit()}
+                  zoomLevel={this.props.zoom}
+                  status={this.props.status}
+                />
+              ) : (
+                <></>
+              )
+            }
+          ></View>
+        }
+        topRight={
+          <View
+            header={<>Properties</>}
+            body={
+              this.props.url ? <WaveControlView url={this.props.url} /> : <></>
+            }
+          ></View>
+        }
+      ></ContentLayout>
     );
   }
 }
