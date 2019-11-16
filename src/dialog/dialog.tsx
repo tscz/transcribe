@@ -1,7 +1,8 @@
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import { Component } from "react";
 import React from "react";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
 
 interface DialogProps {
   title: string;
@@ -9,22 +10,24 @@ interface DialogProps {
   onSubmit?: () => void;
 }
 
-class Dialog extends Component<DialogProps> {
+class Dialog2 extends Component<DialogProps> {
   render() {
     return (
-      <Modal show={true} onHide={this.props.onCancel}>
-        <Modal.Header closeButton>
-          <Modal.Title>{this.props.title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{this.props.children}</Modal.Body>
-        <Modal.Footer>
-          <Button variant="dark" onClick={this.props.onSubmit}>
-            Create
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <Dialog
+        onClose={this.props.onCancel}
+        aria-labelledby="simple-dialog-title"
+        open={true}
+      >
+        <DialogTitle id="simple-dialog-title">{this.props.title}</DialogTitle>
+
+        {this.props.children}
+
+        <Button variant="contained" onClick={this.props.onSubmit}>
+          Create
+        </Button>
+      </Dialog>
     );
   }
 }
 
-export default Dialog;
+export default Dialog2;
