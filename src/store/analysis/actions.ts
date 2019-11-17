@@ -1,4 +1,4 @@
-import { AnalysisActionTypes, Measure, Section, TimeSignature } from "./types";
+import { AnalysisActionTypes, Section, TimeSignatureType } from "./types";
 
 /** Add a section to a song analysis. */
 export const addSection = (section: Section) => {
@@ -32,13 +32,13 @@ export const setLength = (length: number) => ({
 
 export const setRythm = (
   firstMeasureStart: number,
-  timeSignature: TimeSignature,
+  timeSignatureType: TimeSignatureType,
   bpm: number
 ) => ({
   type: AnalysisActionTypes.RYTHM_UPDATE,
   payload: {
     firstMeasureStart,
-    timeSignature,
+    timeSignatureType,
     bpm
   }
 });

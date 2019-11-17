@@ -1,6 +1,12 @@
 import { Reducer } from "redux";
 
-import { AnalysisActionTypes, AnalysisState, Measure } from "./types";
+import {
+  AnalysisActionTypes,
+  AnalysisState,
+  Measure,
+  TimeSignature,
+  TimeSignatureType
+} from "./types";
 
 export const initialState: AnalysisState = {
   sections: [],
@@ -8,7 +14,7 @@ export const initialState: AnalysisState = {
   firstMeasureStart: 0,
   length: 180,
   measures: [],
-  timeSignature: { beatUnit: 4, beatsPerMeasure: 4 }
+  timeSignature: TimeSignatureType.FOUR_FOUR
 };
 
 const reducer: Reducer<AnalysisState> = (state = initialState, action) => {
@@ -31,7 +37,25 @@ const reducer: Reducer<AnalysisState> = (state = initialState, action) => {
     case AnalysisActionTypes.RYTHM_UPDATE:
       {
         let length = state.length;
-        let { firstMeasureStart, bpm, timeSignature } = action.payload;
+        var { firstMeasureStart, bpm, timeSignatureType } = action.payload;
+
+        if (firstMeasureStart == null)
+          firstMeasureStart = state.firstMeasureStart;
+
+        if (bpm == null) bpm = state.bpm;
+
+        if (timeSignatureType == null) timeSignatureType = state.timeSignature;
+
+        let timeSignature: TimeSignature = { beatUnit: 4, beatsPerMeasure: 4 };
+
+        switch (timeSignatureType) {
+          case TimeSignatureType.FOUR_FOUR:
+            timeSignature = { beatUnit: 4, beatsPerMeasure: 4 };
+            break;
+          case TimeSignatureType.THREE_FOUR:
+            timeSignature = { beatUnit: 4, beatsPerMeasure: 3 };
+            break;
+        }
 
         let numberOfMeasures =
           (state.length - firstMeasureStart) *
@@ -62,9 +86,9 @@ const reducer: Reducer<AnalysisState> = (state = initialState, action) => {
       return {
         ...state,
         measures: measures,
-        bpm: action.payload.bpm,
-        timeSignature: action.payload.timeSignature,
-        firstMeasureStart: action.payload.firstTimeMeasureStart
+        bpm: bpm,
+        timeSignature: timeSignatureType,
+        firstMeasureStart: firstMeasureStart
       };
     case AnalysisActionTypes.LENGTH_SET: {
       return {

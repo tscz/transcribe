@@ -7,7 +7,7 @@ export interface AnalysisState {
 
   readonly length: number;
   readonly firstMeasureStart: number;
-  readonly timeSignature: TimeSignature;
+  readonly timeSignature: TimeSignatureType;
   readonly bpm: number;
   readonly measures: Measure[];
 }
@@ -21,6 +21,11 @@ export interface Measure extends PointAddOptions {}
 export interface TimeSignature {
   beatsPerMeasure: number;
   beatUnit: number;
+}
+
+export enum TimeSignatureType {
+  FOUR_FOUR = "FOUR_FOUR",
+  THREE_FOUR = "THREE_FOUR"
 }
 
 export enum SectionType {
