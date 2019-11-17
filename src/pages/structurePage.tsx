@@ -1,4 +1,3 @@
-import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/Add";
 import React from "react";
@@ -6,7 +5,11 @@ import { connect } from "react-redux";
 
 import WaveContainer from "../components/wave/waveContainer";
 import { addSection, setRythm } from "../store/analysis/actions";
-import { Section, SectionType } from "../store/analysis/types";
+import {
+  Section,
+  SectionType,
+  TimeSignatureType
+} from "../store/analysis/types";
 import { ApplicationState } from "../store/store";
 import {
   endInit,
@@ -72,7 +75,7 @@ class StructurePage extends React.Component<AllProps> {
                     onClick={() => {
                       this.props.setRythm(
                         8.42,
-                        { beatUnit: 4, beatsPerMeasure: 4 },
+                        TimeSignatureType.FOUR_FOUR,
                         97
                       );
                     }}
@@ -114,9 +117,7 @@ class StructurePage extends React.Component<AllProps> {
         topRight={
           <View
             header={<>Properties</>}
-            body={
-              this.props.url ? <WaveControlView url={this.props.url} /> : <></>
-            }
+            body={this.props.url ? <WaveControlView /> : <></>}
           ></View>
         }
       ></ContentLayout>

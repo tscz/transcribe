@@ -1,8 +1,6 @@
 import Grid from "@material-ui/core/Grid";
 import React, { ReactElement } from "react";
 
-import View from "../views/view";
-
 interface Props {
   topLeft: ReactElement;
   topRight: ReactElement;
