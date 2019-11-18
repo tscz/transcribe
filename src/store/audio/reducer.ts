@@ -9,7 +9,8 @@ import {
 
 export const initialState: AudioState = {
   zoom: 0,
-  status: LoadingStatus.NOT_INITIALIZED
+  status: LoadingStatus.NOT_INITIALIZED,
+  isPlaying: false
 };
 
 const reducer: Reducer<AudioState> = (state = initialState, action) => {
@@ -30,6 +31,18 @@ const reducer: Reducer<AudioState> = (state = initialState, action) => {
       return {
         ...state,
         zoom: state.zoom === 0 ? state.zoom : state.zoom - 1
+      };
+    }
+    case AudioActionTypes.PLAY: {
+      return {
+        ...state,
+        isPlaying: true
+      };
+    }
+    case AudioActionTypes.PAUSE: {
+      return {
+        ...state,
+        isPlaying: false
       };
     }
     default: {

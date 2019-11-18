@@ -1,16 +1,25 @@
+import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
-import AddIcon from "@material-ui/icons/Add";
+import LoopIcon from "@material-ui/icons/Loop";
+import MusicNoteIcon from "@material-ui/icons/MusicNote";
+import PauseIcon from "@material-ui/icons/Pause";
+import PlayArrowIcon from "@material-ui/icons/PlayArrow";
+import SpeedIcon from "@material-ui/icons/Speed";
+import TimerIcon from "@material-ui/icons/Timer";
 import React from "react";
 import { connect } from "react-redux";
 
 import WaveContainer from "../components/wave/waveContainer";
 import { addSection, setRhythm } from "../store/analysis/actions";
+import { Section } from "../store/analysis/types";
 import {
-  Section,
-  SectionType,
-  TimeSignatureType
-} from "../store/analysis/types";
-import { endInit, startInit, zoomIn, zoomOut } from "../store/audio/actions";
+  endInit,
+  pause,
+  play,
+  startInit,
+  zoomIn,
+  zoomOut
+} from "../store/audio/actions";
 import { LoadingStatus } from "../store/audio/types";
 import { ApplicationState } from "../store/store";
 import View from "../views/view";
@@ -21,6 +30,7 @@ interface PropsFromState {
   sections: Section[];
   zoom: number;
   status: LoadingStatus;
+  isPlaying: boolean;
 }
 
 interface PropsFromDispatch {
@@ -30,6 +40,8 @@ interface PropsFromDispatch {
   startInit: typeof startInit;
   endInit: typeof endInit;
   setRhythm: typeof setRhythm;
+  play: typeof play;
+  pause: typeof pause;
 }
 
 interface Props {
@@ -49,37 +61,28 @@ class StructurePage extends React.Component<AllProps> {
             header="Waveform"
             actions={
               <>
-                <IconButton onClick={this.props.zoomOut}>
-                  <AddIcon className="fa-pull-right" />
+                {this.props.isPlaying ? (
+                  <IconButton onClick={this.props.pause}>
+                    <PauseIcon />
+                  </IconButton>
+                ) : (
+                  <IconButton onClick={this.props.play}>
+                    <PlayArrowIcon />
+                  </IconButton>
+                )}
+                <MeasureSwitch id="startMeasure" />
+                <MeasureSwitch id="endMeasure" />
+                <IconButton>
+                  <LoopIcon />
                 </IconButton>
-                <IconButton onClick={this.props.zoomIn}>
-                  <AddIcon />
+                <IconButton>
+                  <MusicNoteIcon />
                 </IconButton>
-
-                <IconButton
-                  onClick={() => {
-                    this.props.setRhythm({
-                      firstMeasureStart: 8.42,
-                      timeSignatureType: TimeSignatureType.FOUR_FOUR,
-                      bpm: 97
-                    });
-                  }}
-                >
-                  <AddIcon className="fa-pull-right" />
+                <IconButton>
+                  <SpeedIcon />
                 </IconButton>
-                <IconButton
-                  onClick={() => {
-                    this.props.addSection({
-                      startTime: 0,
-                      endTime: 10,
-                      editable: true,
-                      color: "rgba(255, 161, 39, 1)",
-                      labelText: "This is a section created via Redux",
-                      type: SectionType.INTRO
-                    });
-                  }}
-                >
-                  <AddIcon className="fa-pull-right" />
+                <IconButton>
+                  <TimerIcon />
                 </IconButton>
               </>
             }
@@ -97,11 +100,23 @@ class StructurePage extends React.Component<AllProps> {
   }
 }
 
+const MeasureSwitch = (props: { id: string }) => {
+  return (
+    <Select id={props.id} value={0}>
+      <MenuItem value={0}>0</MenuItem>
+      <MenuItem value={1}>1</MenuItem>
+      <MenuItem value={2}>2</MenuItem>
+      <MenuItem value={3}>3</MenuItem>
+    </Select>
+  );
+};
+
 const mapStateToProps = ({ analysis, audio }: ApplicationState) => {
   return {
     sections: analysis.sections,
     zoom: audio.zoom,
-    status: audio.status
+    status: audio.status,
+    isPlaying: audio.isPlaying
   };
 };
 
@@ -111,6 +126,8 @@ const mapDispatchToProps = {
   zoomOut,
   startInit,
   endInit,
-  setRhythm
+  setRhythm,
+  play,
+  pause
 };
 export default connect(mapStateToProps, mapDispatchToProps)(StructurePage);
