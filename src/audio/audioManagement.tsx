@@ -2,7 +2,7 @@ import Peaks, { PeaksInstance } from "peaks.js";
 import React from "react";
 import { connect } from "react-redux";
 
-import { setRhythm } from "../store/analysis/actions";
+import { setLength, setRhythm } from "../store/analysis/actions";
 import { Measure, Section } from "../store/analysis/types";
 import { endInit, startRender } from "../store/audio/actions";
 import { LoadingStatus, ZOOMLEVELS } from "../store/audio/types";
@@ -16,12 +16,14 @@ interface PropsFromState {
   zoomLevel: number;
   firstMeasureStart: number;
   syncFirstMeasureStart: boolean;
+  isPlaying: boolean;
 }
 
 interface PropsFromDispatch {
   startRender: typeof startRender;
   endInit: typeof endInit;
   setRhythm: typeof setRhythm;
+  setLength: typeof setLength;
 }
 
 interface Props {
@@ -32,6 +34,7 @@ type AllProps = PropsFromState & PropsFromDispatch & Props;
 
 class AudioManagement extends React.Component<AllProps> {
   peaks: Peaks.PeaksInstance | undefined;
+  audioBuffer: AudioBuffer | undefined;
 
   componentDidUpdate(prevProps: AllProps) {
     console.log(
@@ -45,18 +48,18 @@ class AudioManagement extends React.Component<AllProps> {
       case LoadingStatus.INITIALIZING:
         this.props.startRender();
         if (this.peaks) this.peaks.destroy();
-        this.initWave();
+        this.getData();
         break;
     }
 
-    if (this.props.sections && this.peaks) {
-      this.peaks.segments.removeAll();
-      this.peaks.segments.add(this.props.sections);
+    this.repaintWave();
 
-      this.peaks.points.removeAll();
-      this.peaks.points.add(this.props.measures);
-
-      this.peaks.zoom.setZoom(this.props.zoomLevel);
+    if (prevProps.isPlaying !== this.props.isPlaying && this.peaks) {
+      if (this.props.isPlaying) {
+        this.peaks.player.play();
+      } else {
+        this.peaks.player.pause();
+      }
     }
 
     /*     if (props.events.length) {
@@ -66,6 +69,16 @@ class AudioManagement extends React.Component<AllProps> {
         type: "CLEAR_EVENT_QUEUE"
       });
     } */
+  }
+
+  private repaintWave() {
+    if (this.props.sections && this.peaks) {
+      this.peaks.segments.removeAll();
+      this.peaks.segments.add(this.props.sections);
+      this.peaks.points.removeAll();
+      this.peaks.points.add(this.props.measures);
+      this.peaks.zoom.setZoom(this.props.zoomLevel);
+    }
   }
 
   processEvent(event: any) {
@@ -88,6 +101,27 @@ class AudioManagement extends React.Component<AllProps> {
     );
   }
 
+  getData = () => {
+    const audioCtx = this.props.audioContext;
+
+    const initWave2 = (audioBuffer: AudioBuffer) => {
+      this.audioBuffer = audioBuffer;
+      this.props.setLength(audioBuffer.duration);
+      this.initWave();
+    };
+
+    fetch(this.props.audioUrl)
+      .then(function(response) {
+        return response.arrayBuffer();
+      })
+      .then(function(buffer) {
+        return audioCtx.decodeAudioData(buffer);
+      })
+      .then(function(audioBuffer) {
+        initWave2(audioBuffer);
+      });
+  };
+
   initWave() {
     var audioElement: Element = document!.getElementById(AUDIO_DOM_ELEMENT)!;
     (audioElement as HTMLAudioElement).src = this.props.audioUrl;
@@ -102,6 +136,7 @@ class AudioManagement extends React.Component<AllProps> {
       mediaElement: audioElement,
       webAudio: {
         audioContext: audioContext,
+        audioBuffer: this.audioBuffer,
         scale: 128,
         multiChannel: false
       },
@@ -112,6 +147,7 @@ class AudioManagement extends React.Component<AllProps> {
     };
 
     let finish = () => {
+      this.props.setRhythm({});
       this.props.endInit();
     };
 
@@ -144,14 +180,16 @@ const mapStateToProps = ({ project, analysis, audio }: ApplicationState) => {
     zoomLevel: audio.zoom,
     status: audio.status,
     firstMeasureStart: analysis.firstMeasureStart,
-    syncFirstMeasureStart: project.syncFirstMeasureStart
+    syncFirstMeasureStart: project.syncFirstMeasureStart,
+    isPlaying: audio.isPlaying
   };
 };
 
 const mapDispatchToProps = {
   startRender,
   endInit,
-  setRhythm
+  setRhythm,
+  setLength
 };
 export default connect(mapStateToProps, mapDispatchToProps)(AudioManagement);
 

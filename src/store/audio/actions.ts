@@ -24,3 +24,11 @@ export const startRender = () => ({
 export const endInit = () => ({
   type: AudioActionTypes.INIT_END
 });
+
+export const play = () => ({
+  type: AudioActionTypes.PLAY
+});
+
+export const pause = () => ({
+  type: AudioActionTypes.PAUSE
+});

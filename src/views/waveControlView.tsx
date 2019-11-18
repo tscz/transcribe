@@ -53,7 +53,6 @@ class WaveControlView extends Component<AllProps> {
               <Input
                 type="text"
                 id="startMeasure1"
-                defaultValue="00:00:00"
                 value={this.props.firstMeasureStart}
                 startAdornment={
                   <InputAdornment position="start">
