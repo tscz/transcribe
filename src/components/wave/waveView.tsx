@@ -1,5 +1,10 @@
 import React, { Component } from "react";
 
+import {
+  OVERVIEW_CONTAINER,
+  ZOOMVIEW_CONTAINER
+} from "../../audio/audioManagement";
+
 interface Props {
   url: string;
 }
@@ -14,8 +19,8 @@ export default class WaveView extends Component<Props> {
     return (
       <div>
         <div id="waveform-container">
-          <div id="zoomview-container"></div>
-          <div id="overview-container"></div>
+          <div id={ZOOMVIEW_CONTAINER}></div>
+          <div id={OVERVIEW_CONTAINER}></div>
         </div>
       </div>
     );

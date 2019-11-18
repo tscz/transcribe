@@ -1,32 +1,32 @@
 import { Reducer } from "redux";
 
 import {
+  AudioActionTypes,
+  AudioState,
   LoadingStatus,
-  StructureActionTypes,
-  StructureState,
   ZOOMLEVELS
 } from "./types";
 
-export const initialState: StructureState = {
+export const initialState: AudioState = {
   zoom: 0,
   status: LoadingStatus.NOT_INITIALIZED
 };
 
-const reducer: Reducer<StructureState> = (state = initialState, action) => {
+const reducer: Reducer<AudioState> = (state = initialState, action) => {
   switch (action.type) {
-    case StructureActionTypes.INIT_START: {
+    case AudioActionTypes.INIT_START: {
       return { ...state, status: LoadingStatus.INITIALIZING };
     }
-    case StructureActionTypes.INIT_END: {
+    case AudioActionTypes.INIT_END: {
       return { ...state, status: LoadingStatus.INITIALIZED };
     }
-    case StructureActionTypes.ZOOM_IN: {
+    case AudioActionTypes.ZOOM_IN: {
       return {
         ...state,
         zoom: state.zoom === ZOOMLEVELS.length - 1 ? state.zoom : state.zoom + 1
       };
     }
-    case StructureActionTypes.ZOOM_OUT: {
+    case AudioActionTypes.ZOOM_OUT: {
       return {
         ...state,
         zoom: state.zoom === 0 ? state.zoom : state.zoom - 1
@@ -38,4 +38,4 @@ const reducer: Reducer<StructureState> = (state = initialState, action) => {
   }
 };
 
-export { reducer as structureReducer };
+export { reducer as audioReducer };

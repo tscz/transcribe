@@ -30,15 +30,17 @@ export const setLength = (length: number) => ({
   payload: { length }
 });
 
-export const setRythm = (
-  firstMeasureStart: number,
-  timeSignatureType: TimeSignatureType,
-  bpm: number
-) => ({
-  type: AnalysisActionTypes.RYTHM_UPDATE,
+interface RhythmParameter {
+  firstMeasureStart?: number;
+  timeSignatureType?: TimeSignatureType;
+  bpm?: number;
+}
+
+export const setRhythm = (param: RhythmParameter) => ({
+  type: AnalysisActionTypes.RHYTHM_UPDATE,
   payload: {
-    firstMeasureStart,
-    timeSignatureType,
-    bpm
+    firstMeasureStart: param.firstMeasureStart,
+    timeSignatureType: param.timeSignatureType,
+    bpm: param.bpm
   }
 });

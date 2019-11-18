@@ -4,20 +4,15 @@ import React from "react";
 import { connect } from "react-redux";
 
 import WaveContainer from "../components/wave/waveContainer";
-import { addSection, setRythm } from "../store/analysis/actions";
+import { addSection, setRhythm } from "../store/analysis/actions";
 import {
   Section,
   SectionType,
   TimeSignatureType
 } from "../store/analysis/types";
+import { endInit, startInit, zoomIn, zoomOut } from "../store/audio/actions";
+import { LoadingStatus } from "../store/audio/types";
 import { ApplicationState } from "../store/store";
-import {
-  endInit,
-  startInit,
-  zoomIn,
-  zoomOut
-} from "../store/structure/actions";
-import { LoadingStatus } from "../store/structure/types";
 import View from "../views/view";
 import WaveControlView from "../views/waveControlView";
 import ContentLayout from "./contentLayout";
@@ -34,11 +29,12 @@ interface PropsFromDispatch {
   zoomOut: typeof zoomOut;
   startInit: typeof startInit;
   endInit: typeof endInit;
-  setRythm: typeof setRythm;
+  setRhythm: typeof setRhythm;
 }
 
 interface Props {
   url: string;
+  audioContext: AudioContext;
 }
 
 type AllProps = PropsFromState & PropsFromDispatch & Props;
@@ -53,65 +49,41 @@ class StructurePage extends React.Component<AllProps> {
             header="Waveform"
             actions={
               <>
-                <audio id="audio" controls hidden>
-                  {this.props.url ? (
-                    <source src={this.props.url} type="audio/mpeg" />
-                  ) : null}
-                  Your browser does not support the audio element.
-                </audio>
-                <IconButton>
-                  <AddIcon
-                    className="fa-pull-right"
-                    onClick={this.props.zoomOut}
-                  />
+                <IconButton onClick={this.props.zoomOut}>
+                  <AddIcon className="fa-pull-right" />
                 </IconButton>
-                <IconButton>
-                  <AddIcon onClick={this.props.zoomIn} />
+                <IconButton onClick={this.props.zoomIn}>
+                  <AddIcon />
                 </IconButton>
 
-                <IconButton>
-                  <AddIcon
-                    className="fa-pull-right"
-                    onClick={() => {
-                      this.props.setRythm(
-                        8.42,
-                        TimeSignatureType.FOUR_FOUR,
-                        97
-                      );
-                    }}
-                  />
+                <IconButton
+                  onClick={() => {
+                    this.props.setRhythm({
+                      firstMeasureStart: 8.42,
+                      timeSignatureType: TimeSignatureType.FOUR_FOUR,
+                      bpm: 97
+                    });
+                  }}
+                >
+                  <AddIcon className="fa-pull-right" />
                 </IconButton>
-                <IconButton>
-                  <AddIcon
-                    className="fa-pull-right"
-                    onClick={() => {
-                      this.props.addSection({
-                        startTime: 0,
-                        endTime: 10,
-                        editable: true,
-                        color: "rgba(255, 161, 39, 1)",
-                        labelText: "This is a section created via Redux",
-                        type: SectionType.INTRO
-                      });
-                    }}
-                  />
+                <IconButton
+                  onClick={() => {
+                    this.props.addSection({
+                      startTime: 0,
+                      endTime: 10,
+                      editable: true,
+                      color: "rgba(255, 161, 39, 1)",
+                      labelText: "This is a section created via Redux",
+                      type: SectionType.INTRO
+                    });
+                  }}
+                >
+                  <AddIcon className="fa-pull-right" />
                 </IconButton>
               </>
             }
-            body={
-              this.props.url ? (
-                <WaveContainer
-                  onLoad={peaks => {
-                    this.props.endInit();
-                  }}
-                  onLoadStart={() => this.props.startInit()}
-                  zoomLevel={this.props.zoom}
-                  status={this.props.status}
-                />
-              ) : (
-                <></>
-              )
-            }
+            body={this.props.url ? <WaveContainer /> : <></>}
           ></View>
         }
         topRight={
@@ -125,11 +97,11 @@ class StructurePage extends React.Component<AllProps> {
   }
 }
 
-const mapStateToProps = ({ analysis, structure }: ApplicationState) => {
+const mapStateToProps = ({ analysis, audio }: ApplicationState) => {
   return {
     sections: analysis.sections,
-    zoom: structure.zoom,
-    status: structure.status
+    zoom: audio.zoom,
+    status: audio.status
   };
 };
 
@@ -139,6 +111,6 @@ const mapDispatchToProps = {
   zoomOut,
   startInit,
   endInit,
-  setRythm
+  setRhythm
 };
 export default connect(mapStateToProps, mapDispatchToProps)(StructurePage);

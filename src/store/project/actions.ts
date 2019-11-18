@@ -11,3 +11,9 @@ export const createProject = (title: string, audioUrl: string) => ({
   type: ProjectActionTypes.CREATE,
   payload: { title: title, audioUrl: audioUrl }
 });
+
+/** Enable/Disable synchronizing first measure start. */
+export const setMeasureSyncMode = (status: boolean) => ({
+  type: ProjectActionTypes.SYNC_FIRST_MEASURE_START,
+  payload: { syncFirstMeasureStart: status }
+});

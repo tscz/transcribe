@@ -6,50 +6,41 @@ import {
   NativeSelect
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
-import IconButton from "@material-ui/core/IconButton";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Slider from "@material-ui/core/Slider";
 import SyncAltIcon from "@material-ui/icons/SyncAlt";
+import ToggleButton from "@material-ui/lab/ToggleButton";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import { setRythm } from "../store/analysis/actions";
+import { setRhythm } from "../store/analysis/actions";
 import { TimeSignatureType } from "../store/analysis/types";
+import { setMeasureSyncMode } from "../store/project/actions";
 import { ApplicationState } from "../store/store";
 
 interface PropsFromState {
   readonly firstMeasureStart: number;
   readonly timeSignature: TimeSignatureType;
   readonly bpm: number;
+  readonly syncFirstMeasureStart: boolean;
 }
 
 interface PropsFromDispatch {
-  setRythm: typeof setRythm;
+  setRhythm: typeof setRhythm;
+  setMeasureSyncMode: typeof setMeasureSyncMode;
 }
 
 type AllProps = PropsFromState & PropsFromDispatch;
 
 class WaveControlView extends Component<AllProps> {
   handleTimeSignatureChange = (e: any) => {
-    this.props.setRythm(
-      this.props.firstMeasureStart,
-      e.target.value,
-      this.props.bpm
-    );
+    this.props.setRhythm({ timeSignatureType: e.target.value });
   };
 
   handleBpmChange = (e: any, bpm: number | number[]) => {
     if (!Array.isArray(bpm)) {
-      this.props.setRythm(
-        this.props.firstMeasureStart,
-        this.props.timeSignature,
-        bpm
-      );
+      this.props.setRhythm({ bpm: bpm });
     }
-  };
-
-  handleFirstMeasureStartChange = (e: any, firstMeasureStart: number) => {
-    this.props.setRythm(3.4, this.props.timeSignature, this.props.bpm);
   };
 
   render() {
@@ -63,11 +54,21 @@ class WaveControlView extends Component<AllProps> {
                 type="text"
                 id="startMeasure1"
                 defaultValue="00:00:00"
+                value={this.props.firstMeasureStart}
                 startAdornment={
                   <InputAdornment position="start">
-                    <IconButton>
+                    <ToggleButton
+                      style={{ width: "15px", height: "25px" }}
+                      value="check"
+                      selected={this.props.syncFirstMeasureStart}
+                      onChange={() => {
+                        this.props.setMeasureSyncMode(
+                          !this.props.syncFirstMeasureStart
+                        );
+                      }}
+                    >
                       <SyncAltIcon />
-                    </IconButton>
+                    </ToggleButton>
                   </InputAdornment>
                 }
               />
@@ -105,15 +106,17 @@ class WaveControlView extends Component<AllProps> {
   }
 }
 
-const mapStateToProps = ({ analysis }: ApplicationState) => {
+const mapStateToProps = ({ project, analysis }: ApplicationState) => {
   return {
     firstMeasureStart: analysis.firstMeasureStart,
     bpm: analysis.bpm,
-    timeSignature: analysis.timeSignature
+    timeSignature: analysis.timeSignature,
+    syncFirstMeasureStart: project.syncFirstMeasureStart
   };
 };
 
 const mapDispatchToProps = {
-  setRythm
+  setRhythm,
+  setMeasureSyncMode
 };
 export default connect(mapStateToProps, mapDispatchToProps)(WaveControlView);
