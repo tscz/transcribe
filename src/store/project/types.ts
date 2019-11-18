@@ -2,11 +2,13 @@ export interface ProjectState {
   readonly currentPage: Page;
   readonly title: string;
   readonly audioUrl: string;
+  readonly syncFirstMeasureStart: boolean;
 }
 
 export enum ProjectActionTypes {
   SWITCH_PAGE = "SWITCH_PAGE",
-  CREATE = "PROJECT_CREATE"
+  CREATE = "PROJECT_CREATE",
+  SYNC_FIRST_MEASURE_START = "SYNC_FIRST_MEASURE_START"
 }
 
 export enum Page {

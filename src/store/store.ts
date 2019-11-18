@@ -3,26 +3,26 @@ import { devToolsEnhancer } from "redux-devtools-extension";
 
 import { analysisReducer } from "./analysis/reducer";
 import { AnalysisState } from "./analysis/types";
+import { audioReducer } from "./audio/reducer";
+import { AudioState } from "./audio/types";
 import { dialogReducer } from "./dialog/reducer";
 import { DialogState } from "./dialog/types";
 import { projectReducer } from "./project/reducer";
 import { ProjectState } from "./project/types";
-import { structureReducer } from "./structure/reducer";
-import { StructureState } from "./structure/types";
 
 /** The top-level application state object. */
 export interface ApplicationState {
   analysis: AnalysisState;
   dialog: DialogState;
   project: ProjectState;
-  structure: StructureState;
+  audio: AudioState;
 }
 
 export const createRootReducer = combineReducers({
   analysis: analysisReducer,
   dialog: dialogReducer,
   project: projectReducer,
-  structure: structureReducer
+  audio: audioReducer
 });
 
 export default createStore(

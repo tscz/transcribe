@@ -34,7 +34,7 @@ const reducer: Reducer<AnalysisState> = (state = initialState, action) => {
     case AnalysisActionTypes.RESET: {
       return initialState;
     }
-    case AnalysisActionTypes.RYTHM_UPDATE:
+    case AnalysisActionTypes.RHYTHM_UPDATE:
       {
         let length = state.length;
         var { firstMeasureStart, bpm, timeSignatureType } = action.payload;

@@ -1,4 +1,3 @@
-import { Dialog } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
@@ -19,19 +18,17 @@ import Typography from "@material-ui/core/Typography";
 import AlbumIcon from "@material-ui/icons/Album";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import CreateIcon from "@material-ui/icons/Create";
 import HomeIcon from "@material-ui/icons/Home";
 import MenuIcon from "@material-ui/icons/Menu";
 import MusicVideoIcon from "@material-ui/icons/MusicVideo";
-import OpenInBrowserIcon from "@material-ui/icons/OpenInBrowser";
 import PrintIcon from "@material-ui/icons/Print";
 import RadioIcon from "@material-ui/icons/Radio";
-import SaveAltIcon from "@material-ui/icons/SaveAlt";
 import clsx from "clsx";
 import React from "react";
 import { FunctionComponent } from "react";
 import { connect } from "react-redux";
 
+import AudioManagement from "../../audio/audioManagement";
 import DialogManagement from "../../dialog/dialogManagement";
 import DefaultPage from "../../pages/defaultPage";
 import DrumPage from "../../pages/drumPage";
@@ -140,6 +137,15 @@ class App extends React.Component<AllProps, State> {
     open: false
   };
 
+  audioContext: AudioContext;
+
+  constructor(props: AllProps) {
+    super(props);
+
+    this.audioContext = new (window.AudioContext ||
+      (window as any).webkitAudioContext)();
+  }
+
   handleDrawerOpen = () => {
     this.setState({ open: true });
   };
@@ -152,6 +158,7 @@ class App extends React.Component<AllProps, State> {
     console.log("render app");
     return (
       <>
+        <AudioManagement audioContext={this.audioContext} />
         <DialogManagement />
 
         <div className={this.props.classes.root}>
@@ -290,7 +297,10 @@ class App extends React.Component<AllProps, State> {
               </Toggle>
 
               <Toggle show={this.props.currentPage === Page.STRUCTURE}>
-                <StructurePage url={this.props.audioUrl} />
+                <StructurePage
+                  url={this.props.audioUrl}
+                  audioContext={this.audioContext}
+                />
               </Toggle>
 
               <Toggle show={this.props.currentPage === Page.HARMONY}>

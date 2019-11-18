@@ -30,7 +30,7 @@ type AllProps = PropsFromState & PropsFromDispatch;
 
 class DialogManagement extends Component<AllProps> {
   async save(url: string): Promise<void> {
-    let { project, analysis } = store.getState();
+    let { analysis } = store.getState();
 
     let persistentState: any = Object.assign({}, { analysis });
 
@@ -98,7 +98,7 @@ const NewDialog: FunctionComponent<{
   const [fileUrl, setFileUrl] = useState("");
   const [title, setTitle] = useState("");
 
-  const handleChange = (event: any) => setTitle(event.target.value);
+  const handleTitleChange = (event: any) => setTitle(event.target.value);
 
   return (
     <Dialog2
@@ -116,6 +116,7 @@ const NewDialog: FunctionComponent<{
             readOnly: false
           }}
           variant="outlined"
+          onChange={handleTitleChange}
         />
         <MusicFileInput
           callback={(file, fileUrl) => {

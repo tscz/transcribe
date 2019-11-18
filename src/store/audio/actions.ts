@@ -1,21 +1,26 @@
-import { StructureActionTypes } from "./types";
+import { AudioActionTypes } from "./types";
 
 /** Zoom in in the Waveform View. */
 export const zoomIn = () => ({
-  type: StructureActionTypes.ZOOM_IN
+  type: AudioActionTypes.ZOOM_IN
 });
 
 /** Zoom out in the Waveform View. */
 export const zoomOut = () => ({
-  type: StructureActionTypes.ZOOM_OUT
+  type: AudioActionTypes.ZOOM_OUT
 });
 
 /** Start initializing the waveform. */
 export const startInit = () => ({
-  type: StructureActionTypes.INIT_START
+  type: AudioActionTypes.INIT_START
+});
+
+/** Start rendering the waveform. */
+export const startRender = () => ({
+  type: AudioActionTypes.INIT_RENDERING
 });
 
 /** Initializing of waveform finished. */
 export const endInit = () => ({
-  type: StructureActionTypes.INIT_END
+  type: AudioActionTypes.INIT_END
 });
