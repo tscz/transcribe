@@ -1,10 +1,8 @@
 import { MenuItem, Select, Tooltip } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import LoopIcon from "@material-ui/icons/Loop";
-import MusicNoteIcon from "@material-ui/icons/MusicNote";
 import PauseIcon from "@material-ui/icons/Pause";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
-import SpeedIcon from "@material-ui/icons/Speed";
 import TimerIcon from "@material-ui/icons/Timer";
 import React, { ReactElement } from "react";
 import { connect } from "react-redux";
@@ -77,8 +75,6 @@ class StructurePage extends React.Component<AllProps> {
                 <MeasureSwitch id="startMeasure" />
                 <MeasureSwitch id="endMeasure" />
                 <WaveformControlButton title="Loop" icon={<LoopIcon />} />
-                <WaveformControlButton title="Pitch" icon={<MusicNoteIcon />} />
-                <WaveformControlButton title="Speed" icon={<SpeedIcon />} />
                 <WaveformControlButton title="Metronome" icon={<TimerIcon />} />
               </>
             }

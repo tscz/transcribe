@@ -16,6 +16,7 @@ import { connect } from "react-redux";
 
 import { setRhythm } from "../store/analysis/actions";
 import { TimeSignatureType } from "../store/analysis/types";
+import { updatePlaybackSettings } from "../store/audio/actions";
 import { setMeasureSyncMode } from "../store/project/actions";
 import { ApplicationState } from "../store/store";
 
@@ -24,11 +25,14 @@ interface PropsFromState {
   readonly timeSignature: TimeSignatureType;
   readonly bpm: number;
   readonly syncFirstMeasureStart: boolean;
+  readonly detune: number;
+  readonly playbackRate: number;
 }
 
 interface PropsFromDispatch {
   setRhythm: typeof setRhythm;
   setMeasureSyncMode: typeof setMeasureSyncMode;
+  updatePlaybackSettings: typeof updatePlaybackSettings;
 }
 
 type AllProps = PropsFromState & PropsFromDispatch;
@@ -41,6 +45,18 @@ class WaveControlView extends Component<AllProps> {
   handleBpmChange = (e: any, bpm: number | number[]) => {
     if (!Array.isArray(bpm)) {
       this.props.setRhythm({ bpm: bpm });
+    }
+  };
+
+  handleDetuneChange = (e: any, detune: number | number[]) => {
+    if (!Array.isArray(detune)) {
+      this.props.updatePlaybackSettings({ detune: detune });
+    }
+  };
+
+  handlePlaybackRateChange = (e: any, playbackRate: number | number[]) => {
+    if (!Array.isArray(playbackRate)) {
+      this.props.updatePlaybackSettings({ playbackRate: playbackRate });
     }
   };
 
@@ -77,18 +93,14 @@ class WaveControlView extends Component<AllProps> {
             </FormControl>
           </Grid>
           <Grid item>
-            <FormControl style={{ width: "100%" }}>
-              <InputLabel shrink>Bpm</InputLabel>
-              <Box mt={2}>
-                <Slider
-                  value={this.props.bpm}
-                  valueLabelDisplay="auto"
-                  min={40}
-                  max={220}
-                  onChange={this.handleBpmChange}
-                />
-              </Box>
-            </FormControl>
+            <SliderInput
+              title="Bpm"
+              value={this.props.bpm}
+              min={40}
+              max={220}
+              step={1}
+              onChange={this.handleBpmChange}
+            ></SliderInput>
           </Grid>
           <Grid item>
             <FormControl style={{ width: "100%" }}>
@@ -102,23 +114,71 @@ class WaveControlView extends Component<AllProps> {
               </NativeSelect>
             </FormControl>
           </Grid>
+          <Grid item>
+            <SliderInput
+              title="Detune"
+              value={this.props.detune}
+              min={-1200}
+              max={1200}
+              step={100}
+              onChange={this.handleDetuneChange}
+            ></SliderInput>
+          </Grid>
+          <Grid item>
+            <SliderInput
+              title="Playback rate"
+              value={this.props.playbackRate}
+              min={0.5}
+              max={2}
+              step={0.05}
+              onChange={this.handlePlaybackRateChange}
+            ></SliderInput>
+          </Grid>
         </Grid>
       </>
     );
   }
 }
 
-const mapStateToProps = ({ project, analysis }: ApplicationState) => {
+const SliderInput = (props: {
+  title: string;
+  min: number;
+  max: number;
+  step: number;
+  value: number;
+  onChange: (event: any, value: number | number[]) => void;
+}) => {
+  return (
+    <FormControl style={{ width: "100%" }}>
+      <InputLabel shrink>{props.title}</InputLabel>
+      <Box mt={2}>
+        <Slider
+          value={props.value}
+          valueLabelDisplay="auto"
+          min={props.min}
+          max={props.max}
+          onChange={props.onChange}
+          step={props.step}
+        />
+      </Box>
+    </FormControl>
+  );
+};
+
+const mapStateToProps = ({ project, analysis, audio }: ApplicationState) => {
   return {
     firstMeasureStart: analysis.firstMeasureStart,
     bpm: analysis.bpm,
     timeSignature: analysis.timeSignature,
-    syncFirstMeasureStart: project.syncFirstMeasureStart
+    syncFirstMeasureStart: project.syncFirstMeasureStart,
+    detune: audio.detune,
+    playbackRate: audio.playbackRate
   };
 };
 
 const mapDispatchToProps = {
   setRhythm,
-  setMeasureSyncMode
+  setMeasureSyncMode,
+  updatePlaybackSettings
 };
 export default connect(mapStateToProps, mapDispatchToProps)(WaveControlView);

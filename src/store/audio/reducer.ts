@@ -10,7 +10,9 @@ import {
 export const initialState: AudioState = {
   zoom: 0,
   status: LoadingStatus.NOT_INITIALIZED,
-  isPlaying: false
+  isPlaying: false,
+  detune: 0,
+  playbackRate: 1
 };
 
 const reducer: Reducer<AudioState> = (state = initialState, action) => {
@@ -44,6 +46,18 @@ const reducer: Reducer<AudioState> = (state = initialState, action) => {
         ...state,
         isPlaying: false
       };
+    }
+    case AudioActionTypes.PLAYBACK_SETTINGS_SET: {
+      const { playbackRate, detune } = action.payload.settings;
+
+      const result = {
+        ...state
+      };
+
+      if (playbackRate) result.playbackRate = playbackRate;
+      if (detune) result.detune = detune;
+
+      return result;
     }
     default: {
       return state;
