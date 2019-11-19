@@ -1,4 +1,4 @@
-import { AudioActionTypes } from "./types";
+import { AudioActionTypes, PlaybackSettings } from "./types";
 
 /** Zoom in in the Waveform View. */
 export const zoomIn = () => ({
@@ -31,4 +31,9 @@ export const play = () => ({
 
 export const pause = () => ({
   type: AudioActionTypes.PAUSE
+});
+
+export const updatePlaybackSettings = (settings: PlaybackSettings) => ({
+  type: AudioActionTypes.PLAYBACK_SETTINGS_SET,
+  payload: { settings }
 });
