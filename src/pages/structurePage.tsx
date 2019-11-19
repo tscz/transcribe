@@ -1,4 +1,4 @@
-import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
+import { MenuItem, Select, Tooltip } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import LoopIcon from "@material-ui/icons/Loop";
 import MusicNoteIcon from "@material-ui/icons/MusicNote";
@@ -6,7 +6,7 @@ import PauseIcon from "@material-ui/icons/Pause";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import SpeedIcon from "@material-ui/icons/Speed";
 import TimerIcon from "@material-ui/icons/Timer";
-import React from "react";
+import React, { ReactElement } from "react";
 import { connect } from "react-redux";
 
 import WaveContainer from "../components/wave/waveContainer";
@@ -62,28 +62,24 @@ class StructurePage extends React.Component<AllProps> {
             actions={
               <>
                 {this.props.isPlaying ? (
-                  <IconButton onClick={this.props.pause}>
-                    <PauseIcon />
-                  </IconButton>
+                  <WaveformControlButton
+                    title="Pause"
+                    icon={<PauseIcon />}
+                    onClick={this.props.pause}
+                  />
                 ) : (
-                  <IconButton onClick={this.props.play}>
-                    <PlayArrowIcon />
-                  </IconButton>
+                  <WaveformControlButton
+                    title="Play"
+                    icon={<PlayArrowIcon />}
+                    onClick={this.props.play}
+                  />
                 )}
                 <MeasureSwitch id="startMeasure" />
                 <MeasureSwitch id="endMeasure" />
-                <IconButton>
-                  <LoopIcon />
-                </IconButton>
-                <IconButton>
-                  <MusicNoteIcon />
-                </IconButton>
-                <IconButton>
-                  <SpeedIcon />
-                </IconButton>
-                <IconButton>
-                  <TimerIcon />
-                </IconButton>
+                <WaveformControlButton title="Loop" icon={<LoopIcon />} />
+                <WaveformControlButton title="Pitch" icon={<MusicNoteIcon />} />
+                <WaveformControlButton title="Speed" icon={<SpeedIcon />} />
+                <WaveformControlButton title="Metronome" icon={<TimerIcon />} />
               </>
             }
             body={this.props.url ? <WaveContainer /> : <></>}
@@ -99,6 +95,18 @@ class StructurePage extends React.Component<AllProps> {
     );
   }
 }
+
+const WaveformControlButton = (props: {
+  title: string;
+  icon: ReactElement;
+  onClick?: () => void;
+}) => {
+  return (
+    <Tooltip title={props.title}>
+      <IconButton onClick={props.onClick}>{props.icon}</IconButton>
+    </Tooltip>
+  );
+};
 
 const MeasureSwitch = (props: { id: string }) => {
   return (

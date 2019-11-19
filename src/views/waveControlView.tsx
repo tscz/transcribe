@@ -3,7 +3,8 @@ import {
   FormControl,
   Input,
   InputLabel,
-  NativeSelect
+  NativeSelect,
+  Tooltip
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -56,18 +57,20 @@ class WaveControlView extends Component<AllProps> {
                 value={this.props.firstMeasureStart}
                 startAdornment={
                   <InputAdornment position="start">
-                    <ToggleButton
-                      style={{ width: "15px", height: "25px" }}
-                      value="check"
-                      selected={this.props.syncFirstMeasureStart}
-                      onChange={() => {
-                        this.props.setMeasureSyncMode(
-                          !this.props.syncFirstMeasureStart
-                        );
-                      }}
-                    >
-                      <SyncAltIcon />
-                    </ToggleButton>
+                    <Tooltip title="Sync with play head">
+                      <ToggleButton
+                        style={{ width: "15px", height: "25px" }}
+                        value="check"
+                        selected={this.props.syncFirstMeasureStart}
+                        onChange={() => {
+                          this.props.setMeasureSyncMode(
+                            !this.props.syncFirstMeasureStart
+                          );
+                        }}
+                      >
+                        <SyncAltIcon />
+                      </ToggleButton>
+                    </Tooltip>
                   </InputAdornment>
                 }
               />
