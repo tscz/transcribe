@@ -1,12 +1,14 @@
 import Peaks, { PeaksInstance } from "peaks.js";
 import React from "react";
 import { connect } from "react-redux";
+import Tone from "tone";
 
 import { setLength, setRhythm } from "../store/analysis/actions";
 import { Measure, Section } from "../store/analysis/types";
-import { endInit, startRender } from "../store/audio/actions";
+import { endInit, pause, startRender } from "../store/audio/actions";
 import { LoadingStatus, ZOOMLEVELS } from "../store/audio/types";
 import { ApplicationState } from "../store/store";
+import AudioPlayer from "./audioPlayer";
 
 interface PropsFromState {
   audioUrl: string;
@@ -17,6 +19,8 @@ interface PropsFromState {
   firstMeasureStart: number;
   syncFirstMeasureStart: boolean;
   isPlaying: boolean;
+  detune: number;
+  playbackRate: number;
 }
 
 interface PropsFromDispatch {
@@ -24,6 +28,7 @@ interface PropsFromDispatch {
   endInit: typeof endInit;
   setRhythm: typeof setRhythm;
   setLength: typeof setLength;
+  pause: typeof pause;
 }
 
 interface Props {
@@ -35,24 +40,39 @@ type AllProps = PropsFromState & PropsFromDispatch & Props;
 class AudioManagement extends React.Component<AllProps> {
   peaks: Peaks.PeaksInstance | undefined;
   audioBuffer: AudioBuffer | undefined;
+  mediaelement: HTMLAudioElement | undefined;
+  pitchShift: Tone.PitchShift | undefined;
 
   componentDidUpdate(prevProps: AllProps) {
     console.log(
-      "AudioManagement.componentDidUpdate with " + JSON.stringify(this.props)
+      "AudioManagement.componentDidUpdate with status " + this.props.status
     );
 
-    switch (this.props.status) {
-      case LoadingStatus.NOT_INITIALIZED:
-      case LoadingStatus.RENDERING:
-        return;
-      case LoadingStatus.INITIALIZING:
-        this.props.startRender();
-        if (this.peaks) this.peaks.destroy();
-        this.getData();
-        break;
+    if (prevProps.status !== this.props.status) {
+      switch (this.props.status) {
+        case LoadingStatus.NOT_INITIALIZED:
+        case LoadingStatus.RENDERING:
+          return;
+        case LoadingStatus.INITIALIZING:
+          this.props.startRender();
+          if (this.peaks) this.peaks.destroy();
+          this.getData();
+          break;
+      }
     }
 
     this.repaintWave();
+
+    if (
+      prevProps.playbackRate !== this.props.playbackRate &&
+      this.mediaelement
+    ) {
+      this.mediaelement.playbackRate = this.props.playbackRate;
+    }
+
+    if (prevProps.detune !== this.props.detune && this.pitchShift) {
+      this.pitchShift.pitch = this.props.detune;
+    }
 
     if (prevProps.isPlaying !== this.props.isPlaying && this.peaks) {
       if (this.props.isPlaying) {
@@ -61,14 +81,6 @@ class AudioManagement extends React.Component<AllProps> {
         this.peaks.player.pause();
       }
     }
-
-    /*     if (props.events.length) {
-      props.events.forEach(this.processEvent.bind(this));
-
-      props.dispatch({
-        type: "CLEAR_EVENT_QUEUE"
-      });
-    } */
   }
 
   private repaintWave() {
@@ -78,15 +90,6 @@ class AudioManagement extends React.Component<AllProps> {
       this.peaks.points.removeAll();
       this.peaks.points.add(this.props.measures);
       this.peaks.zoom.setZoom(this.props.zoomLevel);
-    }
-  }
-
-  processEvent(event: any) {
-    switch (event.type) {
-      case "NOTE_ON":
-        break;
-      case "NOTE_OFF":
-        break;
     }
   }
 
@@ -103,6 +106,9 @@ class AudioManagement extends React.Component<AllProps> {
 
   getData = () => {
     const audioCtx = this.props.audioContext;
+
+    //@ts-ignore because setContext is not defined in TS definition of Tone.js
+    Tone.setContext(audioCtx);
 
     const initWave2 = (audioBuffer: AudioBuffer) => {
       this.audioBuffer = audioBuffer;
@@ -123,19 +129,20 @@ class AudioManagement extends React.Component<AllProps> {
   };
 
   initWave() {
-    var audioElement: Element = document!.getElementById(AUDIO_DOM_ELEMENT)!;
-    (audioElement as HTMLAudioElement).src = this.props.audioUrl;
+    console.log("initWave()");
 
-    let audioContext = this.props.audioContext;
+    this.mediaelement = document!.getElementById(
+      AUDIO_DOM_ELEMENT
+    )! as HTMLAudioElement;
+    this.mediaelement.src = this.props.audioUrl;
 
     var options = {
       containers: {
         zoomview: document!.getElementById(ZOOMVIEW_CONTAINER)!,
         overview: document!.getElementById(OVERVIEW_CONTAINER)!
       },
-      mediaElement: audioElement,
+      mediaElement: this.mediaelement,
       webAudio: {
-        audioContext: audioContext,
         audioBuffer: this.audioBuffer,
         scale: 128,
         multiChannel: false
@@ -160,9 +167,24 @@ class AudioManagement extends React.Component<AllProps> {
         this.props.setRhythm({ firstMeasureStart: time });
     };
 
+    let getBuffer = () => {
+      return this.audioBuffer;
+    };
+
+    let replacePlayer = (peaks: Peaks.PeaksInstance) => {
+      //@ts-ignore
+      peaks.player.destroy();
+      //@ts-ignore
+      peaks.player = new AudioPlayer(peaks, getBuffer(), () =>
+        this.props.pause()
+      );
+    };
+
     Peaks.init(options, function(err, peaks) {
       //TODO: Error handling
       if (peaks !== undefined) {
+        replacePlayer(peaks);
+
         peaks.on("player_seek", updateFirstMeasureStart);
 
         setPeaksInstance(peaks);
@@ -181,7 +203,9 @@ const mapStateToProps = ({ project, analysis, audio }: ApplicationState) => {
     status: audio.status,
     firstMeasureStart: analysis.firstMeasureStart,
     syncFirstMeasureStart: project.syncFirstMeasureStart,
-    isPlaying: audio.isPlaying
+    isPlaying: audio.isPlaying,
+    detune: audio.detune,
+    playbackRate: audio.playbackRate
   };
 };
 
@@ -189,7 +213,8 @@ const mapDispatchToProps = {
   startRender,
   endInit,
   setRhythm,
-  setLength
+  setLength,
+  pause
 };
 export default connect(mapStateToProps, mapDispatchToProps)(AudioManagement);
 

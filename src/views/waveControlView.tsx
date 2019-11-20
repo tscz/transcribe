@@ -118,9 +118,9 @@ class WaveControlView extends Component<AllProps> {
             <SliderInput
               title="Detune"
               value={this.props.detune}
-              min={-1200}
-              max={1200}
-              step={100}
+              min={-12}
+              max={12}
+              step={1}
               onChange={this.handleDetuneChange}
             ></SliderInput>
           </Grid>
