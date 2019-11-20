@@ -120,7 +120,7 @@ class WaveControlView extends Component<AllProps> {
               value={this.props.detune}
               min={-12}
               max={12}
-              step={0.01}
+              step={0.5}
               onChange={this.handleDetuneChange}
             ></SliderInput>
           </Grid>
@@ -128,8 +128,8 @@ class WaveControlView extends Component<AllProps> {
             <SliderInput
               title="Playback rate"
               value={this.props.playbackRate}
-              min={0.5}
-              max={2}
+              min={0.4}
+              max={1.2}
               step={0.05}
               onChange={this.handlePlaybackRateChange}
             ></SliderInput>

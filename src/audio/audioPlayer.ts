@@ -52,12 +52,17 @@ class AudioPlayer implements Player {
     this.peaks.emit("player_canplay", this);
   }
 
+  shiftToSemitones = (shift: number) => 12 * Math.log2(1 / shift);
+
   setPlaybackRate(playbackRate: number) {
     this.player.playbackRate = playbackRate;
+
+    this.pitchShift.pitch = this.shiftToSemitones(playbackRate);
   }
 
   setDetune(detune: number) {
-    this.pitchShift.pitch = detune;
+    this.pitchShift.pitch =
+      this.shiftToSemitones(this.player.playbackRate) + detune;
   }
 
   destroy = () => {
