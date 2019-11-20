@@ -10,6 +10,8 @@ interface Player {
   getCurrentTime: () => number;
   getDuration: () => number;
   seek: (time: number) => void;
+  setPlaybackRate: (playbackRate: number) => void;
+  setDetune: (pitch: number) => void;
 }
 
 /**
@@ -18,6 +20,7 @@ interface Player {
 class AudioPlayer implements Player {
   peaks: PeaksInstance & { emit: (id: string, value: any) => void };
   player: Tone.Player;
+  pitchShift: Tone.PitchShift;
 
   constructor(
     peaks: PeaksInstance,
@@ -29,10 +32,13 @@ class AudioPlayer implements Player {
     //@ts-ignore because we allow the internal emit function in the instance variable peaks
     this.peaks = peaks;
 
-    this.player = new Tone.Player(audioBuffer)
-      .toMaster()
-      .sync()
-      .start();
+    this.player = new Tone.Player(audioBuffer).sync().start();
+
+    this.pitchShift = new Tone.PitchShift();
+
+    //@ts-ignore because connect method is not defined in TS definition
+    Tone.connect(this.player, this.pitchShift);
+    this.pitchShift.toMaster();
 
     Tone.Transport.scheduleRepeat(time => {
       this.peaks.emit("player_time_update", this.getCurrentTime());
@@ -44,6 +50,14 @@ class AudioPlayer implements Player {
 
     this.peaks.emit("player_load", this);
     this.peaks.emit("player_canplay", this);
+  }
+
+  setPlaybackRate(playbackRate: number) {
+    this.player.playbackRate = playbackRate;
+  }
+
+  setDetune(detune: number) {
+    this.pitchShift.pitch = detune;
   }
 
   destroy = () => {

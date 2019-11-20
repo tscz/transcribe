@@ -39,8 +39,8 @@ type AllProps = PropsFromState & PropsFromDispatch & Props;
 
 class AudioManagement extends React.Component<AllProps> {
   peaks: Peaks.PeaksInstance | undefined;
+  player: AudioPlayer | undefined;
   audioBuffer: AudioBuffer | undefined;
-  mediaelement: HTMLAudioElement | undefined;
   pitchShift: Tone.PitchShift | undefined;
 
   componentDidUpdate(prevProps: AllProps) {
@@ -63,15 +63,12 @@ class AudioManagement extends React.Component<AllProps> {
 
     this.repaintWave();
 
-    if (
-      prevProps.playbackRate !== this.props.playbackRate &&
-      this.mediaelement
-    ) {
-      this.mediaelement.playbackRate = this.props.playbackRate;
+    if (prevProps.playbackRate !== this.props.playbackRate && this.player) {
+      this.player.setPlaybackRate(this.props.playbackRate);
     }
 
-    if (prevProps.detune !== this.props.detune && this.pitchShift) {
-      this.pitchShift.pitch = this.props.detune;
+    if (prevProps.detune !== this.props.detune && this.player) {
+      this.player.setDetune(this.props.detune);
     }
 
     if (prevProps.isPlaying !== this.props.isPlaying && this.peaks) {
@@ -131,17 +128,17 @@ class AudioManagement extends React.Component<AllProps> {
   initWave() {
     console.log("initWave()");
 
-    this.mediaelement = document!.getElementById(
+    let mediaelement = document!.getElementById(
       AUDIO_DOM_ELEMENT
     )! as HTMLAudioElement;
-    this.mediaelement.src = this.props.audioUrl;
+    mediaelement.src = this.props.audioUrl;
 
     var options = {
       containers: {
         zoomview: document!.getElementById(ZOOMVIEW_CONTAINER)!,
         overview: document!.getElementById(OVERVIEW_CONTAINER)!
       },
-      mediaElement: this.mediaelement,
+      mediaElement: mediaelement,
       webAudio: {
         audioBuffer: this.audioBuffer,
         scale: 128,
@@ -172,12 +169,14 @@ class AudioManagement extends React.Component<AllProps> {
     };
 
     let replacePlayer = (peaks: Peaks.PeaksInstance) => {
+      this.player = new AudioPlayer(peaks, getBuffer()!, () =>
+        this.props.pause()
+      );
+
       //@ts-ignore
       peaks.player.destroy();
       //@ts-ignore
-      peaks.player = new AudioPlayer(peaks, getBuffer(), () =>
-        this.props.pause()
-      );
+      peaks.player = this.player;
     };
 
     Peaks.init(options, function(err, peaks) {
