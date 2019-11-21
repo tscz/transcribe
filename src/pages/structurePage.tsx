@@ -4,6 +4,8 @@ import LoopIcon from "@material-ui/icons/Loop";
 import PauseIcon from "@material-ui/icons/Pause";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import TimerIcon from "@material-ui/icons/Timer";
+import ZoomInIcon from "@material-ui/icons/ZoomIn";
+import ZoomOutIcon from "@material-ui/icons/ZoomOut";
 import React, { ReactElement } from "react";
 import { connect } from "react-redux";
 
@@ -74,6 +76,17 @@ class StructurePage extends React.Component<AllProps> {
                 )}
                 <MeasureSwitch id="startMeasure" />
                 <MeasureSwitch id="endMeasure" />
+
+                <WaveformControlButton
+                  title="Zoom in"
+                  icon={<ZoomInIcon />}
+                  onClick={this.props.zoomIn}
+                />
+                <WaveformControlButton
+                  title="Zoom out"
+                  icon={<ZoomOutIcon />}
+                  onClick={this.props.zoomOut}
+                />
                 <WaveformControlButton title="Loop" icon={<LoopIcon />} />
                 <WaveformControlButton title="Metronome" icon={<TimerIcon />} />
               </>
