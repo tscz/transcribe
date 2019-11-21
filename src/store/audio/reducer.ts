@@ -23,13 +23,13 @@ const reducer: Reducer<AudioState> = (state = initialState, action) => {
     case AudioActionTypes.INIT_END: {
       return { ...state, status: LoadingStatus.INITIALIZED };
     }
-    case AudioActionTypes.ZOOM_IN: {
+    case AudioActionTypes.ZOOM_OUT: {
       return {
         ...state,
         zoom: state.zoom === ZOOMLEVELS.length - 1 ? state.zoom : state.zoom + 1
       };
     }
-    case AudioActionTypes.ZOOM_OUT: {
+    case AudioActionTypes.ZOOM_IN: {
       return {
         ...state,
         zoom: state.zoom === 0 ? state.zoom : state.zoom - 1

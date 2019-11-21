@@ -29,4 +29,4 @@ export enum LoadingStatus {
   INITIALIZED = "initialized"
 }
 
-export const ZOOMLEVELS = [128, 256, 512, 1024, 2048, 4096];
+export const ZOOMLEVELS = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8196];

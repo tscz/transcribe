@@ -88,7 +88,10 @@ class AudioPlayer implements Player {
   };
 
   getCurrentTime = () => {
-    return this.player.buffer.toSeconds(Tone.Transport.position);
+    return (
+      this.player.buffer.toSeconds(Tone.Transport.position) *
+      this.player.playbackRate
+    );
   };
 
   getDuration = () => {
@@ -96,15 +99,16 @@ class AudioPlayer implements Player {
   };
 
   seek = (time: number) => {
+    const normalizedTime = time * this.player.playbackRate;
+
     if (this.isPlaying()) {
       Tone.Transport.stop();
-      Tone.Transport.start(Tone.now(), time);
+      Tone.Transport.start(Tone.now(), normalizedTime);
     } else {
-      Tone.Transport.start(Tone.now(), time);
+      Tone.Transport.start(Tone.now(), normalizedTime);
       Tone.Transport.pause();
     }
-    this.peaks.emit("player_seek", time);
-    this.peaks.emit("player_time_update", time);
+    this.peaks.emit("player_time_update", normalizedTime);
   };
 }
 
