@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import {
   OVERVIEW_CONTAINER,
   ZOOMVIEW_CONTAINER
-} from "../../audio/audioManagement";
+} from "../../audio/peaksConfig";
 
 interface Props {
   url: string;

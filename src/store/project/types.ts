@@ -3,6 +3,7 @@ export interface ProjectState {
   readonly title: string;
   readonly audioUrl: string;
   readonly syncFirstMeasureStart: boolean;
+  readonly loaded: boolean;
 }
 
 export enum ProjectActionTypes {

@@ -31,6 +31,7 @@ interface PropsFromState {
   zoom: number;
   status: LoadingStatus;
   isPlaying: boolean;
+  loaded: boolean;
 }
 
 interface PropsFromDispatch {
@@ -44,10 +45,7 @@ interface PropsFromDispatch {
   pause: typeof pause;
 }
 
-interface Props {
-  url: string;
-  audioContext: AudioContext;
-}
+interface Props {}
 
 type AllProps = PropsFromState & PropsFromDispatch & Props;
 
@@ -91,13 +89,13 @@ class StructurePage extends React.Component<AllProps> {
                 <WaveformControlButton title="Metronome" icon={<TimerIcon />} />
               </>
             }
-            body={this.props.url ? <WaveContainer /> : <></>}
+            body={this.props.loaded ? <WaveContainer /> : <></>}
           ></View>
         }
         topRight={
           <View
             header={<>Properties</>}
-            body={this.props.url ? <WaveControlView /> : <></>}
+            body={this.props.loaded ? <WaveControlView /> : <></>}
           ></View>
         }
       ></ContentLayout>
@@ -128,12 +126,13 @@ const MeasureSwitch = (props: { id: string }) => {
   );
 };
 
-const mapStateToProps = ({ analysis, audio }: ApplicationState) => {
+const mapStateToProps = ({ analysis, audio, project }: ApplicationState) => {
   return {
     sections: analysis.sections,
     zoom: audio.zoom,
     status: audio.status,
-    isPlaying: audio.isPlaying
+    isPlaying: audio.isPlaying,
+    loaded: project.loaded
   };
 };
 
