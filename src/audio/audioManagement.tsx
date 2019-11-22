@@ -6,9 +6,10 @@ import Tone from "tone";
 import { setLength, setRhythm } from "../store/analysis/actions";
 import { Measure, Section } from "../store/analysis/types";
 import { endInit, pause, startRender } from "../store/audio/actions";
-import { LoadingStatus, ZOOMLEVELS } from "../store/audio/types";
+import { LoadingStatus } from "../store/audio/types";
 import { ApplicationState } from "../store/store";
 import AudioPlayer from "./audioPlayer";
+import PeaksOptions, { AUDIO_DOM_ELEMENT } from "./peaksConfig";
 
 interface PropsFromState {
   audioUrl: string;
@@ -31,37 +32,35 @@ interface PropsFromDispatch {
   pause: typeof pause;
 }
 
-interface Props {
-  audioContext: AudioContext;
-}
+interface Props {}
 
 type AllProps = PropsFromState & PropsFromDispatch & Props;
 
 class AudioManagement extends React.Component<AllProps> {
   peaks: Peaks.PeaksInstance | undefined;
   player: AudioPlayer | undefined;
-  audioBuffer: AudioBuffer | undefined;
-  pitchShift: Tone.PitchShift | undefined;
 
   componentDidUpdate(prevProps: AllProps) {
     console.log(
       "AudioManagement.componentDidUpdate with status " + this.props.status
     );
 
+    // Initialize audio
     if (prevProps.status !== this.props.status) {
       switch (this.props.status) {
         case LoadingStatus.NOT_INITIALIZED:
         case LoadingStatus.RENDERING:
           return;
         case LoadingStatus.INITIALIZING:
+          console.log("Initialize audio engine.");
           this.props.startRender();
           if (this.peaks) this.peaks.destroy();
-          this.getData();
+          this.initAudioManagement(this);
           break;
       }
     }
 
-    this.repaintWave();
+    this.repaintWaveform();
 
     if (prevProps.playbackRate !== this.props.playbackRate && this.player) {
       this.player.setPlaybackRate(this.props.playbackRate);
@@ -71,16 +70,16 @@ class AudioManagement extends React.Component<AllProps> {
       this.player.setDetune(this.props.detune);
     }
 
-    if (prevProps.isPlaying !== this.props.isPlaying && this.peaks) {
+    if (prevProps.isPlaying !== this.props.isPlaying && this.player) {
       if (this.props.isPlaying) {
-        this.peaks.player.play();
+        this.player.play();
       } else {
-        this.peaks.player.pause();
+        this.player.pause();
       }
     }
   }
 
-  private repaintWave() {
+  private repaintWaveform() {
     if (this.props.sections && this.peaks) {
       this.peaks.segments.removeAll();
       this.peaks.segments.add(this.props.sections);
@@ -88,6 +87,61 @@ class AudioManagement extends React.Component<AllProps> {
       this.peaks.points.add(this.props.measures);
       this.peaks.zoom.setZoom(this.props.zoomLevel);
     }
+  }
+
+  private initAudioManagement = (audio: AudioManagement) => {
+    const audioCtx: AudioContext = (Tone.context as unknown) as AudioContext;
+
+    // Load mp3 into audio buffer
+    fetch(this.props.audioUrl)
+      .then(function(response) {
+        return response.arrayBuffer();
+      })
+      .then(function(buffer) {
+        return audioCtx.decodeAudioData(buffer);
+      })
+      .then(function(audioBuffer) {
+        audio.props.setLength(audioBuffer.duration);
+        audio.initPeaks(audio, audioBuffer);
+      });
+  };
+
+  private initPeaks(audio: AudioManagement, audioBuffer: AudioBuffer) {
+    console.log("initPeaks()");
+
+    Peaks.init(PeaksOptions.create(audioBuffer), function(err, peaks) {
+      //TODO: Error handling
+      if (peaks !== undefined) {
+        initPlayer(peaks, audioBuffer);
+        replacePlayer(peaks, audioBuffer);
+
+        peaks.on("player_seek", (time: number) => {
+          if (audio.props.syncFirstMeasureStart)
+            audio.props.setRhythm({ firstMeasureStart: time });
+        });
+
+        audio.peaks = peaks;
+
+        audio.props.setRhythm({});
+        audio.props.endInit();
+      }
+    });
+
+    let initPlayer = (peaks: Peaks.PeaksInstance, audioBuffer: AudioBuffer) => {
+      this.player = new AudioPlayer(peaks, audioBuffer, () =>
+        this.props.pause()
+      );
+    };
+
+    let replacePlayer = (
+      peaks: Peaks.PeaksInstance,
+      audioBuffer: AudioBuffer
+    ) => {
+      //@ts-ignore
+      peaks.player.destroy();
+      //@ts-ignore
+      peaks.player = this.player;
+    };
   }
 
   render() {
@@ -99,97 +153,6 @@ class AudioManagement extends React.Component<AllProps> {
         Your browser does not support the audio element.
       </audio>
     );
-  }
-
-  getData = () => {
-    const audioCtx = this.props.audioContext;
-
-    //@ts-ignore because setContext is not defined in TS definition of Tone.js
-    Tone.setContext(audioCtx);
-
-    const initWave2 = (audioBuffer: AudioBuffer) => {
-      this.audioBuffer = audioBuffer;
-      this.props.setLength(audioBuffer.duration);
-      this.initWave();
-    };
-
-    fetch(this.props.audioUrl)
-      .then(function(response) {
-        return response.arrayBuffer();
-      })
-      .then(function(buffer) {
-        return audioCtx.decodeAudioData(buffer);
-      })
-      .then(function(audioBuffer) {
-        initWave2(audioBuffer);
-      });
-  };
-
-  initWave() {
-    console.log("initWave()");
-
-    let mediaelement = document!.getElementById(
-      AUDIO_DOM_ELEMENT
-    )! as HTMLAudioElement;
-    mediaelement.src = this.props.audioUrl;
-
-    var options = {
-      containers: {
-        zoomview: document!.getElementById(ZOOMVIEW_CONTAINER)!,
-        overview: document!.getElementById(OVERVIEW_CONTAINER)!
-      },
-      mediaElement: mediaelement,
-      webAudio: {
-        audioBuffer: this.audioBuffer,
-        scale: 128,
-        multiChannel: false
-      },
-      keyboard: true,
-      pointMarkerColor: "#006eb0",
-      showPlayheadTime: true,
-      zoomLevels: ZOOMLEVELS
-    };
-
-    let finish = () => {
-      this.props.setRhythm({});
-      this.props.endInit();
-    };
-
-    let setPeaksInstance = (instance: PeaksInstance) => {
-      this.peaks = instance;
-    };
-
-    let updateFirstMeasureStart = (time: number) => {
-      if (this.props.syncFirstMeasureStart)
-        this.props.setRhythm({ firstMeasureStart: time });
-    };
-
-    let getBuffer = () => {
-      return this.audioBuffer;
-    };
-
-    let replacePlayer = (peaks: Peaks.PeaksInstance) => {
-      this.player = new AudioPlayer(peaks, getBuffer()!, () =>
-        this.props.pause()
-      );
-
-      //@ts-ignore
-      peaks.player.destroy();
-      //@ts-ignore
-      peaks.player = this.player;
-    };
-
-    Peaks.init(options, function(err, peaks) {
-      //TODO: Error handling
-      if (peaks !== undefined) {
-        replacePlayer(peaks);
-
-        peaks.on("player_seek", updateFirstMeasureStart);
-
-        setPeaksInstance(peaks);
-        finish();
-      }
-    });
   }
 }
 
@@ -216,8 +179,3 @@ const mapDispatchToProps = {
   pause
 };
 export default connect(mapStateToProps, mapDispatchToProps)(AudioManagement);
-
-export const AUDIO_DOM_ELEMENT = "audio_dom_element";
-
-export const ZOOMVIEW_CONTAINER = "zoomview-container";
-export const OVERVIEW_CONTAINER = "overview-container";

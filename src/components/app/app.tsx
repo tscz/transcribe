@@ -7,12 +7,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import {
-  createStyles,
-  Theme,
-  WithStyles,
-  withStyles
-} from "@material-ui/core/styles";
+import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import AlbumIcon from "@material-ui/icons/Album";
@@ -28,8 +23,6 @@ import React from "react";
 import { FunctionComponent } from "react";
 import { connect } from "react-redux";
 
-import AudioManagement from "../../audio/audioManagement";
-import DialogManagement from "../../dialog/dialogManagement";
 import DefaultPage from "../../pages/defaultPage";
 import DrumPage from "../../pages/drumPage";
 import GuitarPage from "../../pages/guitarPage";
@@ -42,78 +35,11 @@ import { DialogType } from "../../store/dialog/types";
 import { switchPage } from "../../store/project/actions";
 import { Page } from "../../store/project/types";
 import { ApplicationState } from "../../store/store";
-
-const drawerWidth = 200;
-
-const styles = (theme: Theme) =>
-  createStyles({
-    root: {
-      display: "flex"
-    },
-    appBar: {
-      flexGrow: 1,
-      zIndex: theme.zIndex.drawer + 1,
-      transition: theme.transitions.create(["width", "margin"], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen
-      })
-    },
-    appBarShift: {
-      marginLeft: drawerWidth,
-      width: `calc(100% - ${drawerWidth}px)`,
-      transition: theme.transitions.create(["width", "margin"], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen
-      })
-    },
-    menuButton: {
-      marginRight: 36
-    },
-    hide: {
-      display: "none"
-    },
-    drawer: {
-      width: drawerWidth,
-      flexShrink: 0,
-      whiteSpace: "nowrap"
-    },
-    drawerOpen: {
-      width: drawerWidth,
-      transition: theme.transitions.create("width", {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen
-      })
-    },
-    drawerClose: {
-      transition: theme.transitions.create("width", {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen
-      }),
-      overflowX: "hidden",
-      width: theme.spacing(7) + 1,
-      [theme.breakpoints.up("sm")]: {
-        width: theme.spacing(7) + 1
-      }
-    },
-    toolbar: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "flex-end",
-      padding: theme.spacing(0, 1),
-      ...theme.mixins.toolbar
-    },
-    title: {
-      flexGrow: 1
-    },
-    content: {
-      flexGrow: 1,
-      padding: theme.spacing(0)
-    }
-  });
+import { stylesForApp } from "../../styles/styles";
 
 interface PropsFromState {
   currentPage: Page;
-  audioUrl: string;
+  loaded: boolean;
 }
 
 interface PropsFromDispatch {
@@ -122,7 +48,7 @@ interface PropsFromDispatch {
   openDialog: typeof openDialog;
 }
 
-interface Props extends WithStyles<typeof styles> {
+interface Props extends WithStyles<typeof stylesForApp> {
   theme: Theme;
 }
 
@@ -137,15 +63,6 @@ class App extends React.Component<AllProps, State> {
     open: false
   };
 
-  audioContext: AudioContext;
-
-  constructor(props: AllProps) {
-    super(props);
-
-    this.audioContext = new (window.AudioContext ||
-      (window as any).webkitAudioContext)();
-  }
-
   handleDrawerOpen = () => {
     this.setState({ open: true });
   };
@@ -158,9 +75,6 @@ class App extends React.Component<AllProps, State> {
     console.log("render app");
     return (
       <>
-        <AudioManagement audioContext={this.audioContext} />
-        <DialogManagement />
-
         <div className={this.props.classes.root}>
           <AppBar
             position="fixed"
@@ -202,6 +116,7 @@ class App extends React.Component<AllProps, State> {
               <Button
                 color="inherit"
                 onClick={() => this.props.openDialog(DialogType.SAVE)}
+                disabled={!this.props.loaded}
               >
                 Save
               </Button>
@@ -236,7 +151,7 @@ class App extends React.Component<AllProps, State> {
                 button
                 key="Structure"
                 onClick={() => this.props.switchPage(Page.STRUCTURE)}
-                disabled={!this.props.audioUrl}
+                disabled={!this.props.loaded}
               >
                 <ListItemIcon>
                   <HomeIcon />
@@ -247,7 +162,7 @@ class App extends React.Component<AllProps, State> {
                 button
                 key="Harmony"
                 onClick={() => this.props.switchPage(Page.HARMONY)}
-                disabled={!this.props.audioUrl}
+                disabled={!this.props.loaded}
               >
                 <ListItemIcon>
                   <MusicVideoIcon />
@@ -258,7 +173,7 @@ class App extends React.Component<AllProps, State> {
                 button
                 key="Guitar"
                 onClick={() => this.props.switchPage(Page.GUITAR)}
-                disabled={!this.props.audioUrl}
+                disabled={!this.props.loaded}
               >
                 <ListItemIcon>
                   <RadioIcon />
@@ -269,7 +184,7 @@ class App extends React.Component<AllProps, State> {
                 button
                 key="Drum"
                 onClick={() => this.props.switchPage(Page.DRUM)}
-                disabled={!this.props.audioUrl}
+                disabled={!this.props.loaded}
               >
                 <ListItemIcon>
                   <AlbumIcon />
@@ -280,7 +195,7 @@ class App extends React.Component<AllProps, State> {
                 button
                 key="Print"
                 onClick={() => this.props.switchPage(Page.PRINT)}
-                disabled={!this.props.audioUrl}
+                disabled={!this.props.loaded}
               >
                 <ListItemIcon>
                   <PrintIcon />
@@ -297,10 +212,7 @@ class App extends React.Component<AllProps, State> {
               </Toggle>
 
               <Toggle show={this.props.currentPage === Page.STRUCTURE}>
-                <StructurePage
-                  url={this.props.audioUrl}
-                  audioContext={this.audioContext}
-                />
+                <StructurePage />
               </Toggle>
 
               <Toggle show={this.props.currentPage === Page.HARMONY}>
@@ -337,7 +249,7 @@ const Toggle: FunctionComponent<{ show: boolean }> = props => {
 const mapStateToProps = ({ project, dialog }: ApplicationState) => {
   return {
     currentPage: project.currentPage,
-    audioUrl: project.audioUrl
+    loaded: project.loaded
   };
 };
 
@@ -350,4 +262,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles, { withTheme: true })(App));
+)(withStyles(stylesForApp, { withTheme: true })(App));

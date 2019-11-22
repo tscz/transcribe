@@ -6,7 +6,8 @@ export const initialState: ProjectState = {
   currentPage: Page.DEFAULT,
   title: "",
   audioUrl: "",
-  syncFirstMeasureStart: false
+  syncFirstMeasureStart: false,
+  loaded: false
 };
 
 const reducer: Reducer<ProjectState> = (state = initialState, action) => {
@@ -18,7 +19,8 @@ const reducer: Reducer<ProjectState> = (state = initialState, action) => {
       return {
         ...state,
         title: action.payload.title,
-        audioUrl: action.payload.audioUrl
+        audioUrl: action.payload.audioUrl,
+        loaded: true
       };
     }
     case ProjectActionTypes.SYNC_FIRST_MEASURE_START: {
