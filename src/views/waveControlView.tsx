@@ -15,10 +15,10 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { ApplicationState } from "../app/store";
+import { enabledSyncFirstMeasureStart } from "../features/project/projectSlice";
 import { setRhythm } from "../store/analysis/actions";
 import { TimeSignatureType } from "../store/analysis/types";
 import { updatePlaybackSettings } from "../store/audio/actions";
-import { setMeasureSyncMode } from "../store/project/actions";
 
 interface PropsFromState {
   readonly firstMeasureStart: number;
@@ -31,7 +31,7 @@ interface PropsFromState {
 
 interface PropsFromDispatch {
   setRhythm: typeof setRhythm;
-  setMeasureSyncMode: typeof setMeasureSyncMode;
+  enabledSyncFirstMeasureStart: typeof enabledSyncFirstMeasureStart;
   updatePlaybackSettings: typeof updatePlaybackSettings;
 }
 
@@ -79,7 +79,7 @@ class WaveControlView extends Component<AllProps> {
                         value="check"
                         selected={this.props.syncFirstMeasureStart}
                         onChange={() => {
-                          this.props.setMeasureSyncMode(
+                          this.props.enabledSyncFirstMeasureStart(
                             !this.props.syncFirstMeasureStart
                           );
                         }}
@@ -178,7 +178,7 @@ const mapStateToProps = ({ project, analysis, audio }: ApplicationState) => {
 
 const mapDispatchToProps = {
   setRhythm,
-  setMeasureSyncMode,
+  enabledSyncFirstMeasureStart,
   updatePlaybackSettings
 };
 export default connect(mapStateToProps, mapDispatchToProps)(WaveControlView);

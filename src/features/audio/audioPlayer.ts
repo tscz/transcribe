@@ -109,6 +109,7 @@ class AudioPlayer implements Player {
       Tone.Transport.pause();
     }
     this.peaks.emit("player_time_update", normalizedTime);
+    this.peaks.emit("player_seek", normalizedTime);
   };
 }
 
