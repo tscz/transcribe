@@ -14,11 +14,11 @@ import ToggleButton from "@material-ui/lab/ToggleButton";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
+import { ApplicationState } from "../app/store";
 import { setRhythm } from "../store/analysis/actions";
 import { TimeSignatureType } from "../store/analysis/types";
 import { updatePlaybackSettings } from "../store/audio/actions";
 import { setMeasureSyncMode } from "../store/project/actions";
-import { ApplicationState } from "../store/store";
 
 interface PropsFromState {
   readonly firstMeasureStart: number;

@@ -9,6 +9,7 @@ import ZoomOutIcon from "@material-ui/icons/ZoomOut";
 import React, { ReactElement } from "react";
 import { connect } from "react-redux";
 
+import { ApplicationState } from "../app/store";
 import WaveContainer from "../components/wave/waveContainer";
 import { addSection, setRhythm } from "../store/analysis/actions";
 import { Section } from "../store/analysis/types";
@@ -21,7 +22,6 @@ import {
   zoomOut
 } from "../store/audio/actions";
 import { LoadingStatus } from "../store/audio/types";
-import { ApplicationState } from "../store/store";
 import View from "../views/view";
 import WaveControlView from "../views/waveControlView";
 import ContentLayout from "./contentLayout";

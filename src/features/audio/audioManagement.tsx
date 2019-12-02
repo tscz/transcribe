@@ -3,12 +3,12 @@ import React from "react";
 import { connect } from "react-redux";
 import Tone from "tone";
 
-import { setRhythm, setSourceInfos } from "../store/analysis/actions";
-import { Measure, Section } from "../store/analysis/types";
-import { endInit, pause, startRender } from "../store/audio/actions";
-import { computeZoomLevels } from "../store/audio/reducer";
-import { LoadingStatus } from "../store/audio/types";
-import { ApplicationState } from "../store/store";
+import { ApplicationState } from "../../app/store";
+import { setRhythm, setSourceInfos } from "../../store/analysis/actions";
+import { Measure, Section } from "../../store/analysis/types";
+import { endInit, pause, startRender } from "../../store/audio/actions";
+import { computeZoomLevels } from "../../store/audio/reducer";
+import { LoadingStatus } from "../../store/audio/types";
 import AudioPlayer from "./audioPlayer";
 import PeaksOptions, {
   AUDIO_DOM_ELEMENT,

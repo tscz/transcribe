@@ -5,14 +5,13 @@ import JSZip from "jszip";
 import React, { Component, FunctionComponent, useState } from "react";
 import { connect } from "react-redux";
 
-import MusicFileInput from "../components/musicFileInput/musicFileInput";
-import { reset } from "../store/analysis/actions";
-import { closeDialog } from "../store/dialog/actions";
-import { DialogType } from "../store/dialog/types";
-import { createProject, switchPage } from "../store/project/actions";
-import { Page } from "../store/project/types";
-import store, { ApplicationState } from "../store/store";
+import store, { ApplicationState } from "../../app/store";
+import MusicFileInput from "../../components/musicFileInput/musicFileInput";
+import { reset } from "../../store/analysis/actions";
+import { createProject, switchPage } from "../../store/project/actions";
+import { Page } from "../../store/project/types";
 import Dialog2 from "./dialog";
+import { closedDialog, DialogType } from "./dialogsSlice";
 
 interface PropsFromState {
   type: DialogType;
@@ -22,7 +21,7 @@ interface PropsFromState {
 interface PropsFromDispatch {
   switchPage: typeof switchPage;
   reset: typeof reset;
-  closeDialog: typeof closeDialog;
+  closedDialog: typeof closedDialog;
   createProject: typeof createProject;
 }
 
@@ -54,12 +53,12 @@ class DialogManagement extends Component<AllProps> {
       case DialogType.NEW:
         return (
           <NewDialog
-            onCancel={() => this.props.closeDialog()}
+            onCancel={() => this.props.closedDialog()}
             onSubmit={(title: string, fileUrl: string) => {
               this.props.reset();
               this.props.createProject(title, fileUrl);
               this.props.switchPage(Page.STRUCTURE);
-              this.props.closeDialog();
+              this.props.closedDialog();
             }}
           ></NewDialog>
         );
@@ -67,7 +66,7 @@ class DialogManagement extends Component<AllProps> {
         return (
           <Dialog2
             title="Open existing Analysis"
-            onCancel={this.props.closeDialog}
+            onCancel={this.props.closedDialog}
           >
             <p>Open existing Analysis</p>
           </Dialog2>
@@ -76,10 +75,10 @@ class DialogManagement extends Component<AllProps> {
         return (
           <Dialog2
             title="Save Analysis"
-            onCancel={this.props.closeDialog}
+            onCancel={this.props.closedDialog}
             onSubmit={() => {
               this.save(this.props.audioUrl);
-              this.props.closeDialog();
+              this.props.closedDialog();
             }}
           >
             <p>Save Analysis</p>
@@ -136,7 +135,7 @@ const mapStateToProps = ({ dialog, project }: ApplicationState) => {
 };
 
 const mapDispatchToProps = {
-  closeDialog,
+  closedDialog,
   switchPage,
   reset,
   createProject
