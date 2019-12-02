@@ -11,17 +11,17 @@ import { connect } from "react-redux";
 
 import { ApplicationState } from "../app/store";
 import WaveContainer from "../components/wave/waveContainer";
+import {
+  endedInit,
+  LoadingStatus,
+  startedInit,
+  triggeredPause,
+  triggeredPlay,
+  zoomedIn,
+  zoomedOut
+} from "../features/audio/audioSlice";
 import { addSection, setRhythm } from "../store/analysis/actions";
 import { Section } from "../store/analysis/types";
-import {
-  endInit,
-  pause,
-  play,
-  startInit,
-  zoomIn,
-  zoomOut
-} from "../store/audio/actions";
-import { LoadingStatus } from "../store/audio/types";
 import View from "../views/view";
 import WaveControlView from "../views/waveControlView";
 import ContentLayout from "./contentLayout";
@@ -36,13 +36,13 @@ interface PropsFromState {
 
 interface PropsFromDispatch {
   addSection: typeof addSection;
-  zoomIn: typeof zoomIn;
-  zoomOut: typeof zoomOut;
-  startInit: typeof startInit;
-  endInit: typeof endInit;
+  zoomedIn: typeof zoomedIn;
+  zoomedOut: typeof zoomedOut;
+  startedInit: typeof startedInit;
+  endedInit: typeof endedInit;
   setRhythm: typeof setRhythm;
-  play: typeof play;
-  pause: typeof pause;
+  triggeredPlay: typeof triggeredPlay;
+  triggeredPause: typeof triggeredPause;
 }
 
 interface Props {}
@@ -63,13 +63,13 @@ class StructurePage extends React.Component<AllProps> {
                   <WaveformControlButton
                     title="Pause"
                     icon={<PauseIcon />}
-                    onClick={this.props.pause}
+                    onClick={this.props.triggeredPause}
                   />
                 ) : (
                   <WaveformControlButton
                     title="Play"
                     icon={<PlayArrowIcon />}
-                    onClick={this.props.play}
+                    onClick={this.props.triggeredPlay}
                   />
                 )}
                 <MeasureSwitch id="startMeasure" />
@@ -78,12 +78,12 @@ class StructurePage extends React.Component<AllProps> {
                 <WaveformControlButton
                   title="Zoom in"
                   icon={<ZoomInIcon />}
-                  onClick={this.props.zoomIn}
+                  onClick={this.props.zoomedIn}
                 />
                 <WaveformControlButton
                   title="Zoom out"
                   icon={<ZoomOutIcon />}
-                  onClick={this.props.zoomOut}
+                  onClick={this.props.zoomedOut}
                 />
                 <WaveformControlButton title="Loop" icon={<LoopIcon />} />
                 <WaveformControlButton title="Metronome" icon={<TimerIcon />} />
@@ -138,12 +138,12 @@ const mapStateToProps = ({ analysis, audio, project }: ApplicationState) => {
 
 const mapDispatchToProps = {
   addSection,
-  zoomIn,
-  zoomOut,
-  startInit,
-  endInit,
+  zoomedIn,
+  zoomedOut,
+  startedInit,
+  endedInit,
   setRhythm,
-  play,
-  pause
+  triggeredPlay,
+  triggeredPause
 };
 export default connect(mapStateToProps, mapDispatchToProps)(StructurePage);

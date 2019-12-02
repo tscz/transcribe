@@ -6,10 +6,13 @@ import Tone from "tone";
 import { ApplicationState } from "../../app/store";
 import { setRhythm, setSourceInfos } from "../../store/analysis/actions";
 import { Measure, Section } from "../../store/analysis/types";
-import { endInit, pause, startRender } from "../../store/audio/actions";
-import { computeZoomLevels } from "../../store/audio/reducer";
-import { LoadingStatus } from "../../store/audio/types";
 import AudioPlayer from "./audioPlayer";
+import {
+  computeZoomLevels,
+  endedInit,
+  LoadingStatus,
+  triggeredPause
+} from "./audioSlice";
 import PeaksOptions, {
   AUDIO_DOM_ELEMENT,
   ZOOMVIEW_CONTAINER
@@ -31,11 +34,10 @@ interface PropsFromState {
 }
 
 interface PropsFromDispatch {
-  startRender: typeof startRender;
-  endInit: typeof endInit;
+  endedInit: typeof endedInit;
   setRhythm: typeof setRhythm;
   setSourceInfos: typeof setSourceInfos;
-  pause: typeof pause;
+  triggeredPause: typeof triggeredPause;
 }
 
 interface Props {}
@@ -59,7 +61,6 @@ class AudioManagement extends React.Component<AllProps> {
           return;
         case LoadingStatus.INITIALIZING:
           console.log("Initialize audio engine.");
-          this.props.startRender();
           if (this.peaks) this.peaks.destroy();
           this.initAudioManagement(this);
           break;
@@ -148,13 +149,13 @@ class AudioManagement extends React.Component<AllProps> {
         audio.peaks = peaks;
 
         audio.props.setRhythm({});
-        audio.props.endInit();
+        audio.props.endedInit();
       }
     });
 
     let initPlayer = (peaks: Peaks.PeaksInstance, audioBuffer: AudioBuffer) => {
       this.player = new AudioPlayer(peaks, audioBuffer, () =>
-        this.props.pause()
+        this.props.triggeredPause()
       );
     };
 
@@ -199,10 +200,9 @@ const mapStateToProps = ({ project, analysis, audio }: ApplicationState) => {
 };
 
 const mapDispatchToProps = {
-  startRender,
-  endInit,
+  endedInit,
   setRhythm,
   setSourceInfos: setSourceInfos,
-  pause
+  triggeredPause
 };
 export default connect(mapStateToProps, mapDispatchToProps)(AudioManagement);

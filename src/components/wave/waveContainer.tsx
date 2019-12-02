@@ -3,8 +3,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { ApplicationState } from "../../app/store";
-import { startInit } from "../../store/audio/actions";
-import { LoadingStatus } from "../../store/audio/types";
+import { LoadingStatus, startedInit } from "../../features/audio/audioSlice";
 import WaveView from "./waveView";
 
 interface PropsFromState {
@@ -13,7 +12,7 @@ interface PropsFromState {
 }
 
 interface PropsFromDispatch {
-  startInit: typeof startInit;
+  startedInit: typeof startedInit;
 }
 
 interface Props {}
@@ -22,7 +21,7 @@ type AllProps = PropsFromState & PropsFromDispatch & Props;
 
 class WaveContainer extends Component<AllProps> {
   componentDidMount() {
-    this.props.startInit();
+    this.props.startedInit();
   }
 
   componentDidUpdate(prevProps: AllProps) {
@@ -32,7 +31,7 @@ class WaveContainer extends Component<AllProps> {
     );
 
     if (prevProps.audioUrl !== this.props.audioUrl) {
-      this.props.startInit();
+      this.props.startedInit();
     }
   }
 
@@ -57,7 +56,7 @@ const mapStateToProps = ({ project, analysis, audio }: ApplicationState) => {
 };
 
 const mapDispatchToProps = {
-  startInit
+  startedInit
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(WaveContainer);
