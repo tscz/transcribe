@@ -10,7 +10,10 @@ import React, { ReactElement } from "react";
 import { connect } from "react-redux";
 
 import { ApplicationState } from "../app/store";
+import ContentLayout from "../common/contentLayout";
+import View from "../common/view";
 import WaveContainer from "../components/wave/waveContainer";
+import WaveControlView from "../components/wave/waveControlView";
 import {
   addedSection,
   Section,
@@ -25,9 +28,6 @@ import {
   zoomedIn,
   zoomedOut
 } from "../features/audio/audioSlice";
-import View from "../views/view";
-import WaveControlView from "../views/waveControlView";
-import ContentLayout from "./contentLayout";
 
 interface PropsFromState {
   sections: Section[];
