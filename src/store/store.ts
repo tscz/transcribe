@@ -1,5 +1,5 @@
-import { combineReducers, createStore } from "redux";
-import { devToolsEnhancer } from "redux-devtools-extension";
+import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers } from "redux";
 
 import { analysisReducer } from "./analysis/reducer";
 import { AnalysisState } from "./analysis/types";
@@ -25,10 +25,6 @@ export const createRootReducer = combineReducers({
   audio: audioReducer
 });
 
-export default createStore(
-  createRootReducer,
-  devToolsEnhancer(
-    {}
-    // Specify name here, actionsBlacklist, actionsCreators and other options if needed
-  )
-);
+export default configureStore({
+  reducer: createRootReducer
+});
