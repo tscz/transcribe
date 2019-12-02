@@ -1,8 +1,8 @@
 import React from "react";
 
-import View from "../views/view";
-import WaveControlView from "../views/waveControlView";
-import ContentLayout from "./contentLayout";
+import ContentLayout from "../common/contentLayout";
+import View from "../common/view";
+import WaveControlView from "../components/wave/waveControlView";
 
 class DefaultPage extends React.Component {
   render() {

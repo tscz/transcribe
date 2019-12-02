@@ -1,6 +1,6 @@
 import React from "react";
 
-import View from "../views/view";
+import View from "../common/view";
 
 class GuitarPage extends React.Component {
   render() {
