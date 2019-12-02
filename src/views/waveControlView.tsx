@@ -15,10 +15,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { ApplicationState } from "../app/store";
+import {
+  TimeSignatureType,
+  updatedRhythm
+} from "../features/analysis/analysisSlice";
 import { updatedPlaybackSettings } from "../features/audio/audioSlice";
 import { enabledSyncFirstMeasureStart } from "../features/project/projectSlice";
-import { setRhythm } from "../store/analysis/actions";
-import { TimeSignatureType } from "../store/analysis/types";
 
 interface PropsFromState {
   readonly firstMeasureStart: number;
@@ -30,7 +32,7 @@ interface PropsFromState {
 }
 
 interface PropsFromDispatch {
-  setRhythm: typeof setRhythm;
+  updatedRhythm: typeof updatedRhythm;
   enabledSyncFirstMeasureStart: typeof enabledSyncFirstMeasureStart;
   updatedPlaybackSettings: typeof updatedPlaybackSettings;
 }
@@ -39,12 +41,12 @@ type AllProps = PropsFromState & PropsFromDispatch;
 
 class WaveControlView extends Component<AllProps> {
   handleTimeSignatureChange = (e: any) => {
-    this.props.setRhythm({ timeSignatureType: e.target.value });
+    this.props.updatedRhythm({ timeSignatureType: e.target.value });
   };
 
   handleBpmChange = (e: any, bpm: number | number[]) => {
     if (!Array.isArray(bpm)) {
-      this.props.setRhythm({ bpm: bpm });
+      this.props.updatedRhythm({ bpm: bpm });
     }
   };
 
@@ -177,7 +179,7 @@ const mapStateToProps = ({ project, analysis, audio }: ApplicationState) => {
 };
 
 const mapDispatchToProps = {
-  setRhythm,
+  updatedRhythm,
   enabledSyncFirstMeasureStart,
   updatedPlaybackSettings
 };

@@ -23,6 +23,7 @@ import React from "react";
 import { FunctionComponent } from "react";
 import { connect } from "react-redux";
 
+import { resettedAnalysis } from "../features/analysis/analysisSlice";
 import { DialogType, openedDialog } from "../features/dialogs/dialogsSlice";
 import { Page, switchedPage } from "../features/project/projectSlice";
 import DefaultPage from "../pages/defaultPage";
@@ -31,7 +32,6 @@ import GuitarPage from "../pages/guitarPage";
 import HarmonyPage from "../pages/harmonyPage";
 import PrintPage from "../pages/printPage";
 import StructurePage from "../pages/structurePage";
-import { reset } from "../store/analysis/actions";
 import { stylesForApp } from "../styles/styles";
 import { ApplicationState } from "./store";
 
@@ -42,7 +42,7 @@ interface PropsFromState {
 
 interface PropsFromDispatch {
   switchedPage: typeof switchedPage;
-  reset: typeof reset;
+  resettedAnalysis: typeof resettedAnalysis;
   openedDialog: typeof openedDialog;
 }
 
@@ -253,7 +253,7 @@ const mapStateToProps = ({ project, dialog }: ApplicationState) => {
 
 const mapDispatchToProps = {
   switchedPage,
-  reset,
+  resettedAnalysis,
   openedDialog
 };
 
