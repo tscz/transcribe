@@ -4,8 +4,12 @@ import { connect } from "react-redux";
 import Tone from "tone";
 
 import { ApplicationState } from "../../app/store";
-import { setRhythm, setSourceInfos } from "../../store/analysis/actions";
-import { Measure, Section } from "../../store/analysis/types";
+import {
+  Measure,
+  Section,
+  updatedRhythm,
+  updatedSource
+} from "../analysis/analysisSlice";
 import AudioPlayer from "./audioPlayer";
 import {
   computeZoomLevels,
@@ -35,8 +39,8 @@ interface PropsFromState {
 
 interface PropsFromDispatch {
   endedInit: typeof endedInit;
-  setRhythm: typeof setRhythm;
-  setSourceInfos: typeof setSourceInfos;
+  updatedRhythm: typeof updatedRhythm;
+  updatedSource: typeof updatedSource;
   triggeredPause: typeof triggeredPause;
 }
 
@@ -124,10 +128,10 @@ class AudioManagement extends React.Component<AllProps> {
         return audioCtx.decodeAudioData(buffer);
       })
       .then(function(audioBuffer) {
-        audio.props.setSourceInfos(
-          audioBuffer.duration,
-          audioBuffer.sampleRate
-        );
+        audio.props.updatedSource({
+          audioLength: audioBuffer.duration,
+          audioSampleRate: audioBuffer.sampleRate
+        });
         audio.initPeaks(audio, audioBuffer);
       });
   };
@@ -143,12 +147,12 @@ class AudioManagement extends React.Component<AllProps> {
 
         peaks.on("player_seek", (time: number) => {
           if (audio.props.syncFirstMeasureStart)
-            audio.props.setRhythm({ firstMeasureStart: time });
+            audio.props.updatedRhythm({ firstMeasureStart: time });
         });
 
         audio.peaks = peaks;
 
-        audio.props.setRhythm({});
+        audio.props.updatedRhythm({});
         audio.props.endedInit();
       }
     });
@@ -201,8 +205,8 @@ const mapStateToProps = ({ project, analysis, audio }: ApplicationState) => {
 
 const mapDispatchToProps = {
   endedInit,
-  setRhythm,
-  setSourceInfos: setSourceInfos,
+  updatedRhythm,
+  updatedSource,
   triggeredPause
 };
 export default connect(mapStateToProps, mapDispatchToProps)(AudioManagement);

@@ -12,6 +12,11 @@ import { connect } from "react-redux";
 import { ApplicationState } from "../app/store";
 import WaveContainer from "../components/wave/waveContainer";
 import {
+  addedSection,
+  Section,
+  updatedRhythm
+} from "../features/analysis/analysisSlice";
+import {
   endedInit,
   LoadingStatus,
   startedInit,
@@ -20,8 +25,6 @@ import {
   zoomedIn,
   zoomedOut
 } from "../features/audio/audioSlice";
-import { addSection, setRhythm } from "../store/analysis/actions";
-import { Section } from "../store/analysis/types";
 import View from "../views/view";
 import WaveControlView from "../views/waveControlView";
 import ContentLayout from "./contentLayout";
@@ -35,12 +38,12 @@ interface PropsFromState {
 }
 
 interface PropsFromDispatch {
-  addSection: typeof addSection;
+  addedSection: typeof addedSection;
   zoomedIn: typeof zoomedIn;
   zoomedOut: typeof zoomedOut;
   startedInit: typeof startedInit;
   endedInit: typeof endedInit;
-  setRhythm: typeof setRhythm;
+  updatedRhythm: typeof updatedRhythm;
   triggeredPlay: typeof triggeredPlay;
   triggeredPause: typeof triggeredPause;
 }
@@ -137,12 +140,12 @@ const mapStateToProps = ({ analysis, audio, project }: ApplicationState) => {
 };
 
 const mapDispatchToProps = {
-  addSection,
+  addedSection,
   zoomedIn,
   zoomedOut,
   startedInit,
   endedInit,
-  setRhythm,
+  updatedRhythm,
   triggeredPlay,
   triggeredPause
 };
