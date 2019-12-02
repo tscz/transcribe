@@ -24,6 +24,7 @@ import { FunctionComponent } from "react";
 import { connect } from "react-redux";
 
 import { DialogType, openedDialog } from "../features/dialogs/dialogsSlice";
+import { Page, switchedPage } from "../features/project/projectSlice";
 import DefaultPage from "../pages/defaultPage";
 import DrumPage from "../pages/drumPage";
 import GuitarPage from "../pages/guitarPage";
@@ -31,8 +32,6 @@ import HarmonyPage from "../pages/harmonyPage";
 import PrintPage from "../pages/printPage";
 import StructurePage from "../pages/structurePage";
 import { reset } from "../store/analysis/actions";
-import { switchPage } from "../store/project/actions";
-import { Page } from "../store/project/types";
 import { stylesForApp } from "../styles/styles";
 import { ApplicationState } from "./store";
 
@@ -42,7 +41,7 @@ interface PropsFromState {
 }
 
 interface PropsFromDispatch {
-  switchPage: typeof switchPage;
+  switchedPage: typeof switchedPage;
   reset: typeof reset;
   openedDialog: typeof openedDialog;
 }
@@ -149,7 +148,7 @@ class App extends React.Component<AllProps, State> {
               <ListItem
                 button
                 key="Structure"
-                onClick={() => this.props.switchPage(Page.STRUCTURE)}
+                onClick={() => this.props.switchedPage(Page.STRUCTURE)}
                 disabled={!this.props.loaded}
               >
                 <ListItemIcon>
@@ -160,7 +159,7 @@ class App extends React.Component<AllProps, State> {
               <ListItem
                 button
                 key="Harmony"
-                onClick={() => this.props.switchPage(Page.HARMONY)}
+                onClick={() => this.props.switchedPage(Page.HARMONY)}
                 disabled={!this.props.loaded}
               >
                 <ListItemIcon>
@@ -171,7 +170,7 @@ class App extends React.Component<AllProps, State> {
               <ListItem
                 button
                 key="Guitar"
-                onClick={() => this.props.switchPage(Page.GUITAR)}
+                onClick={() => this.props.switchedPage(Page.GUITAR)}
                 disabled={!this.props.loaded}
               >
                 <ListItemIcon>
@@ -182,7 +181,7 @@ class App extends React.Component<AllProps, State> {
               <ListItem
                 button
                 key="Drum"
-                onClick={() => this.props.switchPage(Page.DRUM)}
+                onClick={() => this.props.switchedPage(Page.DRUM)}
                 disabled={!this.props.loaded}
               >
                 <ListItemIcon>
@@ -193,7 +192,7 @@ class App extends React.Component<AllProps, State> {
               <ListItem
                 button
                 key="Print"
-                onClick={() => this.props.switchPage(Page.PRINT)}
+                onClick={() => this.props.switchedPage(Page.PRINT)}
                 disabled={!this.props.loaded}
               >
                 <ListItemIcon>
@@ -253,7 +252,7 @@ const mapStateToProps = ({ project, dialog }: ApplicationState) => {
 };
 
 const mapDispatchToProps = {
-  switchPage,
+  switchedPage,
   reset,
   openedDialog
 };

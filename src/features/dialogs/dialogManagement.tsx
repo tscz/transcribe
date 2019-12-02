@@ -8,8 +8,7 @@ import { connect } from "react-redux";
 import store, { ApplicationState } from "../../app/store";
 import MusicFileInput from "../../components/musicFileInput/musicFileInput";
 import { reset } from "../../store/analysis/actions";
-import { createProject, switchPage } from "../../store/project/actions";
-import { Page } from "../../store/project/types";
+import { createdProject, Page, switchedPage } from "../project/projectSlice";
 import Dialog2 from "./dialog";
 import { closedDialog, DialogType } from "./dialogsSlice";
 
@@ -19,10 +18,10 @@ interface PropsFromState {
 }
 
 interface PropsFromDispatch {
-  switchPage: typeof switchPage;
+  switchedPage: typeof switchedPage;
   reset: typeof reset;
   closedDialog: typeof closedDialog;
-  createProject: typeof createProject;
+  createdProject: typeof createdProject;
 }
 
 type AllProps = PropsFromState & PropsFromDispatch;
@@ -54,10 +53,10 @@ class DialogManagement extends Component<AllProps> {
         return (
           <NewDialog
             onCancel={() => this.props.closedDialog()}
-            onSubmit={(title: string, fileUrl: string) => {
+            onSubmit={(title: string, audioUrl: string) => {
               this.props.reset();
-              this.props.createProject(title, fileUrl);
-              this.props.switchPage(Page.STRUCTURE);
+              this.props.createdProject({ title, audioUrl });
+              this.props.switchedPage(Page.STRUCTURE);
               this.props.closedDialog();
             }}
           ></NewDialog>
@@ -136,9 +135,9 @@ const mapStateToProps = ({ dialog, project }: ApplicationState) => {
 
 const mapDispatchToProps = {
   closedDialog,
-  switchPage,
+  switchedPage,
   reset,
-  createProject
+  createdProject
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DialogManagement);
