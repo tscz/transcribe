@@ -25,9 +25,12 @@ export const reset = () => ({
   type: AnalysisActionTypes.RESET
 });
 
-export const setLength = (length: number) => ({
-  type: AnalysisActionTypes.LENGTH_SET,
-  payload: { length }
+export const setSourceInfos = (
+  audioLength: number,
+  audioSampleRate: number
+) => ({
+  type: AnalysisActionTypes.SOURCE_UPDATE,
+  payload: { audioLength: audioLength, audioSampleRate: audioSampleRate }
 });
 
 interface RhythmParameter {

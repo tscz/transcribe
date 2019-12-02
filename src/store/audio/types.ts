@@ -28,20 +28,3 @@ export enum LoadingStatus {
   RENDERING = "rendering",
   INITIALIZED = "initialized"
 }
-
-//TODO: Update Zoomlevels dynamically during runtime
-const secondsPerMeasure = 1;
-const audioSampleRate = 48000; // audioBuffer.sampleRate
-const zoomviewWidth = 1465; // document.getElementById(ZOOMVIEW_CONTAINER)!.clientWidth
-
-const baseZoom = Math.floor(
-  (secondsPerMeasure * audioSampleRate) / zoomviewWidth
-);
-
-export const ZOOMLEVELS = [
-  baseZoom,
-  baseZoom * 2,
-  baseZoom * 3,
-  baseZoom * 4,
-  baseZoom * 5
-];

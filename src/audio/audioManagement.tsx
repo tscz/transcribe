@@ -3,13 +3,17 @@ import React from "react";
 import { connect } from "react-redux";
 import Tone from "tone";
 
-import { setLength, setRhythm } from "../store/analysis/actions";
+import { setRhythm, setSourceInfos } from "../store/analysis/actions";
 import { Measure, Section } from "../store/analysis/types";
 import { endInit, pause, startRender } from "../store/audio/actions";
+import { computeZoomLevels } from "../store/audio/reducer";
 import { LoadingStatus } from "../store/audio/types";
 import { ApplicationState } from "../store/store";
 import AudioPlayer from "./audioPlayer";
-import PeaksOptions, { AUDIO_DOM_ELEMENT } from "./peaksConfig";
+import PeaksOptions, {
+  AUDIO_DOM_ELEMENT,
+  ZOOMVIEW_CONTAINER
+} from "./peaksConfig";
 
 interface PropsFromState {
   audioUrl: string;
@@ -22,13 +26,15 @@ interface PropsFromState {
   isPlaying: boolean;
   detune: number;
   playbackRate: number;
+  secondsPerMeasure: number;
+  audioSampleRate: number;
 }
 
 interface PropsFromDispatch {
   startRender: typeof startRender;
   endInit: typeof endInit;
   setRhythm: typeof setRhythm;
-  setLength: typeof setLength;
+  setSourceInfos: typeof setSourceInfos;
   pause: typeof pause;
 }
 
@@ -60,6 +66,7 @@ class AudioManagement extends React.Component<AllProps> {
       }
     }
 
+    this.recomputeZoomlevels();
     this.repaintWaveform();
 
     if (prevProps.playbackRate !== this.props.playbackRate && this.player) {
@@ -77,6 +84,21 @@ class AudioManagement extends React.Component<AllProps> {
         this.player.pause();
       }
     }
+  }
+
+  private recomputeZoomlevels() {
+    if (!this.peaks) return;
+
+    //TODO: Ignored because setZoomlevel is not API. See https://github.com/bbc/peaks.js/issues/295.
+    //@ts-ignore
+    this.peaks.zoom.setZoomLevels(
+      computeZoomLevels(
+        this.props.secondsPerMeasure,
+        this.props.audioSampleRate,
+        document.getElementById(ZOOMVIEW_CONTAINER)!.clientWidth,
+        this.props.measures.length
+      )
+    );
   }
 
   private repaintWaveform() {
@@ -101,7 +123,10 @@ class AudioManagement extends React.Component<AllProps> {
         return audioCtx.decodeAudioData(buffer);
       })
       .then(function(audioBuffer) {
-        audio.props.setLength(audioBuffer.duration);
+        audio.props.setSourceInfos(
+          audioBuffer.duration,
+          audioBuffer.sampleRate
+        );
         audio.initPeaks(audio, audioBuffer);
       });
   };
@@ -167,7 +192,9 @@ const mapStateToProps = ({ project, analysis, audio }: ApplicationState) => {
     syncFirstMeasureStart: project.syncFirstMeasureStart,
     isPlaying: audio.isPlaying,
     detune: audio.detune,
-    playbackRate: audio.playbackRate
+    playbackRate: audio.playbackRate,
+    secondsPerMeasure: analysis.secondsPerMeasure,
+    audioSampleRate: analysis.audioSampleRate
   };
 };
 
@@ -175,7 +202,7 @@ const mapDispatchToProps = {
   startRender,
   endInit,
   setRhythm,
-  setLength,
+  setSourceInfos: setSourceInfos,
   pause
 };
 export default connect(mapStateToProps, mapDispatchToProps)(AudioManagement);
