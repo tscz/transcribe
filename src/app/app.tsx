@@ -23,19 +23,18 @@ import React from "react";
 import { FunctionComponent } from "react";
 import { connect } from "react-redux";
 
-import DefaultPage from "../../pages/defaultPage";
-import DrumPage from "../../pages/drumPage";
-import GuitarPage from "../../pages/guitarPage";
-import HarmonyPage from "../../pages/harmonyPage";
-import PrintPage from "../../pages/printPage";
-import StructurePage from "../../pages/structurePage";
-import { reset } from "../../store/analysis/actions";
-import { openDialog } from "../../store/dialog/actions";
-import { DialogType } from "../../store/dialog/types";
-import { switchPage } from "../../store/project/actions";
-import { Page } from "../../store/project/types";
-import { ApplicationState } from "../../store/store";
-import { stylesForApp } from "../../styles/styles";
+import { DialogType, openedDialog } from "../features/dialogs/dialogsSlice";
+import DefaultPage from "../pages/defaultPage";
+import DrumPage from "../pages/drumPage";
+import GuitarPage from "../pages/guitarPage";
+import HarmonyPage from "../pages/harmonyPage";
+import PrintPage from "../pages/printPage";
+import StructurePage from "../pages/structurePage";
+import { reset } from "../store/analysis/actions";
+import { switchPage } from "../store/project/actions";
+import { Page } from "../store/project/types";
+import { stylesForApp } from "../styles/styles";
+import { ApplicationState } from "./store";
 
 interface PropsFromState {
   currentPage: Page;
@@ -45,7 +44,7 @@ interface PropsFromState {
 interface PropsFromDispatch {
   switchPage: typeof switchPage;
   reset: typeof reset;
-  openDialog: typeof openDialog;
+  openedDialog: typeof openedDialog;
 }
 
 interface Props extends WithStyles<typeof stylesForApp> {
@@ -103,19 +102,19 @@ class App extends React.Component<AllProps, State> {
               </Typography>
               <Button
                 color="inherit"
-                onClick={() => this.props.openDialog(DialogType.NEW)}
+                onClick={() => this.props.openedDialog(DialogType.NEW)}
               >
                 New
               </Button>
               <Button
                 color="inherit"
-                onClick={() => this.props.openDialog(DialogType.OPEN)}
+                onClick={() => this.props.openedDialog(DialogType.OPEN)}
               >
                 Open
               </Button>
               <Button
                 color="inherit"
-                onClick={() => this.props.openDialog(DialogType.SAVE)}
+                onClick={() => this.props.openedDialog(DialogType.SAVE)}
                 disabled={!this.props.loaded}
               >
                 Save
@@ -256,7 +255,7 @@ const mapStateToProps = ({ project, dialog }: ApplicationState) => {
 const mapDispatchToProps = {
   switchPage,
   reset,
-  openDialog
+  openedDialog
 };
 
 export default connect(
