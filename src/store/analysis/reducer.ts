@@ -12,7 +12,9 @@ export const initialState: AnalysisState = {
   sections: [],
   bpm: 120,
   firstMeasureStart: 0,
-  length: 180,
+  secondsPerMeasure: 2,
+  audioLength: 180,
+  audioSampleRate: 44400,
   measures: [],
   timeSignature: TimeSignatureType.FOUR_FOUR
 };
@@ -36,7 +38,7 @@ const reducer: Reducer<AnalysisState> = (state = initialState, action) => {
     }
     case AnalysisActionTypes.RHYTHM_UPDATE:
       {
-        let length = state.length;
+        let length = state.audioLength;
         var { firstMeasureStart, bpm, timeSignatureType } = action.payload;
 
         if (firstMeasureStart == null)
@@ -58,11 +60,11 @@ const reducer: Reducer<AnalysisState> = (state = initialState, action) => {
         }
 
         let numberOfMeasures =
-          (state.length - firstMeasureStart) *
+          (state.audioLength - firstMeasureStart) *
           (bpm / 60) *
           (1 / timeSignature.beatsPerMeasure);
 
-        let lengthOfOneMeasure = (60 * timeSignature.beatsPerMeasure) / bpm;
+        var lengthOfOneMeasure = (60 * timeSignature.beatsPerMeasure) / bpm;
 
         var measures = new Array<Measure>(Math.floor(numberOfMeasures));
 
@@ -88,12 +90,14 @@ const reducer: Reducer<AnalysisState> = (state = initialState, action) => {
         measures: measures,
         bpm: bpm,
         timeSignature: timeSignatureType,
-        firstMeasureStart: firstMeasureStart
+        firstMeasureStart: firstMeasureStart,
+        secondsPerMeasure: lengthOfOneMeasure
       };
-    case AnalysisActionTypes.LENGTH_SET: {
+    case AnalysisActionTypes.SOURCE_UPDATE: {
       return {
         ...state,
-        length: action.payload.length
+        audioLength: action.payload.audioLength,
+        audioSampleRate: action.payload.audioSampleRate
       };
     }
     default: {

@@ -1,5 +1,3 @@
-import { ZOOMLEVELS } from "../store/audio/types";
-
 export const AUDIO_DOM_ELEMENT = "audio_dom_element";
 export const ZOOMVIEW_CONTAINER = "zoomview-container";
 export const OVERVIEW_CONTAINER = "overview-container";
@@ -24,7 +22,7 @@ class PeaksOptions {
       keyboard: true,
       pointMarkerColor: "#006eb0",
       showPlayheadTime: true,
-      zoomLevels: ZOOMLEVELS
+      zoomLevels: [42] //TODO: Define good initial default
     };
   };
 }

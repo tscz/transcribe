@@ -5,8 +5,10 @@ export interface AnalysisState {
   /** List of all sections of a song. */
   readonly sections: Section[];
 
-  readonly length: number;
+  readonly audioLength: number;
+  readonly audioSampleRate: number;
   readonly firstMeasureStart: number;
+  readonly secondsPerMeasure: number;
   readonly timeSignature: TimeSignatureType;
   readonly bpm: number;
   readonly measures: Measure[];
@@ -45,5 +47,5 @@ export enum AnalysisActionTypes {
   SECTION_UPDATE = "SECTION_UPDATE",
   RESET = "ANALYSIS_RESET",
   RHYTHM_UPDATE = "RHYTHM_UPDATE",
-  LENGTH_SET = "LENGTH_SET"
+  SOURCE_UPDATE = "SOURCE_UPDATE"
 }
