@@ -7,20 +7,23 @@ import analysisReducer, {
 import audioReducer, { AudioState } from "../features/audio/audioSlice";
 import dialogReducer, { DialogState } from "../features/dialogs/dialogsSlice";
 import projectReducer, { ProjectState } from "../features/project/projectSlice";
+import waveReducer, { WaveState } from "../features/wave/waveSlice";
 
 /** The top-level application state object. */
 export interface ApplicationState {
   analysis: AnalysisState;
+  audio: AudioState;
   dialog: DialogState;
   project: ProjectState;
-  audio: AudioState;
+  wave: WaveState;
 }
 
 export const createRootReducer = combineReducers({
   analysis: analysisReducer,
+  audio: audioReducer,
   dialog: dialogReducer,
   project: projectReducer,
-  audio: audioReducer
+  wave: waveReducer
 });
 
 export default configureStore({
