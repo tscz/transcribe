@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { ApplicationState } from "../../app/store";
-import { LoadingStatus, startedInit } from "../../features/audio/audioSlice";
+import { LoadingStatus, startedInit } from "../audio/audioSlice";
 import WaveView from "./waveView";
 
 interface PropsFromState {

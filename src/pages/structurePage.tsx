@@ -12,8 +12,6 @@ import { connect } from "react-redux";
 import { ApplicationState } from "../app/store";
 import ContentLayout from "../common/contentLayout";
 import View from "../common/view";
-import WaveContainer from "../components/wave/waveContainer";
-import WaveControlView from "../components/wave/waveControlView";
 import {
   addedSection,
   Section,
@@ -28,6 +26,8 @@ import {
   zoomedIn,
   zoomedOut
 } from "../features/audio/audioSlice";
+import WaveContainer from "../features/wave/waveContainer";
+import WaveControlView from "../features/wave/waveControlView";
 
 interface PropsFromState {
   sections: Section[];

@@ -15,12 +15,9 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { ApplicationState } from "../../app/store";
-import {
-  TimeSignatureType,
-  updatedRhythm
-} from "../../features/analysis/analysisSlice";
-import { updatedPlaybackSettings } from "../../features/audio/audioSlice";
-import { enabledSyncFirstMeasureStart } from "../../features/project/projectSlice";
+import { TimeSignatureType, updatedRhythm } from "../analysis/analysisSlice";
+import { updatedPlaybackSettings } from "../audio/audioSlice";
+import { enabledSyncFirstMeasureStart } from "../project/projectSlice";
 
 interface PropsFromState {
   readonly firstMeasureStart: number;

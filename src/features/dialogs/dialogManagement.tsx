@@ -6,11 +6,11 @@ import React, { Component, FunctionComponent, useState } from "react";
 import { connect } from "react-redux";
 
 import store, { ApplicationState } from "../../app/store";
-import MusicFileInput from "../../components/musicFileInput/musicFileInput";
 import { resettedAnalysis } from "../analysis/analysisSlice";
 import { createdProject, Page, switchedPage } from "../project/projectSlice";
 import Dialog2 from "./dialog";
 import { closedDialog, DialogType } from "./dialogsSlice";
+import MusicFileInput from "./musicFileInput";
 
 interface PropsFromState {
   type: DialogType;
