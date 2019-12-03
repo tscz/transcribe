@@ -3,11 +3,11 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { ApplicationState } from "../../app/store";
-import { LoadingStatus, startedInit } from "../audio/audioSlice";
+import { startedInit } from "../audio/audioSlice";
 import WaveView from "./waveView";
 
 interface PropsFromState {
-  status: LoadingStatus;
+  waveformLoaded: boolean;
   audioUrl: string;
 }
 
@@ -39,19 +39,17 @@ class WaveContainer extends Component<AllProps> {
     console.log("render waveContainer");
     return (
       <div>
-        {this.props.status !== LoadingStatus.INITIALIZED && (
-          <CircularProgress />
-        )}
+        {!this.props.waveformLoaded && <CircularProgress />}
         <WaveView url={this.props.audioUrl} />
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ project, analysis, audio }: ApplicationState) => {
+const mapStateToProps = ({ project, wave }: ApplicationState) => {
   return {
     audioUrl: project.audioUrl,
-    status: audio.status
+    waveformLoaded: wave.isLoaded
   };
 };
 

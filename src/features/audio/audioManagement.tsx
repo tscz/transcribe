@@ -10,6 +10,7 @@ import {
   updatedRhythm,
   updatedSource
 } from "../analysis/analysisSlice";
+import { initializedWaveform } from "../wave/waveSlice";
 import AudioPlayer from "./audioPlayer";
 import {
   computeZoomLevels,
@@ -42,6 +43,7 @@ interface PropsFromDispatch {
   updatedRhythm: typeof updatedRhythm;
   updatedSource: typeof updatedSource;
   triggeredPause: typeof triggeredPause;
+  initializedWaveform: typeof initializedWaveform;
 }
 
 interface Props {}
@@ -61,7 +63,6 @@ class AudioManagement extends React.Component<AllProps> {
     if (prevProps.status !== this.props.status) {
       switch (this.props.status) {
         case LoadingStatus.NOT_INITIALIZED:
-        case LoadingStatus.RENDERING:
           return;
         case LoadingStatus.INITIALIZING:
           console.log("Initialize audio engine.");
@@ -154,6 +155,7 @@ class AudioManagement extends React.Component<AllProps> {
 
         audio.props.updatedRhythm({});
         audio.props.endedInit();
+        audio.props.initializedWaveform();
       }
     });
 
@@ -186,12 +188,17 @@ class AudioManagement extends React.Component<AllProps> {
   }
 }
 
-const mapStateToProps = ({ project, analysis, audio }: ApplicationState) => {
+const mapStateToProps = ({
+  project,
+  analysis,
+  audio,
+  wave
+}: ApplicationState) => {
   return {
     audioUrl: project.audioUrl,
     sections: analysis.sections,
     measures: analysis.measures,
-    zoomLevel: audio.zoom,
+    zoomLevel: wave.zoom,
     status: audio.status,
     firstMeasureStart: analysis.firstMeasureStart,
     syncFirstMeasureStart: project.syncFirstMeasureStart,
@@ -207,6 +214,7 @@ const mapDispatchToProps = {
   endedInit,
   updatedRhythm,
   updatedSource,
-  triggeredPause
+  triggeredPause,
+  initializedWaveform
 };
 export default connect(mapStateToProps, mapDispatchToProps)(AudioManagement);

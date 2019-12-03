@@ -1,7 +1,6 @@
 import { Action, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface AudioState {
-  readonly zoom: number;
   readonly status: LoadingStatus;
   readonly isPlaying: boolean;
   readonly detune: number;
@@ -15,11 +14,9 @@ export interface PlaybackSettings {
 export enum LoadingStatus {
   NOT_INITIALIZED = "not_initialized",
   INITIALIZING = "initializing",
-  RENDERING = "rendering",
   INITIALIZED = "initialized"
 }
 export const initialState: AudioState = {
-  zoom: 0,
   status: LoadingStatus.NOT_INITIALIZED,
   isPlaying: false,
   detune: 0,
@@ -35,15 +32,6 @@ const audioSlice = createSlice({
     },
     endedInit(state, action: Action) {
       state.status = LoadingStatus.INITIALIZED;
-    },
-    zoomedOut(state, action: Action) {
-      state.zoom =
-        state.zoom === 42 //TODO: use max zoomlevel here, which is dynamic
-          ? state.zoom
-          : state.zoom + 1;
-    },
-    zoomedIn(state, action: Action) {
-      state.zoom = state.zoom === 0 ? state.zoom : state.zoom - 1;
     },
     triggeredPlay(state, action: Action) {
       state.isPlaying = true;
@@ -86,9 +74,7 @@ export const {
   endedInit,
   triggeredPause,
   triggeredPlay,
-  updatedPlaybackSettings,
-  zoomedIn,
-  zoomedOut
+  updatedPlaybackSettings
 } = audioSlice.actions;
 
 export default audioSlice.reducer;

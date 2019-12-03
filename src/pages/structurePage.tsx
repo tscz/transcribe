@@ -17,22 +17,14 @@ import {
   Section,
   updatedRhythm
 } from "../features/analysis/analysisSlice";
-import {
-  endedInit,
-  LoadingStatus,
-  startedInit,
-  triggeredPause,
-  triggeredPlay,
-  zoomedIn,
-  zoomedOut
-} from "../features/audio/audioSlice";
+import { triggeredPause, triggeredPlay } from "../features/audio/audioSlice";
 import WaveContainer from "../features/wave/waveContainer";
 import WaveControlView from "../features/wave/waveControlView";
+import { zoomedIn, zoomedOut } from "../features/wave/waveSlice";
 
 interface PropsFromState {
   sections: Section[];
   zoom: number;
-  status: LoadingStatus;
   isPlaying: boolean;
   loaded: boolean;
 }
@@ -41,8 +33,6 @@ interface PropsFromDispatch {
   addedSection: typeof addedSection;
   zoomedIn: typeof zoomedIn;
   zoomedOut: typeof zoomedOut;
-  startedInit: typeof startedInit;
-  endedInit: typeof endedInit;
   updatedRhythm: typeof updatedRhythm;
   triggeredPlay: typeof triggeredPlay;
   triggeredPause: typeof triggeredPause;
@@ -129,10 +119,15 @@ const MeasureSwitch = (props: { id: string }) => {
   );
 };
 
-const mapStateToProps = ({ analysis, audio, project }: ApplicationState) => {
+const mapStateToProps = ({
+  analysis,
+  audio,
+  project,
+  wave
+}: ApplicationState) => {
   return {
     sections: analysis.sections,
-    zoom: audio.zoom,
+    zoom: wave.zoom,
     status: audio.status,
     isPlaying: audio.isPlaying,
     loaded: project.loaded
@@ -143,8 +138,6 @@ const mapDispatchToProps = {
   addedSection,
   zoomedIn,
   zoomedOut,
-  startedInit,
-  endedInit,
   updatedRhythm,
   triggeredPlay,
   triggeredPause
