@@ -1,0 +1,30 @@
+name: Deploy release
+
+on: [release]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - name: Prepare dependencies
+      run: |
+        npm ci
+      env:
+        CI: true
+    - name: Build release
+      run: |
+        npm run build
+      env:
+        CI: true
+    - name: Deploy to Github Pages
+      run: |
+        npm run deploy
+      env:
+        CI: true
