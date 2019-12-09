@@ -1,6 +1,8 @@
 name: Deploy release
 
-on: [release]
+on:
+  release:
+    types: [published]
 
 jobs:
   build:
@@ -24,7 +26,8 @@ jobs:
       env:
         CI: true
     - name: Deploy to Github Pages
-      run: |
-        npm run deploy
-      env:
-        CI: true
+      uses: JamesIves/github-pages-deploy-action@3.0.4
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages
+        FOLDER: build
