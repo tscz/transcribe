@@ -4,7 +4,7 @@
     "private": true,
     "homepage": "http://tscz.github.io/transcribe",
     "dependencies": {
-        "@material-ui/core": "4.7.1",
+        "@material-ui/core": "^4.7.2",
         "@material-ui/icons": "^4.5.1",
         "@material-ui/lab": "^4.0.0-alpha.32",
         "@reduxjs/toolkit": "^1.1.0",
