@@ -23,6 +23,7 @@ import React from "react";
 import { FunctionComponent } from "react";
 import { connect } from "react-redux";
 
+import VersionInfo from "../common/versionInfo";
 import { resettedAnalysis } from "../features/analysis/analysisSlice";
 import { DialogType, openedDialog } from "../features/dialogs/dialogsSlice";
 import { Page, switchedPage } from "../features/project/projectSlice";
@@ -97,7 +98,7 @@ class App extends React.Component<AllProps, State> {
                 noWrap
                 className={this.props.classes.title}
               >
-                Transcribe
+                Transcribe{" "}
               </Typography>
               <Button
                 color="inherit"
@@ -229,6 +230,7 @@ class App extends React.Component<AllProps, State> {
                 <PrintPage />
               </Toggle>
             </div>
+            Version: <VersionInfo />
           </main>
         </div>
       </>
