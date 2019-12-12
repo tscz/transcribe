@@ -21,16 +21,16 @@
         "tone": "^13.8.25"
     },
     "scripts": {
-        "start": "npm run version && react-scripts start",
-        "build": "npm run version && react-scripts build",
+        "start": "npm run app-version && react-scripts start",
+        "build": "npm run app-version && react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
-        "predeploy": "npm build",
+        "predeploy": "npm run build",
         "deploy": "gh-pages -d build",
         "update": "node ./node_modules/npm-check/bin/cli -u",
         "git-info": "git log -1 --oneline > public/gitInfo.txt",
         "npm-info": "node -p \"require('./package.json').version\" > public/npmInfo.txt",
-        "version": "npm run git-info && npm run npm-info"
+        "app-version": "npm run git-info && npm run npm-info"
     },
     "eslintConfig": {
         "extends": [
