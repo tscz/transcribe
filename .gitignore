@@ -11,6 +11,10 @@
 # production
 /build
 
+# temp files
+gitInfo.txt
+npmInfo.txt
+
 # misc
 .DS_Store
 .env.local
