@@ -4,6 +4,9 @@ on:
   release:
     types: [published]
 
+env:
+  CI: true
+
 jobs:
   build:
 
@@ -18,16 +21,21 @@ jobs:
     - name: Prepare dependencies
       run: |
         npm ci
-      env:
-        CI: true
     - name: Build release
       run: |
         npm run build
-      env:
-        CI: true
-    - name: Deploy to Github Pages
+    - name: Deploy Application on Github Pages
       uses: JamesIves/github-pages-deploy-action@3.0.4
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BRANCH: gh-pages
         FOLDER: build
+    - name: Build storybook
+      run: |
+        npm run build-storybook
+    - name: Deploy Storybook on Github Branch
+      uses: JamesIves/github-pages-deploy-action@3.0.4
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: storyboard
+        FOLDER: build-storybook
