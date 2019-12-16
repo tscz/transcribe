@@ -8,6 +8,7 @@
         "@material-ui/icons": "^4.5.1",
         "@material-ui/lab": "^4.0.0-alpha.32",
         "@reduxjs/toolkit": "^1.1.0",
+        "@storybook/react": "^5.2.8",
         "clsx": "^1.0.4",
         "cross-env": "^6.0.3",
         "file-saver": "^2.0.2",
@@ -32,7 +33,9 @@
         "predeploy": "npm run build",
         "deploy": "gh-pages -d build",
         "update": "node ./node_modules/npm-check/bin/cli -u",
-        "setEnv": "cross-env REACT_APP_VERSION=$npm_package_version REACT_APP_VERSION_HASH=$(git log --format=%h -1) REACT_APP_VERSION_DESCRIPTION=\"$(git log --format=%s -1)\" npm run $npm_config_command"
+        "setEnv": "cross-env REACT_APP_VERSION=$npm_package_version REACT_APP_VERSION_HASH=$(git log --format=%h -1) REACT_APP_VERSION_DESCRIPTION=\"$(git log --format=%s -1)\" npm run $npm_config_command",
+        "storybook": "start-storybook -p 9009 -s public",
+        "build-storybook": "build-storybook -s public"
     },
     "eslintConfig": {
         "extends": [
