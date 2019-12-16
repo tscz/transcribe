@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 
-import { OVERVIEW_CONTAINER, ZOOMVIEW_CONTAINER } from "../audio/peaksConfig";
+import {
+  OVERVIEW_CONTAINER,
+  ZOOMVIEW_CONTAINER
+} from "../../components/audioManagement/peaksConfig";
 
 interface Props {
   url: string;

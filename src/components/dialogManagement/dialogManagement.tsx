@@ -5,12 +5,12 @@ import JSZip from "jszip";
 import React, { Component, FunctionComponent, useState } from "react";
 import { connect } from "react-redux";
 
-import store, { ApplicationState } from "../../app/store";
-import { resettedAnalysis } from "../analysis/analysisSlice";
-import { createdProject, Page, switchedPage } from "../project/projectSlice";
-import Dialog2 from "./dialog";
-import { closedDialog, DialogType } from "./dialogsSlice";
-import MusicFileInput from "./musicFileInput";
+import { resettedAnalysis } from "../../states/analysisSlice";
+import { closedDialog, DialogType } from "../../states/dialogsSlice";
+import { createdProject, Page, switchedPage } from "../../states/projectSlice";
+import store, { ApplicationState } from "../../states/store";
+import Dialog2 from "../dialog/dialog";
+import MusicFileInput from "../musicFileInput/musicFileInput";
 
 interface PropsFromState {
   type: DialogType;

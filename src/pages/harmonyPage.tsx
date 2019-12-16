@@ -1,6 +1,6 @@
 import React from "react";
 
-import View from "../common/view";
+import View from "../components/view/view";
 
 class HarmonyPage extends React.Component {
   render() {

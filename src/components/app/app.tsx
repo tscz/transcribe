@@ -23,18 +23,18 @@ import React from "react";
 import { FunctionComponent } from "react";
 import { connect } from "react-redux";
 
-import VersionInfo from "../common/versionInfo";
-import { resettedAnalysis } from "../features/analysis/analysisSlice";
-import { DialogType, openedDialog } from "../features/dialogs/dialogsSlice";
-import { Page, switchedPage } from "../features/project/projectSlice";
-import DefaultPage from "../pages/defaultPage";
-import DrumPage from "../pages/drumPage";
-import GuitarPage from "../pages/guitarPage";
-import HarmonyPage from "../pages/harmonyPage";
-import PrintPage from "../pages/printPage";
-import StructurePage from "../pages/structurePage";
-import { stylesForApp } from "../styles/styles";
-import { ApplicationState } from "./store";
+import DefaultPage from "../../pages/defaultPage";
+import DrumPage from "../../pages/drumPage";
+import GuitarPage from "../../pages/guitarPage";
+import HarmonyPage from "../../pages/harmonyPage";
+import PrintPage from "../../pages/printPage";
+import StructurePage from "../../pages/structurePage";
+import { resettedAnalysis } from "../../states/analysisSlice";
+import { DialogType, openedDialog } from "../../states/dialogsSlice";
+import { Page, switchedPage } from "../../states/projectSlice";
+import { ApplicationState } from "../../states/store";
+import { stylesForApp } from "../../styles/styles";
+import VersionInfo from "../versionInfo/versionInfo";
 
 interface PropsFromState {
   currentPage: Page;

@@ -9,18 +9,14 @@ import ZoomOutIcon from "@material-ui/icons/ZoomOut";
 import React, { ReactElement } from "react";
 import { connect } from "react-redux";
 
-import { ApplicationState } from "../app/store";
-import ContentLayout from "../common/contentLayout";
-import View from "../common/view";
-import {
-  addedSection,
-  Section,
-  updatedRhythm
-} from "../features/analysis/analysisSlice";
-import { triggeredPause, triggeredPlay } from "../features/audio/audioSlice";
-import WaveContainer from "../features/wave/waveContainer";
-import WaveControlView from "../features/wave/waveControlView";
-import { zoomedIn, zoomedOut } from "../features/wave/waveSlice";
+import ContentLayout from "../components/contentLayout/contentLayout";
+import View from "../components/view/view";
+import { addedSection, Section, updatedRhythm } from "../states/analysisSlice";
+import { triggeredPause, triggeredPlay } from "../states/audioSlice";
+import { ApplicationState } from "../states/store";
+import { zoomedIn, zoomedOut } from "../states/waveSlice";
+import WaveContainer from "../views/wave/waveContainer";
+import WaveControlView from "../views/waveControl/waveControlView";
 
 interface PropsFromState {
   sections: Section[];
