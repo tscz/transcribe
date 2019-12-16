@@ -1,6 +1,6 @@
 import React from "react";
 
-import View from "../components/view/view";
+import View from "../../components/view/view";
 
 class DrumPage extends React.Component {
   render() {

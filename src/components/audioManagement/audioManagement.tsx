@@ -17,7 +17,7 @@ import {
 } from "../../states/audioSlice";
 import { ApplicationState } from "../../states/store";
 import { initializedWaveform } from "../../states/waveSlice";
-import AudioPlayer from "../audioPlayer/audioPlayer";
+import AudioPlayer from "./audioPlayer";
 import PeaksOptions, {
   AUDIO_DOM_ELEMENT,
   ZOOMVIEW_CONTAINER

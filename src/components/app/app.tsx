@@ -23,12 +23,12 @@ import React from "react";
 import { FunctionComponent } from "react";
 import { connect } from "react-redux";
 
-import DefaultPage from "../../pages/defaultPage";
-import DrumPage from "../../pages/drumPage";
-import GuitarPage from "../../pages/guitarPage";
-import HarmonyPage from "../../pages/harmonyPage";
-import PrintPage from "../../pages/printPage";
-import StructurePage from "../../pages/structurePage";
+import DefaultPage from "../../pages/default/defaultPage";
+import DrumPage from "../../pages/drum/drumPage";
+import GuitarPage from "../../pages/guitar/guitarPage";
+import HarmonyPage from "../../pages/harmony/harmonyPage";
+import PrintPage from "../../pages/print/printPage";
+import StructurePage from "../../pages/structure/structurePage";
 import { resettedAnalysis } from "../../states/analysisSlice";
 import { DialogType, openedDialog } from "../../states/dialogsSlice";
 import { Page, switchedPage } from "../../states/projectSlice";
