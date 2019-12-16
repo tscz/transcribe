@@ -35,7 +35,7 @@
         "update": "node ./node_modules/npm-check/bin/cli -u",
         "setEnv": "cross-env REACT_APP_VERSION=$npm_package_version REACT_APP_VERSION_HASH=$(git log --format=%h -1) REACT_APP_VERSION_DESCRIPTION=\"$(git log --format=%s -1)\" npm run $npm_config_command",
         "storybook": "start-storybook -p 9009 -s public",
-        "build-storybook": "build-storybook -s public"
+        "build-storybook": "build-storybook -s public -o build-storybook"
     },
     "eslintConfig": {
         "extends": [
