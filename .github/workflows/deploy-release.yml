@@ -1,0 +1,32 @@
+name: Deploy release
+
+on:
+  release:
+    types: [published]
+
+env:
+  CI: true
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - name: Prepare dependencies
+      run: |
+        npm ci
+    - name: Build release
+      run: |
+        npm run build
+    - name: Deploy Application on Github Pages
+      uses: JamesIves/github-pages-deploy-action@3.0.4
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages
+        FOLDER: build
