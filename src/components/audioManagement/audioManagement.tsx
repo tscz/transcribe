@@ -3,21 +3,21 @@ import React from "react";
 import { connect } from "react-redux";
 import Tone from "tone";
 
-import { ApplicationState } from "../../app/store";
 import {
   Measure,
   Section,
   updatedRhythm,
   updatedSource
-} from "../analysis/analysisSlice";
-import { initializedWaveform } from "../wave/waveSlice";
-import AudioPlayer from "./audioPlayer";
+} from "../../states/analysisSlice";
 import {
   computeZoomLevels,
   endedInit,
   LoadingStatus,
   triggeredPause
-} from "./audioSlice";
+} from "../../states/audioSlice";
+import { ApplicationState } from "../../states/store";
+import { initializedWaveform } from "../../states/waveSlice";
+import AudioPlayer from "../audioPlayer/audioPlayer";
 import PeaksOptions, {
   AUDIO_DOM_ELEMENT,
   ZOOMVIEW_CONTAINER

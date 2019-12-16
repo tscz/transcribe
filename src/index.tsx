@@ -4,12 +4,12 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 
-import App from "./app/app";
-import store from "./app/store";
-import AudioManagement from "./features/audio/audioManagement";
-import DialogManagement from "./features/dialogs/dialogManagement";
+import App from "./components/app/app";
+import AudioManagement from "./components/audioManagement/audioManagement";
+import DialogManagement from "./components/dialogManagement/dialogManagement";
 import * as serviceWorker from "./serviceWorker";
-import theme from "./theme";
+import store from "./states/store";
+import theme from "./styles/theme";
 
 ReactDOM.render(
   <Provider store={store}>

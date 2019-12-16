@@ -2,8 +2,8 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import { ApplicationState } from "../../app/store";
-import { startedInit } from "../audio/audioSlice";
+import { startedInit } from "../../states/audioSlice";
+import { ApplicationState } from "../../states/store";
 import WaveView from "./waveView";
 
 interface PropsFromState {
