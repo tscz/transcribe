@@ -1,6 +1,9 @@
-name: CI Build
+name: Build application
 
 on: [push]
+
+env:
+  CI: true
 
 jobs:
   build:
@@ -20,15 +23,12 @@ jobs:
     - name: Install dependencies
       run: |
         npm ci
-      env:
-        CI: true
     - name: Build the app
       run: |
         npm run build
-      env:
-        CI: true
+    - name: Build the storybook
+      run: |
+        npm run build-storybook
     - name: Run all tests
       run: |
         npm test
-      env:
-        CI: true
