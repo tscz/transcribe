@@ -1,10 +1,9 @@
 import FormControl from "@material-ui/core/FormControl";
 import TextField from "@material-ui/core/TextField";
-import { saveAs } from "file-saver";
-import JSZip from "jszip";
 import React, { Component, FunctionComponent, useState } from "react";
 import { connect } from "react-redux";
 
+import TranscriptionApi from "../../api/transcriptionApi";
 import { resettedAnalysis } from "../../states/analysisSlice";
 import { closedDialog, DialogType } from "../../states/dialogsSlice";
 import { createdProject, Page, switchedPage } from "../../states/projectSlice";
@@ -27,24 +26,6 @@ interface PropsFromDispatch {
 type AllProps = PropsFromState & PropsFromDispatch;
 
 class DialogManagement extends Component<AllProps> {
-  async save(url: string): Promise<void> {
-    let { analysis } = store.getState();
-
-    let persistentState: any = Object.assign({}, { analysis });
-
-    let zip = new JSZip();
-    zip.file("analyis.json", JSON.stringify(persistentState));
-
-    let blob: Blob = await fetch(url).then(r => r.blob());
-
-    zip.file("song.mp3", blob);
-
-    zip.generateAsync({ type: "blob" }).then(function(content) {
-      // see FileSaver.js
-      saveAs(content, "project.zip");
-    });
-  }
-
   render() {
     switch (this.props.type) {
       case DialogType.NONE:
@@ -76,7 +57,7 @@ class DialogManagement extends Component<AllProps> {
             title="Save Analysis"
             onCancel={this.props.closedDialog}
             onSubmit={() => {
-              this.save(this.props.audioUrl);
+              TranscriptionApi.save(this.props.audioUrl, store.getState());
               this.props.closedDialog();
             }}
           >
