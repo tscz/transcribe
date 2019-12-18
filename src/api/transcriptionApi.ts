@@ -1,29 +1,51 @@
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
 
+import { AnalysisState } from "../states/analysisSlice";
 import { ApplicationState } from "../states/store";
 
-class TranscriptionApi {
-  static save = async (url: string, state: ApplicationState) => {
-    let { analysis } = state;
+interface SaveOptions {
+  mp3url: string;
+  state: ApplicationState;
+}
 
+class TranscriptionApi {
+  private constructor() {}
+
+  private static song = "song.mp3";
+  private static state = "analysis.json";
+
+  static save = async (filename: string, options: SaveOptions) => {
+    let { analysis } = options.state;
     let persistentState: any = Object.assign({}, { analysis });
 
     let zip = new JSZip();
-    zip.file("analyis.json", JSON.stringify(persistentState));
+    zip.file(TranscriptionApi.state, JSON.stringify(persistentState));
 
-    let blob: Blob = await fetch(url).then(r => r.blob());
+    let mp3: Blob = await fetch(options.mp3url).then(r => r.blob());
+    zip.file(TranscriptionApi.song, mp3);
 
-    zip.file("song.mp3", blob);
-
-    zip.generateAsync({ type: "blob" }).then(function(content) {
-      // see FileSaver.js
-      saveAs(content, "project.zip");
+    zip.generateAsync({ type: "blob" }).then(file => {
+      saveAs(file, filename);
     });
   };
 
-  static open = () => {
-    console.log("TranscriptionApi.open");
+  static open = async (
+    zipUrl: string,
+    loadstart: (zipUrl: string) => void,
+    load: (mp3Url: string, state: AnalysisState) => void
+  ) => {
+    loadstart(zipUrl);
+
+    let zip = new JSZip();
+    zip.loadAsync(zipUrl).then(async archive => {
+      let mp3 = archive.file(TranscriptionApi.song).name;
+
+      let json = await archive.file(TranscriptionApi.state).async("text");
+      let state: AnalysisState = JSON.parse(json);
+
+      load(mp3, state);
+    });
   };
 }
 

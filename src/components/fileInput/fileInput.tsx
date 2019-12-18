@@ -1,6 +1,13 @@
 import React from "react";
 
+export enum FileType {
+  AUDIO = "audio/*",
+  ZIP = ".zip"
+}
+
 interface Props {
+  id: string;
+  fileType: FileType;
   callback: (file: File, fileUrl: string) => void;
 }
 
@@ -8,7 +15,7 @@ interface State {
   file: File | null;
 }
 
-export default class MusicFileInput extends React.Component<Props, State> {
+export default class FileInput extends React.Component<Props, State> {
   state: State = {
     file: null
   };
@@ -31,9 +38,9 @@ export default class MusicFileInput extends React.Component<Props, State> {
   render() {
     return (
       <input
-        id="audio_file"
+        id={this.props.id}
         type="file"
-        accept="audio/*"
+        accept={this.props.fileType}
         ref={this.fileInput}
         onChange={() => this.handleChange()}
       ></input>
