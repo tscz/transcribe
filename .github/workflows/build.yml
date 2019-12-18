@@ -26,6 +26,9 @@ jobs:
     - name: Build the app
       run: |
         npm run build
+    - name: Verify code formatting rules
+      run: |
+        npm run lint
     - name: Build the storybook
       run: |
         npm run build-storybook
