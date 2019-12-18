@@ -8,8 +8,8 @@ import { resettedAnalysis } from "../../states/analysisSlice";
 import { closedDialog, DialogType } from "../../states/dialogsSlice";
 import { createdProject, Page, switchedPage } from "../../states/projectSlice";
 import store, { ApplicationState } from "../../states/store";
-import Dialog2 from "../dialog/dialog";
-import MusicFileInput from "../musicFileInput/musicFileInput";
+import FileInput, { FileType } from "../fileInput/fileInput";
+import ModalDialog from "../modalDialog/modalDialog";
 
 interface PropsFromState {
   type: DialogType;
@@ -44,25 +44,46 @@ class DialogManagement extends Component<AllProps> {
         );
       case DialogType.OPEN:
         return (
-          <Dialog2
-            title="Open existing Analysis"
-            onCancel={this.props.closedDialog}
-          >
-            <p>Open existing Analysis</p>
-          </Dialog2>
+          <OpenDialog
+            onCancel={() => this.props.closedDialog()}
+            onSubmit={(zipUrl: string) => {
+              TranscriptionApi.open(
+                zipUrl,
+                zipUrl => {
+                  this.props.resettedAnalysis();
+                },
+                (mp3url, state) => {
+                  this.props.createdProject({
+                    title: "readFromState",
+                    audioUrl: mp3url
+                  });
+                  this.props.switchedPage(Page.STRUCTURE);
+                  this.props.closedDialog();
+                }
+              );
+            }}
+          ></OpenDialog>
         );
       case DialogType.SAVE:
         return (
-          <Dialog2
-            title="Save Analysis"
+          <ModalDialog
+            title="Save Transcription"
             onCancel={this.props.closedDialog}
-            onSubmit={() => {
-              TranscriptionApi.save(this.props.audioUrl, store.getState());
-              this.props.closedDialog();
-            }}
+            actions={[
+              {
+                label: "Save",
+                onClick: () => {
+                  TranscriptionApi.save("transcription.zip", {
+                    mp3url: this.props.audioUrl,
+                    state: store.getState()
+                  });
+                  this.props.closedDialog();
+                }
+              }
+            ]}
           >
-            <p>Save Analysis</p>
-          </Dialog2>
+            <p>Save Transcription</p>
+          </ModalDialog>
         );
       default:
         return null;
@@ -80,16 +101,20 @@ const NewDialog: FunctionComponent<{
   const handleTitleChange = (event: any) => setTitle(event.target.value);
 
   return (
-    <Dialog2
-      title="Create new Analysis"
-      onSubmit={() => props.onSubmit(title, fileUrl)}
+    <ModalDialog
+      title="Create new Transcription"
+      actions={[
+        {
+          label: "Create",
+          onClick: () => props.onSubmit(title, fileUrl)
+        }
+      ]}
       onCancel={props.onCancel}
     >
-      <FormControl>
+      <FormControl fullWidth>
         <TextField
           id="title"
           label="Project title"
-          defaultValue="This title will be used for the new analysis project."
           margin="normal"
           InputProps={{
             readOnly: false
@@ -97,13 +122,45 @@ const NewDialog: FunctionComponent<{
           variant="outlined"
           onChange={handleTitleChange}
         />
-        <MusicFileInput
+        <FileInput
+          fileType={FileType.AUDIO}
+          id="audio_file"
           callback={(file, fileUrl) => {
             setFileUrl(fileUrl);
           }}
-        ></MusicFileInput>
+        ></FileInput>
       </FormControl>
-    </Dialog2>
+    </ModalDialog>
+  );
+};
+
+const OpenDialog: FunctionComponent<{
+  onSubmit: (fileUrl: string) => void;
+  onCancel: () => void;
+}> = props => {
+  const [fileUrl, setFileUrl] = useState("");
+
+  return (
+    <ModalDialog
+      title="Open Transcription"
+      onCancel={props.onCancel}
+      actions={[
+        {
+          label: "Open",
+          onClick: () => props.onSubmit(fileUrl)
+        }
+      ]}
+    >
+      <FormControl>
+        <FileInput
+          fileType={FileType.ZIP}
+          id="zip_file"
+          callback={(file, fileUrl) => {
+            setFileUrl(fileUrl);
+          }}
+        ></FileInput>
+      </FormControl>
+    </ModalDialog>
   );
 };
 
