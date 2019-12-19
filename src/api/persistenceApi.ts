@@ -9,7 +9,7 @@ interface SaveOptions {
   state: ApplicationState;
 }
 
-class TranscriptionApi {
+class PersistenceApi {
   private constructor() {}
 
   private static song = "song.mp3";
@@ -20,10 +20,10 @@ class TranscriptionApi {
     let persistentState: any = Object.assign({}, { analysis });
 
     let zip = new JSZip();
-    zip.file(TranscriptionApi.state, JSON.stringify(persistentState));
+    zip.file(PersistenceApi.state, JSON.stringify(persistentState));
 
     let mp3: Blob = await fetch(options.mp3url).then(r => r.blob());
-    zip.file(TranscriptionApi.song, mp3);
+    zip.file(PersistenceApi.song, mp3);
 
     zip.generateAsync({ type: "blob" }).then(file => {
       saveAs(file, filename);
@@ -39,9 +39,9 @@ class TranscriptionApi {
 
     let zip = new JSZip();
     zip.loadAsync(zipUrl).then(async archive => {
-      let mp3 = archive.file(TranscriptionApi.song).name;
+      let mp3 = archive.file(PersistenceApi.song).name;
 
-      let json = await archive.file(TranscriptionApi.state).async("text");
+      let json = await archive.file(PersistenceApi.state).async("text");
       let state: AnalysisState = JSON.parse(json);
 
       load(mp3, state);
@@ -49,4 +49,4 @@ class TranscriptionApi {
   };
 }
 
-export default TranscriptionApi;
+export default PersistenceApi;
