@@ -3,7 +3,7 @@ import TextField from "@material-ui/core/TextField";
 import React, { Component, FunctionComponent, useState } from "react";
 import { connect } from "react-redux";
 
-import TranscriptionApi from "../../api/transcriptionApi";
+import PersistenceApi from "../../api/persistenceApi";
 import { resettedAnalysis } from "../../states/analysisSlice";
 import { closedDialog, DialogType } from "../../states/dialogsSlice";
 import { createdProject, Page, switchedPage } from "../../states/projectSlice";
@@ -47,7 +47,7 @@ class DialogManagement extends Component<AllProps> {
           <OpenDialog
             onCancel={() => this.props.closedDialog()}
             onSubmit={(zipUrl: string) => {
-              TranscriptionApi.open(
+              PersistenceApi.open(
                 zipUrl,
                 zipUrl => {
                   this.props.resettedAnalysis();
@@ -73,7 +73,7 @@ class DialogManagement extends Component<AllProps> {
               {
                 label: "Save",
                 onClick: () => {
-                  TranscriptionApi.save("transcription.zip", {
+                  PersistenceApi.save("transcription.zip", {
                     mp3url: this.props.audioUrl,
                     state: store.getState()
                   });
