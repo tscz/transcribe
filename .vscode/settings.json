@@ -7,5 +7,6 @@
         "rules": {
             "prettier/prettier": "warn" // Locally report Prettier formatting as warnings.
         }
-    }
+    },
+    "jest.pathToJest": "npm run testWithoutEnv --"
 }
