@@ -7,7 +7,10 @@ import PersistenceApi from "../../api/persistenceApi";
 import { resettedAnalysis } from "../../states/analysisSlice";
 import { closedDialog, DialogType } from "../../states/dialogsSlice";
 import { createdProject, Page, switchedPage } from "../../states/projectSlice";
-import store, { ApplicationState } from "../../states/store";
+import store, {
+  ApplicationState,
+  restoredPersistedState
+} from "../../states/store";
 import FileInput, { FileType } from "../fileInput/fileInput";
 import ModalDialog from "../modalDialog/modalDialog";
 
@@ -53,6 +56,8 @@ class DialogManagement extends Component<AllProps> {
                   this.props.resettedAnalysis();
                 },
                 (mp3url, state) => {
+                  store.dispatch(restoredPersistedState(state));
+
                   this.props.createdProject({
                     title: "readFromState",
                     audioUrl: mp3url

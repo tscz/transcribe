@@ -1,5 +1,5 @@
-import { configureStore } from "@reduxjs/toolkit";
-import { combineReducers } from "redux";
+import { configureStore, createAction } from "@reduxjs/toolkit";
+import { AnyAction, combineReducers, Reducer } from "redux";
 
 import analysisReducer, { AnalysisState } from "./analysisSlice";
 import audioReducer, { AudioState } from "./audioSlice";
@@ -16,7 +16,28 @@ export interface ApplicationState {
   wave: WaveState;
 }
 
-export const createRootReducer = combineReducers({
+export interface PersistedState {
+  analysis: AnalysisState;
+  project: ProjectState;
+}
+export const restoredPersistedState = createAction<PersistedState>(
+  "restoredPersistedState"
+);
+
+export const createRootReducer: Reducer<ApplicationState, AnyAction> = (
+  state,
+  action
+) => {
+  state = sliceReducer(state, action);
+
+  if (restoredPersistedState.match(action)) {
+    return state;
+  }
+
+  return state;
+};
+
+export const sliceReducer = combineReducers({
   analysis: analysisReducer,
   audio: audioReducer,
   dialog: dialogReducer,

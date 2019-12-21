@@ -17,7 +17,7 @@ export enum Page {
   PRINT = "print"
 }
 
-export const initialState: ProjectState = {
+export const initialProjectState: ProjectState = {
   currentPage: Page.DEFAULT,
   title: "",
   audioUrl: "",
@@ -27,7 +27,7 @@ export const initialState: ProjectState = {
 
 const projectSlice = createSlice({
   name: "project",
-  initialState,
+  initialState: initialProjectState,
   reducers: {
     switchedPage(state, action: PayloadAction<Page>) {
       state.currentPage = action.payload;

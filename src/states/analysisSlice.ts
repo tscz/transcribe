@@ -38,7 +38,7 @@ export enum SectionType {
   OUTRO = "OUTRO"
 }
 
-export const initialState: AnalysisState = {
+export const initialAnalysisState: AnalysisState = {
   sections: [],
   bpm: 120,
   firstMeasureStart: 0,
@@ -51,7 +51,7 @@ export const initialState: AnalysisState = {
 
 const analysisSlice = createSlice({
   name: "analysis",
-  initialState,
+  initialState: initialAnalysisState,
   reducers: {
     addedSection(state, action: PayloadAction<Section>) {
       //TODO
@@ -63,7 +63,7 @@ const analysisSlice = createSlice({
       //TODO
     },
     resettedAnalysis(state, action: Action) {
-      state = initialState;
+      state = initialAnalysisState;
     },
     updatedRhythm(
       state,
