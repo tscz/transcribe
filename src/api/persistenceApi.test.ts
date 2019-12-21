@@ -1,13 +1,14 @@
 import FileSaver from "file-saver";
 import JSZip from "jszip";
 
-import { initialState as initialAnalysisState } from "../states/analysisSlice";
-import { initialState } from "../states/projectSlice";
+import { initialAnalysisState } from "../states/analysisSlice";
+import { initialProjectState } from "../states/projectSlice";
+import { PersistedState } from "../states/store";
 import PersistenceApi from "./persistenceApi";
 
 const expectedMp3 = "mp3content";
 
-// Mock fetch API by returning dummy mp3
+// Mock fetch API by returning a dummy mp3 blob
 (global as any).fetch = (url: string) => {
   return new Promise<Response>(resolve =>
     resolve(new Response(new Blob([expectedMp3])))
@@ -19,9 +20,9 @@ jest.mock("file-saver");
 const mockedSaveAs = FileSaver.saveAs as jest.Mock<typeof saveAs>;
 
 it("can save a transcription", async () => {
-  let expectedState = {
+  let expectedState: PersistedState = {
     analysis: initialAnalysisState,
-    project: initialState
+    project: initialProjectState
   };
 
   // Trigger save API

@@ -5,14 +5,14 @@ export interface WaveState {
   readonly isLoaded: boolean;
 }
 
-export const initialState: WaveState = {
+export const initialWaveState: WaveState = {
   zoom: 0,
   isLoaded: false
 };
 
 const waveSlice = createSlice({
   name: "wave",
-  initialState,
+  initialState: initialWaveState,
   reducers: {
     zoomedOut(state, action: Action) {
       state.zoom =

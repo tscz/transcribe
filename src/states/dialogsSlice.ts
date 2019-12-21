@@ -11,13 +11,13 @@ export enum DialogType {
   SAVE = "save"
 }
 
-const initialState: DialogState = {
+const initialDialogState: DialogState = {
   currentDialog: DialogType.NONE
 };
 
 const dialogsSlice = createSlice({
   name: "dialogs",
-  initialState,
+  initialState: initialDialogState,
   reducers: {
     openedDialog(state, action: PayloadAction<DialogType>) {
       state.currentDialog = action.payload;

@@ -16,7 +16,7 @@ export enum LoadingStatus {
   INITIALIZING = "initializing",
   INITIALIZED = "initialized"
 }
-export const initialState: AudioState = {
+export const initialAudioState: AudioState = {
   status: LoadingStatus.NOT_INITIALIZED,
   isPlaying: false,
   detune: 0,
@@ -25,7 +25,7 @@ export const initialState: AudioState = {
 
 const audioSlice = createSlice({
   name: "project",
-  initialState,
+  initialState: initialAudioState,
   reducers: {
     startedInit(state, action: Action) {
       state.status = LoadingStatus.INITIALIZING;
