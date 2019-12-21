@@ -20,7 +20,8 @@
         "deploy-storybook": "gh-pages -d build-storybook -b storybook",
         "lint": "eslint --ignore-path .gitignore . --ext ts --ext tsx",
         "lint:fix": "eslint --fix --ignore-path .gitignore . --ext ts --ext tsx",
-        "lint:check": "eslint --print-config src/components/app/app.tsx | eslint-config-prettier-check"
+        "lint:check": "eslint --print-config src/components/app/app.tsx | eslint-config-prettier-check",
+        "coverage": "npm run testWithoutEnv -- --coverage"
     },
     "dependencies": {
         "@material-ui/core": "4.8.0",
