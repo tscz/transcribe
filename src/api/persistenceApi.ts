@@ -1,31 +1,28 @@
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
 
-import { AnalysisState } from "../states/analysisSlice";
-import { ApplicationState } from "../states/store";
+import { PersistedState } from "../states/store";
 
 interface SaveOptions {
   mp3url: string;
-  state: ApplicationState;
+  state: PersistedState;
 }
 
 class PersistenceApi {
   private constructor() {}
 
-  private static song = "song.mp3";
-  private static state = "analysis.json";
+  private static songFile = "song.mp3";
+  private static stateFile = "state.json";
 
   static save = async (filename: string, options: SaveOptions) => {
-    let { analysis } = options.state;
-    let persistentState: any = Object.assign({}, { analysis });
-
     let zip = new JSZip();
-    zip.file(PersistenceApi.state, JSON.stringify(persistentState));
+    zip.file(PersistenceApi.stateFile, JSON.stringify(options.state));
 
-    let mp3: Blob = await fetch(options.mp3url).then(r => r.blob());
-    zip.file(PersistenceApi.song, mp3);
+    let response = await fetch(options.mp3url);
+    let mp3: Blob = await response.blob();
+    zip.file(PersistenceApi.songFile, mp3);
 
-    zip.generateAsync({ type: "blob" }).then(file => {
+    await zip.generateAsync({ type: "blob" }).then(file => {
       saveAs(file, filename);
     });
   };
@@ -33,16 +30,16 @@ class PersistenceApi {
   static open = async (
     zipUrl: string,
     loadstart: (zipUrl: string) => void,
-    load: (mp3Url: string, state: AnalysisState) => void
+    load: (mp3Url: string, state: PersistedState) => void
   ) => {
     loadstart(zipUrl);
 
     let zip = new JSZip();
     zip.loadAsync(zipUrl).then(async archive => {
-      let mp3 = archive.file(PersistenceApi.song).name;
+      let mp3 = archive.file(PersistenceApi.songFile).name;
 
-      let json = await archive.file(PersistenceApi.state).async("text");
-      let state: AnalysisState = JSON.parse(json);
+      let json = await archive.file(PersistenceApi.stateFile).async("text");
+      let state: PersistedState = JSON.parse(json);
 
       load(mp3, state);
     });
