@@ -67,6 +67,10 @@ class AudioPlayer implements Player {
 
   destroy = () => {
     console.log("AudioPlayer destroy()");
+    Tone.context.dispose();
+    ((Tone as unknown) as Tone & {
+      setContext: (ctx: AudioContext) => void;
+    }).setContext(new AudioContext());
   };
 
   play = () => {

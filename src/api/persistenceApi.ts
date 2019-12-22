@@ -27,23 +27,17 @@ class PersistenceApi {
     });
   };
 
-  static open = async (
-    zipUrl: string,
-    loadstart: (zipUrl: string) => void,
-    load: (mp3Url: string, state: PersistedState) => void
-  ) => {
-    loadstart(zipUrl);
+  static async open(
+    zip: File
+  ): Promise<{ audioBlob: Blob; state: PersistedState }> {
+    let archive = await JSZip.loadAsync(zip);
+    let audioBlob = await archive.file(PersistenceApi.songFile).async("blob");
 
-    let zip = new JSZip();
-    zip.loadAsync(zipUrl).then(async archive => {
-      let mp3 = archive.file(PersistenceApi.songFile).name;
+    let json = await archive.file(PersistenceApi.stateFile).async("text");
+    let state: PersistedState = JSON.parse(json);
 
-      let json = await archive.file(PersistenceApi.stateFile).async("text");
-      let state: PersistedState = JSON.parse(json);
-
-      load(mp3, state);
-    });
-  };
+    return { audioBlob, state };
+  }
 }
 
 export default PersistenceApi;
