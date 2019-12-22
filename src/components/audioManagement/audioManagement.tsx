@@ -66,6 +66,12 @@ class AudioManagement extends React.Component<AllProps> {
           return;
         case LoadingStatus.INITIALIZING:
           console.log("Initialize audio engine.");
+          if (prevProps.audioUrl !== this.props.audioUrl) {
+            console.log(
+              "switch from " + prevProps.audioUrl + " to " + this.props.audioUrl
+            );
+            window.URL.revokeObjectURL(prevProps.audioUrl);
+          }
           if (this.peaks) this.peaks.destroy();
           this.initAudioManagement(this);
           break;

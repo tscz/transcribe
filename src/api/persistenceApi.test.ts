@@ -8,6 +8,11 @@ import PersistenceApi from "./persistenceApi";
 
 const expectedMp3 = "mp3content";
 
+async function contentOf(blob: Blob) {
+  let text = await new Response(blob).text();
+  return text;
+}
+
 // Mock fetch API by returning a dummy mp3 blob
 (global as any).fetch = (url: string) => {
   return new Promise<Response>(resolve =>
@@ -49,4 +54,31 @@ it("can save a transcription", async () => {
 
   let persistedMp3 = await mp3.async("text");
   expect(persistedMp3).toEqual(expectedMp3);
+});
+
+it("can open a transcription", async () => {
+  let expectedState: PersistedState = {
+    analysis: initialAnalysisState,
+    project: initialProjectState
+  };
+
+  let zip = new JSZip();
+  zip.file("state.json", JSON.stringify(expectedState));
+  zip.file("song.mp3", new Blob([expectedMp3]));
+
+  let mockedLoadAsync = jest.fn(async (url: string) => zip);
+  JSZip.loadAsync = mockedLoadAsync;
+
+  //Trigger open API
+  let zipFile = new File(
+    [await zip.generateAsync({ type: "blob" })],
+    "transcription.zip"
+  );
+  let { audioBlob, state } = await PersistenceApi.open(zipFile);
+
+  //Verify extracted and processed zip
+  expect(mockedLoadAsync).toHaveBeenCalledTimes(1);
+  expect(mockedLoadAsync).toHaveBeenCalledWith(zipFile);
+  expect(state).toEqual(expectedState);
+  expect(await contentOf(audioBlob)).toEqual(expectedMp3);
 });

@@ -7,10 +7,7 @@ import PersistenceApi from "../../api/persistenceApi";
 import { resettedAnalysis } from "../../states/analysisSlice";
 import { closedDialog, DialogType } from "../../states/dialogsSlice";
 import { createdProject, Page, switchedPage } from "../../states/projectSlice";
-import store, {
-  ApplicationState,
-  restoredPersistedState
-} from "../../states/store";
+import store, { ApplicationState } from "../../states/store";
 import FileInput, { FileType } from "../fileInput/fileInput";
 import ModalDialog from "../modalDialog/modalDialog";
 
@@ -49,23 +46,18 @@ class DialogManagement extends Component<AllProps> {
         return (
           <OpenDialog
             onCancel={() => this.props.closedDialog()}
-            onSubmit={(zipUrl: string) => {
-              PersistenceApi.open(
-                zipUrl,
-                zipUrl => {
-                  this.props.resettedAnalysis();
-                },
-                (mp3url, state) => {
-                  store.dispatch(restoredPersistedState(state));
-
-                  this.props.createdProject({
-                    title: "readFromState",
-                    audioUrl: mp3url
-                  });
-                  this.props.switchedPage(Page.STRUCTURE);
-                  this.props.closedDialog();
-                }
-              );
+            onSubmit={(zip: File, zipUrl: string) => {
+              PersistenceApi.open(zip).then(({ audioBlob, state }) => {
+                let audioUrl = window.URL.createObjectURL(audioBlob);
+                this.props.resettedAnalysis();
+                this.props.createdProject({
+                  title: state.project.title,
+                  audioUrl
+                });
+                window.URL.revokeObjectURL(zipUrl);
+                this.props.switchedPage(Page.STRUCTURE);
+                this.props.closedDialog();
+              });
             }}
           ></OpenDialog>
         );
@@ -140,10 +132,11 @@ const NewDialog: FunctionComponent<{
 };
 
 const OpenDialog: FunctionComponent<{
-  onSubmit: (fileUrl: string) => void;
+  onSubmit: (file: File, fileUrl: string) => void;
   onCancel: () => void;
 }> = props => {
   const [fileUrl, setFileUrl] = useState("");
+  const [file, setFile] = useState<File>();
 
   return (
     <ModalDialog
@@ -152,7 +145,7 @@ const OpenDialog: FunctionComponent<{
       actions={[
         {
           label: "Open",
-          onClick: () => props.onSubmit(fileUrl)
+          onClick: () => props.onSubmit(file!, fileUrl)
         }
       ]}
     >
@@ -162,6 +155,7 @@ const OpenDialog: FunctionComponent<{
           id="zip_file"
           callback={(file, fileUrl) => {
             setFileUrl(fileUrl);
+            setFile(file);
           }}
         ></FileInput>
       </FormControl>
