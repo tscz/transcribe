@@ -27,11 +27,11 @@ Read the [Documentation](#documentation) for developing and building infos.
 
 ## Status
 
-![](https://github.com/tscz/transcribe/workflows/Build%20application/badge.svg)
+[![](https://github.com/tscz/transcribe/workflows/Build%20application/badge.svg)](https://github.com/tscz/transcribe/actions?query=workflow%3A%22Build+application%22)
 
-![](https://github.com/tscz/transcribe/workflows/Deploy%20release/badge.svg)
+[![](https://github.com/tscz/transcribe/workflows/Deploy%20release/badge.svg)](https://github.com/tscz/transcribe/releases/latest)
 
-![](https://github.com/tscz/transcribe/workflows/Deploy%20storybook/badge.svg)
+[![](https://github.com/tscz/transcribe/workflows/Deploy%20storybook/badge.svg)](https://transcribe-storybook.herokuapp.com)
 
 
 ## Documentation
