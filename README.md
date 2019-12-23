@@ -19,9 +19,7 @@
 
 ## Quick start
 
-Run the demo app in your Browser:
-
-- [Transcribe](https://tscz.github.com/transcribe).
+Run the demo app in your Browser: [Transcribe Demo App](https://tscz.github.com/transcribe).
 
 Read the [Documentation](#documentation) for developing and building infos.
 
@@ -41,7 +39,7 @@ transcribe/
 └── .github/ (Github Action config)
 └── .storybook/ (Storybook config)
 └── .vscode/ (Visual Studio Code config)
-└── public/ (
+└── public/ (Static app content)
 └── src/
     ├── api/ (External interfaces)
     ├── components/ (React components)
