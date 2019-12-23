@@ -44,10 +44,10 @@
     },
     "devDependencies": {
         "@types/file-saver": "2.0.1",
-        "@types/jest": "24.0.23",
+        "@types/jest": "^24.0.24",
         "@types/jszip": "3.1.6",
-        "@types/node": "12.12.20",
-        "@types/react": "16.9.16",
+        "@types/node": "^12.12.21",
+        "@types/react": "^16.9.17",
         "@types/react-dom": "16.9.4",
         "@types/react-redux": "7.1.5",
         "@types/tone": "https://github.com/Tonejs/TypeScript.git",
@@ -61,7 +61,7 @@
         "gh-pages": "2.1.1",
         "npm-check": "5.9.0",
         "prettier": "1.19.1",
-        "typescript": "3.7.3"
+        "typescript": "^3.7.4"
     },
     "eslintConfig": {
         "extends": [
