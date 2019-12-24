@@ -1,13 +1,12 @@
 <p align="center">
-    <img src="" alt="logo" width="72" height="72">
+    <img src="./public/logo.svg" alt="logo" width="72" height="72">
 </p>
 
 <h3 align="center">Transcribe</h3>
 
 <p align="center">
- A Web App for Transcribing Songs.
+ A Web App for Transcribing Songs<br>Load mp3, transcribe song, get the score.
 </p>
- <p align="center"><img src="" width="400" alt="screenshot"></p>
 
 ## Table of contents
 
@@ -26,13 +25,15 @@ Read the [Documentation](#documentation) for developing and building infos.
 ## Status
 
 [![](https://github.com/tscz/transcribe/workflows/Build%20application/badge.svg)](https://github.com/tscz/transcribe/actions?query=workflow%3A%22Build+application%22)
+[![Coverage Status](https://coveralls.io/repos/github/tscz/transcribe/badge.svg?branch=master)](https://coveralls.io/github/tscz/transcribe?branch=master)
 
 [![](https://github.com/tscz/transcribe/workflows/Deploy%20release/badge.svg)](https://github.com/tscz/transcribe/releases/latest)
 
 [![](https://github.com/tscz/transcribe/workflows/Deploy%20storybook/badge.svg)](https://transcribe-storybook.herokuapp.com)
 
+## Usage
 
-## Documentation
+## Developer Documentation
 ### Project Structure
 ```text
 transcribe/
@@ -56,6 +57,9 @@ transcribe/
 See [Storybook](https://transcribe-storybook.herokuapp.com) for Component Documentation.
 
 ## Versioning
+| Version | Info
+| --- | --- 
+| 0.1 | First running version (see https://github.com/tscz/transcribe/projects/1)
 
 ## Copyright and license
-
+<div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
