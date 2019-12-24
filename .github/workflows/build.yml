@@ -35,9 +35,11 @@ jobs:
       run: |
         npm run build-storybook
     - name: Run all tests with code coverage
+      if: matrix.os == 'ubuntu-latest' && matrix.node-version == '12.x'
       run: |
         npm run coverage
     - name: Deploy coverage results to Coveralls 
+      if: matrix.os == 'ubuntu-latest' && matrix.node-version == '12.x'
       uses: coverallsapp/github-action@v1.0.1
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
