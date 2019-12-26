@@ -14,11 +14,17 @@ interface Player {
   setDetune: (pitch: number) => void;
 }
 
+interface EmitAware {
+  emit: (id: string, value: any) => void;
+}
+
+interface PeaksInstanceEmitAware extends PeaksInstance, EmitAware {}
+
 /**
  * Tone.js Player replacement for the <audio>-element based Peaks.js player
  */
 class AudioPlayer implements Player {
-  peaks: PeaksInstance & { emit: (id: string, value: any) => void };
+  peaks: PeaksInstanceEmitAware;
   player: Tone.Player;
   pitchShift: Tone.PitchShift;
 
@@ -29,16 +35,13 @@ class AudioPlayer implements Player {
   ) {
     console.log("AudioPlayer constructor");
 
-    //@ts-ignore because we allow the internal emit function in the instance variable peaks
-    this.peaks = peaks;
+    this.peaks = peaks as PeaksInstanceEmitAware;
 
     this.player = new Tone.Player(audioBuffer).sync().start();
 
     this.pitchShift = new Tone.PitchShift();
 
-    //@ts-ignore because connect method is not defined in TS definition
-    Tone.connect(this.player, this.pitchShift);
-    this.pitchShift.toMaster();
+    Tone.connectSeries(this.player, this.pitchShift, Tone.Master);
 
     Tone.Transport.scheduleRepeat(time => {
       this.peaks.emit("player_time_update", this.getCurrentTime());
@@ -48,7 +51,6 @@ class AudioPlayer implements Player {
       }
     }, 0.03);
 
-    this.peaks.emit("player_load", this);
     this.peaks.emit("player_canplay", this);
   }
 
