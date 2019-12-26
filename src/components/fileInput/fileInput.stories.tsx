@@ -3,7 +3,7 @@ import React from "react";
 import FileInput, { FileType } from "./fileInput";
 
 export default {
-  title: "Components|MusicFileInput",
+  title: "Components|FileInput",
   component: FileInput
 };
 
