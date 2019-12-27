@@ -6,17 +6,17 @@ import { initialProjectState } from "../states/projectSlice";
 import { PersistedState } from "../states/store";
 import PersistenceApi from "./persistenceApi";
 
-const expectedMp3 = "mp3content";
+const expectedAudioContent = "expectedAudioContent";
 
 async function contentOf(blob: Blob) {
   let text = await new Response(blob).text();
   return text;
 }
 
-// Mock fetch API by returning a dummy mp3 blob
+// Mock fetch API by returning a dummy audio blob
 (global as any).fetch = (url: string) => {
   return new Promise<Response>(resolve =>
-    resolve(new Response(new Blob([expectedMp3])))
+    resolve(new Response(new Blob([expectedAudioContent])))
   );
 };
 
@@ -32,7 +32,7 @@ it("can save a transcription", async () => {
 
   // Trigger save API
   await PersistenceApi.save("project.zip", {
-    mp3url: "song.mp3",
+    audioFileUrl: "song.blob",
     state: expectedState
   });
 
@@ -40,10 +40,10 @@ it("can save a transcription", async () => {
   const createdZip = mockedSaveAs.mock.calls[0][0];
   let zip = await JSZip.loadAsync(createdZip);
   let json = zip.file("state.json");
-  let mp3 = zip.file("song.mp3");
+  let audioBlob = zip.file("song.blob");
 
   expect(zip.files).toEqual({
-    "song.mp3": expect.anything(),
+    "song.blob": expect.anything(),
     "state.json": expect.anything()
   });
 
@@ -52,8 +52,8 @@ it("can save a transcription", async () => {
     .then(content => JSON.parse(content));
   expect(persistedState).toEqual(expectedState);
 
-  let persistedMp3 = await mp3.async("text");
-  expect(persistedMp3).toEqual(expectedMp3);
+  let persistedAudioFile = await audioBlob.async("text");
+  expect(persistedAudioFile).toEqual(expectedAudioContent);
 });
 
 it("can open a transcription", async () => {
@@ -64,7 +64,7 @@ it("can open a transcription", async () => {
 
   let zip = new JSZip();
   zip.file("state.json", JSON.stringify(expectedState));
-  zip.file("song.mp3", new Blob([expectedMp3]));
+  zip.file("song.blob", new Blob([expectedAudioContent]));
 
   let mockedLoadAsync = jest.fn(async (url: string) => zip);
   JSZip.loadAsync = mockedLoadAsync;
@@ -80,5 +80,5 @@ it("can open a transcription", async () => {
   expect(mockedLoadAsync).toHaveBeenCalledTimes(1);
   expect(mockedLoadAsync).toHaveBeenCalledWith(zipFile);
   expect(state).toEqual(expectedState);
-  expect(await contentOf(audioBlob)).toEqual(expectedMp3);
+  expect(await contentOf(audioBlob)).toEqual(expectedAudioContent);
 });

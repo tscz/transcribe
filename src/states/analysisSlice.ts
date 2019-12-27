@@ -1,5 +1,7 @@
-import { Action, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { PointAddOptions, SegmentAddOptions } from "peaks.js";
+
+import { PersistedState } from "./store";
 
 export interface AnalysisState {
   readonly sections: Section[];
@@ -62,8 +64,10 @@ const analysisSlice = createSlice({
     removedSection(state, action: PayloadAction<Section>) {
       //TODO
     },
-    resettedAnalysis(state, action: Action) {
-      state = initialAnalysisState;
+    resettedAnalysis(state, action: PayloadAction<{ state?: PersistedState }>) {
+      if (action.payload.state?.analysis) {
+        return action.payload.state.analysis;
+      } else return initialAnalysisState;
     },
     updatedRhythm(
       state,

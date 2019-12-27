@@ -126,7 +126,7 @@ class AudioManagement extends React.Component<AllProps> {
   private initAudioManagement = (audio: AudioManagement) => {
     const audioCtx: AudioContext = (Tone.context as unknown) as AudioContext;
 
-    // Load mp3 into audio buffer
+    // Load audioFile into audio buffer
     fetch(this.props.audioUrl)
       .then(function(response) {
         return response.arrayBuffer();

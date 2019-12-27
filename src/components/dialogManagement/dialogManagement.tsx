@@ -35,7 +35,7 @@ class DialogManagement extends Component<AllProps> {
           <NewDialog
             onCancel={() => this.props.closedDialog()}
             onSubmit={(title: string, audioUrl: string) => {
-              this.props.resettedAnalysis();
+              this.props.resettedAnalysis({});
               this.props.createdProject({ title, audioUrl });
               this.props.switchedPage(Page.STRUCTURE);
               this.props.closedDialog();
@@ -49,7 +49,7 @@ class DialogManagement extends Component<AllProps> {
             onSubmit={(zip: File, zipUrl: string) => {
               PersistenceApi.open(zip).then(({ audioBlob, state }) => {
                 let audioUrl = window.URL.createObjectURL(audioBlob);
-                this.props.resettedAnalysis();
+                this.props.resettedAnalysis({ state });
                 this.props.createdProject({
                   title: state.project.title,
                   audioUrl
@@ -71,7 +71,7 @@ class DialogManagement extends Component<AllProps> {
                 label: "Save",
                 onClick: () => {
                   PersistenceApi.save("transcription.zip", {
-                    mp3url: this.props.audioUrl,
+                    audioFileUrl: this.props.audioUrl,
                     state: store.getState()
                   });
                   this.props.closedDialog();

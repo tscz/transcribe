@@ -4,23 +4,23 @@ import JSZip from "jszip";
 import { PersistedState } from "../states/store";
 
 interface SaveOptions {
-  mp3url: string;
+  audioFileUrl: string;
   state: PersistedState;
 }
 
 class PersistenceApi {
   private constructor() {}
 
-  private static songFile = "song.mp3";
+  private static songFile = "song.blob";
   private static stateFile = "state.json";
 
   static save = async (filename: string, options: SaveOptions) => {
     let zip = new JSZip();
     zip.file(PersistenceApi.stateFile, JSON.stringify(options.state));
 
-    let response = await fetch(options.mp3url);
-    let mp3: Blob = await response.blob();
-    zip.file(PersistenceApi.songFile, mp3);
+    let response = await fetch(options.audioFileUrl);
+    let audioBlob: Blob = await response.blob();
+    zip.file(PersistenceApi.songFile, audioBlob);
 
     await zip.generateAsync({ type: "blob" }).then(file => {
       saveAs(file, filename);
