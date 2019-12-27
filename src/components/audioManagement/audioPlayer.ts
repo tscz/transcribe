@@ -18,7 +18,7 @@ interface EmitAware {
   emit: (id: string, value: any) => void;
 }
 
-interface PeaksInstanceEmitAware extends PeaksInstance, EmitAware {}
+export interface PeaksInstanceEmitAware extends PeaksInstance, EmitAware {}
 
 /**
  * Tone.js Player replacement for the <audio>-element based Peaks.js player
@@ -37,7 +37,9 @@ class AudioPlayer implements Player {
 
     this.peaks = peaks as PeaksInstanceEmitAware;
 
-    this.player = new Tone.Player(audioBuffer).sync().start();
+    this.player = new Tone.Player(audioBuffer);
+    this.player.sync();
+    this.player.start();
 
     this.pitchShift = new Tone.PitchShift();
 

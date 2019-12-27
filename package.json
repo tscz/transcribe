@@ -59,6 +59,7 @@
         "eslint-plugin-react-hooks": "2.3.0",
         "eslint-plugin-simple-import-sort": "5.0.0",
         "gh-pages": "2.1.1",
+        "jest-mock-extended": "^1.0.5",
         "npm-check": "5.9.0",
         "prettier": "1.19.1",
         "typescript": "^3.7.4"
