@@ -6,7 +6,6 @@ class PrintPage extends React.Component {
   render() {
     return (
       <View
-        header="Print"
         body={
           <p>
             In this section you'll be able to print the leadsheet. Please come

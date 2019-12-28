@@ -43,8 +43,9 @@ const audioSlice = createSlice({
       state,
       action: PayloadAction<{ playbackRate?: number; detune?: number }>
     ) {
-      if (action.payload.detune) state.detune = action.payload.detune;
-      if (action.payload.playbackRate)
+      if (action.payload.detune !== undefined)
+        state.detune = action.payload.detune;
+      if (action.payload.playbackRate !== undefined)
         state.playbackRate = action.payload.playbackRate;
     }
   }

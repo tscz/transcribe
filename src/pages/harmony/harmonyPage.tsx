@@ -6,7 +6,6 @@ class HarmonyPage extends React.Component {
   render() {
     return (
       <View
-        header="Harmony"
         body={
           <p>
             In this section you'll be able to transcribe the harmony. Please

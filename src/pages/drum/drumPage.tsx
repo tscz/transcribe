@@ -6,7 +6,6 @@ class DrumPage extends React.Component {
   render() {
     return (
       <View
-        header="Drums"
         body={
           <p>
             In this section you'll be able to transcribe the drum part. Please

@@ -3,21 +3,35 @@ import {
   FormControl,
   Input,
   InputLabel,
+  MenuItem,
   NativeSelect,
+  Select,
   Tooltip
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
+import IconButton from "@material-ui/core/IconButton";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Slider from "@material-ui/core/Slider";
+import LoopIcon from "@material-ui/icons/Loop";
+import PauseIcon from "@material-ui/icons/Pause";
+import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import SyncAltIcon from "@material-ui/icons/SyncAlt";
+import TimerIcon from "@material-ui/icons/Timer";
+import ZoomInIcon from "@material-ui/icons/ZoomIn";
+import ZoomOutIcon from "@material-ui/icons/ZoomOut";
 import ToggleButton from "@material-ui/lab/ToggleButton";
-import React, { Component } from "react";
+import React, { Component, ReactElement } from "react";
 import { connect } from "react-redux";
 
 import { TimeSignatureType, updatedRhythm } from "../../states/analysisSlice";
-import { updatedPlaybackSettings } from "../../states/audioSlice";
+import {
+  triggeredPause,
+  triggeredPlay,
+  updatedPlaybackSettings
+} from "../../states/audioSlice";
 import { enabledSyncFirstMeasureStart } from "../../states/projectSlice";
 import { ApplicationState } from "../../states/store";
+import { zoomedIn, zoomedOut } from "../../states/waveSlice";
 
 interface PropsFromState {
   readonly firstMeasureStart: number;
@@ -26,12 +40,18 @@ interface PropsFromState {
   readonly syncFirstMeasureStart: boolean;
   readonly detune: number;
   readonly playbackRate: number;
+  readonly zoom: number;
+  readonly isPlaying: boolean;
 }
 
 interface PropsFromDispatch {
   updatedRhythm: typeof updatedRhythm;
   enabledSyncFirstMeasureStart: typeof enabledSyncFirstMeasureStart;
   updatedPlaybackSettings: typeof updatedPlaybackSettings;
+  zoomedIn: typeof zoomedIn;
+  zoomedOut: typeof zoomedOut;
+  triggeredPlay: typeof triggeredPlay;
+  triggeredPause: typeof triggeredPause;
 }
 
 type AllProps = PropsFromState & PropsFromDispatch;
@@ -48,13 +68,16 @@ class WaveControlView extends Component<AllProps> {
   };
 
   handleDetuneChange = (e: any, detune: number | number[]) => {
-    if (!Array.isArray(detune)) {
+    if (!Array.isArray(detune) && detune !== this.props.detune) {
       this.props.updatedPlaybackSettings({ detune: detune });
     }
   };
 
   handlePlaybackRateChange = (e: any, playbackRate: number | number[]) => {
-    if (!Array.isArray(playbackRate)) {
+    if (
+      !Array.isArray(playbackRate) &&
+      playbackRate !== this.props.playbackRate
+    ) {
       this.props.updatedPlaybackSettings({ playbackRate: playbackRate });
     }
   };
@@ -64,7 +87,38 @@ class WaveControlView extends Component<AllProps> {
       <>
         <Grid container direction="column" spacing={3}>
           <Grid item>
-            <FormControl>
+            <InputLabel shrink>Actions</InputLabel>
+            {this.props.isPlaying ? (
+              <WaveformControlButton
+                title="Pause"
+                icon={<PauseIcon />}
+                onClick={this.props.triggeredPause}
+              />
+            ) : (
+              <WaveformControlButton
+                title="Play"
+                icon={<PlayArrowIcon />}
+                onClick={this.props.triggeredPlay}
+              />
+            )}
+            <MeasureSwitch id="startMeasure" />
+            <MeasureSwitch id="endMeasure" />
+
+            <WaveformControlButton
+              title="Zoom in"
+              icon={<ZoomInIcon />}
+              onClick={this.props.zoomedIn}
+            />
+            <WaveformControlButton
+              title="Zoom out"
+              icon={<ZoomOutIcon />}
+              onClick={this.props.zoomedOut}
+            />
+            <WaveformControlButton title="Loop" icon={<LoopIcon />} />
+            <WaveformControlButton title="Metronome" icon={<TimerIcon />} />
+          </Grid>
+          <Grid item>
+            <FormControl fullWidth={true}>
               <InputLabel>Start Measure 1</InputLabel>
               <Input
                 type="text"
@@ -102,7 +156,7 @@ class WaveControlView extends Component<AllProps> {
             ></SliderInput>
           </Grid>
           <Grid item>
-            <FormControl style={{ width: "100%" }}>
+            <FormControl fullWidth={true}>
               <InputLabel>Time Signature</InputLabel>
               <NativeSelect
                 value={this.props.timeSignature}
@@ -139,6 +193,29 @@ class WaveControlView extends Component<AllProps> {
   }
 }
 
+const WaveformControlButton = (props: {
+  title: string;
+  icon: ReactElement;
+  onClick?: () => void;
+}) => {
+  return (
+    <Tooltip title={props.title}>
+      <IconButton onClick={props.onClick}>{props.icon}</IconButton>
+    </Tooltip>
+  );
+};
+
+const MeasureSwitch = (props: { id: string }) => {
+  return (
+    <Select id={props.id} value={0}>
+      <MenuItem value={0}>0</MenuItem>
+      <MenuItem value={1}>1</MenuItem>
+      <MenuItem value={2}>2</MenuItem>
+      <MenuItem value={3}>3</MenuItem>
+    </Select>
+  );
+};
+
 const SliderInput = (props: {
   title: string;
   min: number;
@@ -164,20 +241,33 @@ const SliderInput = (props: {
   );
 };
 
-const mapStateToProps = ({ project, analysis, audio }: ApplicationState) => {
+const mapStateToProps = ({
+  project,
+  analysis,
+  audio,
+  wave
+}: ApplicationState) => {
   return {
     firstMeasureStart: analysis.firstMeasureStart,
     bpm: analysis.bpm,
     timeSignature: analysis.timeSignature,
     syncFirstMeasureStart: project.syncFirstMeasureStart,
     detune: audio.detune,
-    playbackRate: audio.playbackRate
+    playbackRate: audio.playbackRate,
+    zoom: wave.zoom,
+    status: audio.status,
+    isPlaying: audio.isPlaying,
+    loaded: project.loaded
   };
 };
 
 const mapDispatchToProps = {
   updatedRhythm,
   enabledSyncFirstMeasureStart,
-  updatedPlaybackSettings
+  updatedPlaybackSettings,
+  zoomedIn,
+  zoomedOut,
+  triggeredPlay,
+  triggeredPause
 };
 export default connect(mapStateToProps, mapDispatchToProps)(WaveControlView);

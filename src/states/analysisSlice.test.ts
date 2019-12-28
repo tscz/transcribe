@@ -1,7 +1,10 @@
 import reducer, {
+  addedSection,
   AnalysisState,
   initialAnalysisState,
+  removedSection,
   resettedAnalysis,
+  SectionType,
   TimeSignatureType,
   updatedRhythm,
   updatedSource
@@ -115,4 +118,39 @@ it("can update the audio source", () => {
   );
   expect(state.audioLength).toEqual(42);
   expect(state.audioSampleRate).toEqual(44400);
+});
+
+it("can add a section", () => {
+  let state: AnalysisState = reducer(
+    undefined,
+    addedSection({
+      id: "section",
+      startTime: 0,
+      endTime: 10,
+      type: SectionType.BRIDGE
+    })
+  );
+  expect(state.sections).toContainEqual({
+    id: "section",
+    startTime: 0,
+    endTime: 10,
+    type: SectionType.BRIDGE
+  });
+});
+
+it("can remove a section", () => {
+  let state: AnalysisState = reducer(
+    undefined,
+    addedSection({
+      id: "section",
+      startTime: 0,
+      endTime: 10,
+      type: SectionType.BRIDGE
+    })
+  );
+  expect(state.sections.length).toBe(1);
+
+  let state2 = reducer(state, removedSection("section"));
+
+  expect(state2.sections.length).toBe(0);
 });

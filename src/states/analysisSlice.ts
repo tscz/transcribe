@@ -56,13 +56,16 @@ const analysisSlice = createSlice({
   initialState: initialAnalysisState,
   reducers: {
     addedSection(state, action: PayloadAction<Section>) {
-      //TODO
+      state.sections.push(action.payload);
     },
     updatedSection(state, action: PayloadAction<Section>) {
-      //TODO
+      state.sections.filter(section => section.id !== action.payload.id);
+      state.sections.push(action.payload);
     },
-    removedSection(state, action: PayloadAction<Section>) {
-      //TODO
+    removedSection(state, action: PayloadAction<string>) {
+      state.sections = state.sections.filter(
+        section => section.id !== action.payload
+      );
     },
     resettedAnalysis(state, action: PayloadAction<{ state?: PersistedState }>) {
       if (action.payload.state?.analysis) {
