@@ -16,25 +16,22 @@ export const Default = () => {
   store.dispatch(
     addedSection({
       type: SectionType.INTRO,
-      startTime: 0,
-      endTime: 1,
-      id: "intro"
+      firstMeasure: 0,
+      lastMeasure: 1
     })
   );
   store.dispatch(
     addedSection({
       type: SectionType.VERSE,
-      startTime: 1,
-      endTime: 2,
-      id: "verse"
+      firstMeasure: 1,
+      lastMeasure: 2
     })
   );
   store.dispatch(
     addedSection({
       type: SectionType.CHORUS,
-      startTime: 2,
-      endTime: 3,
-      id: "chorus"
+      firstMeasure: 2,
+      lastMeasure: 3
     })
   );
 

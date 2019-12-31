@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { PointAddOptions, SegmentAddOptions } from "peaks.js";
+import { PointAddOptions } from "peaks.js";
 
 import { PersistedState } from "./store";
 
@@ -14,8 +14,10 @@ export interface AnalysisState {
   readonly measures: Measure[];
 }
 
-export interface Section extends SegmentAddOptions {
+export interface Section {
   type: SectionType;
+  firstMeasure: number;
+  lastMeasure: number;
 }
 
 export interface Measure extends PointAddOptions {}
@@ -58,13 +60,34 @@ const analysisSlice = createSlice({
     addedSection(state, action: PayloadAction<Section>) {
       state.sections.push(action.payload);
     },
-    updatedSection(state, action: PayloadAction<Section>) {
-      state.sections.filter(section => section.id !== action.payload.id);
-      state.sections.push(action.payload);
+    updatedSection(
+      state,
+      action: PayloadAction<{ before: Section; after: Section }>
+    ) {
+      state.sections = state.sections.filter(
+        section =>
+          section.type +
+            "_" +
+            section.firstMeasure +
+            "-" +
+            section.lastMeasure !==
+          action.payload.before.type +
+            "_" +
+            action.payload.before.firstMeasure +
+            "-" +
+            action.payload.before.lastMeasure
+      );
+      state.sections.push(action.payload.after);
     },
     removedSection(state, action: PayloadAction<string>) {
       state.sections = state.sections.filter(
-        section => section.id !== action.payload
+        section =>
+          section.type +
+            "_" +
+            section.firstMeasure +
+            "-" +
+            section.lastMeasure !==
+          action.payload
       );
     },
     resettedAnalysis(state, action: PayloadAction<{ state?: PersistedState }>) {

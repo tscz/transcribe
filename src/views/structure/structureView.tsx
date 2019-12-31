@@ -11,6 +11,7 @@ import RemoveIcon from "@material-ui/icons/Remove";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
+import SectionSelect from "../../components/sectionSelect/sectionSelect";
 import {
   addedSection,
   removedSection,
@@ -37,6 +38,10 @@ class StructureView extends Component<AllProps> {
     this.props.addedSection(section);
   };
 
+  handleUpdatedSection = (before: Section, after: Section) => {
+    this.props.updatedSection({ before, after });
+  };
+
   handleRemoveSection = (id: string) => {
     this.props.removedSection(id);
   };
@@ -53,18 +58,32 @@ class StructureView extends Component<AllProps> {
           </TableRow>
         </TableHead>
         <TableBody>
-          {this.props.sections.map(section => (
-            <TableRow key={section.id}>
+          {this.props.sections.map((section: Section) => (
+            <TableRow key={section.firstMeasure + "-" + section.lastMeasure}>
               <TableCell component="th" scope="row">
                 <IconButton
-                  onClick={() => this.handleRemoveSection(section.id!)}
+                  onClick={() =>
+                    this.handleRemoveSection(
+                      section.firstMeasure + "-" + section.lastMeasure
+                    )
+                  }
                 >
                   <RemoveIcon></RemoveIcon>
                 </IconButton>
               </TableCell>
-              <TableCell>{section.type}</TableCell>
-              <TableCell>{section.startTime}</TableCell>
-              <TableCell>{section.endTime}</TableCell>
+              <TableCell>
+                <SectionSelect
+                  value={section.type}
+                  onChange={sectionType => {
+                    this.handleUpdatedSection(section, {
+                      ...section,
+                      type: sectionType
+                    });
+                  }}
+                ></SectionSelect>
+              </TableCell>
+              <TableCell>{section.firstMeasure}</TableCell>
+              <TableCell>{section.lastMeasure}</TableCell>
             </TableRow>
           ))}
           <TableRow key="last">
@@ -72,16 +91,9 @@ class StructureView extends Component<AllProps> {
               <IconButton
                 onClick={() => {
                   this.handleAddSection({
-                    endTime: Math.random(),
-                    startTime: 34,
-                    type: SectionType.OUTRO,
-                    id:
-                      Math.random()
-                        .toString(36)
-                        .substring(2, 15) +
-                      Math.random()
-                        .toString(36)
-                        .substring(2, 15)
+                    type: SectionType.SOLO,
+                    firstMeasure: 1,
+                    lastMeasure: 4
                   });
                 }}
               >

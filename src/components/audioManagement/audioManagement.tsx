@@ -116,7 +116,9 @@ class AudioManagement extends React.Component<AllProps> {
   private repaintWaveform() {
     if (this.props.sections && this.peaks) {
       this.peaks.segments.removeAll();
-      this.peaks.segments.add(this.props.sections);
+      this.peaks.segments.add(
+        PeaksOptions.sectionsToSegment(this.props.sections)
+      );
       this.peaks.points.removeAll();
       this.peaks.points.add(this.props.measures);
       this.peaks.zoom.setZoom(this.props.zoomLevel);
