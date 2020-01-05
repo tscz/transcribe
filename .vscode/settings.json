@@ -8,5 +8,7 @@
             "prettier/prettier": "warn" // Locally report Prettier formatting as warnings.
         }
     },
-    "jest.pathToJest": "npm run testWithoutEnv --"
+    "jest.pathToJest": "npm run testWithoutEnv --",
+    "plantuml.diagramsRoot": "doc/diagrams/src",
+    "plantuml.exportOutDir": "doc/diagrams/out"
 }

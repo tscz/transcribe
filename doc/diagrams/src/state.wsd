@@ -1,0 +1,47 @@
+@startuml Application State Overview
+
+title     Application State Overview
+
+frame "Application" {
+
+    package State {
+        package "UI State" {
+            [Wave]
+            [Dialogs]
+            [Audio]
+        }
+        package "Persisted State" {
+            [Analysis]
+            [Project]
+        }
+    }
+
+    package AudioManagment {
+        [AudioPlayer (Tone.js)]
+        [Waveform (Peaks.js)]
+    }
+
+    package DialogManagement {
+        [Dialog]
+    }
+
+    package  Api {
+        [Persistence Api]
+    }
+
+}
+
+frame "File System" {
+    [Project File]
+}
+
+[Project] --> [Persistence Api]
+[Analysis] --> [Persistence Api] 
+[Persistence Api] --> [Project File] : save
+[Persistence Api] <-- [Project File] : open
+[Dialogs] --> [Dialog]
+[Wave] --> [Waveform (Peaks.js)]
+[Analysis] --> [Waveform (Peaks.js)]
+[Audio] --> [AudioPlayer (Tone.js)]
+
+@enduml

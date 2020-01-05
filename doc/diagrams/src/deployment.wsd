@@ -1,0 +1,19 @@
+@startuml Deployment Overview
+
+title     Deployment Overview
+
+node "https://tscz.github.io/transcribe/" {
+    package "Transcribe App" {
+        [static/js/*.js]
+        [index.html]
+    }
+}
+
+node "https://transcribe-storybook.herokuapp.com" {
+    package "Storybook App" {
+        [*.js]
+        [index.html] as anotherStartpage
+    }
+}
+
+@enduml

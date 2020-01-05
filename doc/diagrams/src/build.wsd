@@ -1,0 +1,56 @@
+@startuml Application build
+
+title Application Build
+
+start
+
+:Get hash and description of last git commit;
+if (git cli execution failed?) then (yes)
+    end
+else (no)
+endif
+
+:Run default app build;
+if (compilation error?) then (yes)
+    end
+else (no)
+endif
+
+:Run static code analysis via eslint;
+if (code format error?) then (yes)
+    end
+else (no)
+endif
+
+:Run storybook build;
+if (compilation error?) then (yes)
+    end
+else (no)
+endif
+
+if (linux build?) then (yes)
+
+else (no)
+    :Run Jest tests;
+    if (failed tests?) then (yes)
+        end
+    else (no)
+    stop
+    endif
+endif
+
+:Run Jest tests with code coverage;
+if (failed tests?) then (yes)
+    end
+else (no)
+endif
+
+:Upload coverage results to coveralls.io;
+if (upload failed?) then (yes)
+    end
+else (no)
+    stop
+endif
+
+
+@enduml

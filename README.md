@@ -53,8 +53,18 @@ transcribe/
 └── tsconfig.json (Typescript compiler config)
 
 ```
+### Application State
+<img src="./doc/diagrams/out/state/Application State Overview.svg" alt="app state overview">
+
+
 ### Component documentation
 See [Storybook](https://transcribe-storybook.herokuapp.com) for Component Documentation.
+
+## Build
+<img src="./doc/diagrams/out/build/Application build.svg" alt="app build">
+
+## Deployment
+<img src="./doc/diagrams/out/deployment/Deployment Overview.svg" alt="app deployment">
 
 ## Versioning
 | Version | Info
