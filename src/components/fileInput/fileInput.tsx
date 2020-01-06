@@ -31,7 +31,7 @@ interface Props extends WithStyles<typeof stylesForFileInput> {
 }
 
 interface State {
-  file: File | null;
+  display: string;
 }
 
 const stylesForFileInput = (theme: Theme) =>
@@ -53,7 +53,7 @@ const stylesForFileInput = (theme: Theme) =>
 
 class FileInput extends React.Component<Props, State> {
   state: State = {
-    file: null
+    display: ""
   };
 
   fileInput: React.RefObject<HTMLInputElement>;
@@ -63,11 +63,13 @@ class FileInput extends React.Component<Props, State> {
     this.fileInput = React.createRef();
   }
 
-  handleChange = () => {
-    var file = this.fileInput.current!.files![0];
+  handleChange = (fileList: FileList | null) => {
+    if (fileList === null) return;
+
+    var file = fileList[0];
     var fileURL = window.URL.createObjectURL(file);
 
-    this.setState({ file: file });
+    this.setState({ display: file.name });
     this.props.callback(file, fileURL);
   };
 
@@ -81,7 +83,7 @@ class FileInput extends React.Component<Props, State> {
             inputProps={{
               "aria-label": "Choose " + toString(this.props.fileType)
             }}
-            value={this.state.file?.name}
+            value={this.state.display}
             readOnly={true}
             onClick={() => this.fileInput.current?.click()}
           />
@@ -99,7 +101,7 @@ class FileInput extends React.Component<Props, State> {
           type="file"
           accept={this.props.fileType}
           ref={this.fileInput}
-          onChange={() => this.handleChange()}
+          onChange={e => this.handleChange(e.target.files)}
         ></input>
       </>
     );
