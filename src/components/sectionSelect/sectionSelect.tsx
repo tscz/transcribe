@@ -19,12 +19,14 @@ const SectionSelect: FunctionComponent<{
       value={props.value}
       onChange={handleChange}
       style={{
-        backgroundColor: PeaksOptions.SECTIONTYPE_TO_COLOR.get(props.value)
+        backgroundColor: PeaksOptions.SECTIONTYPE_TO_COLOR.get(props.value),
+        minWidth: "140px"
       }}
     >
       {Object.values(SectionType).map(sectionType => {
         return (
           <MenuItem
+            key={sectionType}
             value={sectionType}
             style={{
               backgroundColor: PeaksOptions.SECTIONTYPE_TO_COLOR.get(

@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { PointAddOptions } from "peaks.js";
 
-import { PersistedState } from "./store";
+import { NormalizedObjects, PersistedState } from "./store";
 
 export interface AnalysisState {
-  readonly sections: Section[];
+  readonly sections: NormalizedObjects<Section>;
   readonly audioLength: number;
   readonly audioSampleRate: number;
   readonly firstMeasureStart: number;
@@ -43,7 +43,7 @@ export enum SectionType {
 }
 
 export const initialAnalysisState: AnalysisState = {
-  sections: [],
+  sections: { allIds: [], byId: {} },
   bpm: 120,
   firstMeasureStart: 0,
   secondsPerMeasure: 2,
@@ -58,37 +58,30 @@ const analysisSlice = createSlice({
   initialState: initialAnalysisState,
   reducers: {
     addedSection(state, action: PayloadAction<Section>) {
-      state.sections.push(action.payload);
+      const id = generateSectionId(action.payload);
+      state.sections.allIds.push(id);
+      state.sections.byId[id] = action.payload;
     },
     updatedSection(
       state,
-      action: PayloadAction<{ before: Section; after: Section }>
+      action: PayloadAction<{ before: string; after: Section }>
     ) {
-      state.sections = state.sections.filter(
-        section =>
-          section.type +
-            "_" +
-            section.firstMeasure +
-            "-" +
-            section.lastMeasure !==
-          action.payload.before.type +
-            "_" +
-            action.payload.before.firstMeasure +
-            "-" +
-            action.payload.before.lastMeasure
+      state.sections.allIds = state.sections.allIds.filter(
+        id => id !== action.payload.before
       );
-      state.sections.push(action.payload.after);
+
+      delete state.sections.byId[action.payload.before];
+
+      const id = generateSectionId(action.payload.after);
+      state.sections.allIds.push(id);
+      state.sections.byId[id] = action.payload.after;
     },
     removedSection(state, action: PayloadAction<string>) {
-      state.sections = state.sections.filter(
-        section =>
-          section.type +
-            "_" +
-            section.firstMeasure +
-            "-" +
-            section.lastMeasure !==
-          action.payload
+      state.sections.allIds = state.sections.allIds.filter(
+        id => id !== action.payload
       );
+
+      delete state.sections.byId[action.payload];
     },
     resettedAnalysis(state, action: PayloadAction<{ state?: PersistedState }>) {
       if (action.payload.state?.analysis) {
@@ -165,6 +158,9 @@ const analysisSlice = createSlice({
     }
   }
 });
+
+const generateSectionId = (section: Section) =>
+  section.type + "_" + section.firstMeasure + "_" + section.lastMeasure;
 
 export const {
   addedSection,

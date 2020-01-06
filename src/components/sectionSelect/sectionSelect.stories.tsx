@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { SectionType } from "../../states/analysisSlice";
 import SectionSelect from "./sectionSelect";
@@ -8,11 +8,15 @@ export default {
   component: SectionSelect
 };
 
-var currentSelection = SectionType.INTRO;
+export const Basic = () => {
+  const [section, setSection] = useState(SectionType.BRIDGE);
 
-export const Basic = () => (
-  <SectionSelect
-    value={currentSelection}
-    onChange={sectionType => (currentSelection = sectionType)}
-  ></SectionSelect>
-);
+  return (
+    <>
+      <SectionSelect
+        value={section}
+        onChange={sectionType => setSection(sectionType)}
+      ></SectionSelect>
+    </>
+  );
+};

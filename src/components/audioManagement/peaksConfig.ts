@@ -1,6 +1,7 @@
 import { SegmentAddOptions } from "peaks.js";
 
 import { Section, SectionType } from "../../states/analysisSlice";
+import { NormalizedObjects } from "../../states/store";
 
 export const AUDIO_DOM_ELEMENT = "audio_dom_element";
 export const ZOOMVIEW_CONTAINER = "zoomview-container";
@@ -30,9 +31,11 @@ class PeaksOptions {
     };
   };
 
-  static sectionsToSegment = (sections: Section[]) => {
+  static sectionsToSegment = (sections: NormalizedObjects<Section>) => {
     let segments: SegmentAddOptions[] = [];
-    sections.forEach(section => {
+    sections.allIds.forEach(id => {
+      const section = sections.byId[id];
+
       let segment: SegmentAddOptions = {
         id:
           section.type + "_" + section.firstMeasure + "-" + section.lastMeasure,

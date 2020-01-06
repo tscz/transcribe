@@ -11,6 +11,7 @@ import RemoveIcon from "@material-ui/icons/Remove";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
+import MeasureSelect from "../../components/measureSelect/measureSelect";
 import SectionSelect from "../../components/sectionSelect/sectionSelect";
 import {
   addedSection,
@@ -19,10 +20,10 @@ import {
   SectionType,
   updatedSection
 } from "../../states/analysisSlice";
-import { ApplicationState } from "../../states/store";
+import { ApplicationState, NormalizedObjects } from "../../states/store";
 
 interface PropsFromState {
-  readonly sections: Section[];
+  readonly sections: NormalizedObjects<Section>;
 }
 
 interface PropsFromDispatch {
@@ -38,8 +39,10 @@ class StructureView extends Component<AllProps> {
     this.props.addedSection(section);
   };
 
-  handleUpdatedSection = (before: Section, after: Section) => {
-    this.props.updatedSection({ before, after });
+  handleUpdatedSection = (id: string, before: Section, after: Section) => {
+    if (after.firstMeasure >= after.lastMeasure) return;
+
+    this.props.updatedSection({ before: id, after });
   };
 
   handleRemoveSection = (id: string) => {
@@ -58,34 +61,56 @@ class StructureView extends Component<AllProps> {
           </TableRow>
         </TableHead>
         <TableBody>
-          {this.props.sections.map((section: Section) => (
-            <TableRow key={section.firstMeasure + "-" + section.lastMeasure}>
-              <TableCell component="th" scope="row">
-                <IconButton
-                  onClick={() =>
-                    this.handleRemoveSection(
-                      section.firstMeasure + "-" + section.lastMeasure
-                    )
-                  }
-                >
-                  <RemoveIcon></RemoveIcon>
-                </IconButton>
-              </TableCell>
-              <TableCell>
-                <SectionSelect
-                  value={section.type}
-                  onChange={sectionType => {
-                    this.handleUpdatedSection(section, {
-                      ...section,
-                      type: sectionType
-                    });
-                  }}
-                ></SectionSelect>
-              </TableCell>
-              <TableCell>{section.firstMeasure}</TableCell>
-              <TableCell>{section.lastMeasure}</TableCell>
-            </TableRow>
-          ))}
+          {this.props.sections.allIds.map((id: string) => {
+            let section = this.props.sections.byId[id];
+            console.log("render with " + JSON.stringify(this.props.sections));
+            return (
+              <TableRow key={id}>
+                <TableCell component="th" scope="row">
+                  <IconButton onClick={() => this.handleRemoveSection(id)}>
+                    <RemoveIcon></RemoveIcon>
+                  </IconButton>
+                </TableCell>
+                <TableCell>
+                  <SectionSelect
+                    value={section.type}
+                    onChange={sectionType =>
+                      this.handleUpdatedSection(id, section, {
+                        ...section,
+                        type: sectionType
+                      })
+                    }
+                  ></SectionSelect>
+                </TableCell>
+                <TableCell>
+                  <MeasureSelect
+                    value={section.firstMeasure}
+                    min={0}
+                    max={99}
+                    onChange={measure =>
+                      this.handleUpdatedSection(id, section, {
+                        ...section,
+                        firstMeasure: measure
+                      })
+                    }
+                  />
+                </TableCell>
+                <TableCell>
+                  <MeasureSelect
+                    value={section.lastMeasure}
+                    min={0}
+                    max={99}
+                    onChange={measure =>
+                      this.handleUpdatedSection(id, section, {
+                        ...section,
+                        lastMeasure: measure
+                      })
+                    }
+                  />
+                </TableCell>
+              </TableRow>
+            );
+          })}
           <TableRow key="last">
             <TableCell component="th" scope="row">
               <IconButton

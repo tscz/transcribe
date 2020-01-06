@@ -14,7 +14,7 @@ import { Page } from "./projectSlice";
 import { PersistedState } from "./store";
 
 const initialState: AnalysisState = {
-  sections: [],
+  sections: { allIds: [], byId: {} },
   bpm: 42,
   firstMeasureStart: 3,
   secondsPerMeasure: 2.423,
@@ -25,7 +25,7 @@ const initialState: AnalysisState = {
 };
 
 const persistedAnalysisState: AnalysisState = {
-  sections: [],
+  sections: { allIds: [], byId: {} },
   bpm: 120,
   firstMeasureStart: 1,
   secondsPerMeasure: 3,
@@ -58,7 +58,7 @@ it("can reset an analysis from a persisted state", () => {
     resettedAnalysis({ state: persistedState })
   );
   expect(state).toEqual({
-    sections: [],
+    sections: { allIds: [], byId: {} },
     bpm: 120,
     firstMeasureStart: 1,
     secondsPerMeasure: 3,
@@ -128,8 +128,13 @@ it("can add a section", () => {
     lastMeasure: 10
   };
 
+  let id =
+    section.type + "_" + section.firstMeasure + "_" + section.lastMeasure;
+
   let state: AnalysisState = reducer(undefined, addedSection(section));
-  expect(state.sections).toContainEqual(section);
+
+  expect(state.sections.allIds).toContainEqual(id);
+  expect(state.sections.byId[id]).toEqual(section);
 });
 
 it("can remove a section", () => {
@@ -141,8 +146,10 @@ it("can remove a section", () => {
 
   let state: AnalysisState = reducer(undefined, addedSection(section));
 
-  expect(state.sections.length).toBe(1);
+  expect(state.sections.allIds.length).toBe(1);
+  expect(state.sections.byId["BRIDGE_0_10"]).toEqual(section);
 
-  state = reducer(state, removedSection("BRIDGE_0-10"));
-  expect(state.sections.length).toBe(0);
+  state = reducer(state, removedSection("BRIDGE_0_10"));
+  expect(state.sections.allIds.length).toBe(0);
+  expect(state.sections.byId["BRIDGE_0_10"]).toEqual(undefined);
 });

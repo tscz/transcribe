@@ -15,7 +15,7 @@ import {
   LoadingStatus,
   triggeredPause
 } from "../../states/audioSlice";
-import { ApplicationState } from "../../states/store";
+import { ApplicationState, NormalizedObjects } from "../../states/store";
 import { initializedWaveform } from "../../states/waveSlice";
 import AudioPlayer from "./audioPlayer";
 import PeaksOptions, {
@@ -26,7 +26,7 @@ import PeaksOptions, {
 interface PropsFromState {
   audioUrl: string;
   status: LoadingStatus;
-  sections: Section[];
+  sections: NormalizedObjects<Section>;
   measures: Measure[];
   zoomLevel: number;
   firstMeasureStart: number;
