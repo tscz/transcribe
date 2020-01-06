@@ -27,7 +27,7 @@ interface PropsFromState {
   audioUrl: string;
   status: LoadingStatus;
   sections: NormalizedObjects<Section>;
-  measures: Measure[];
+  measures: NormalizedObjects<Measure>;
   zoomLevel: number;
   firstMeasureStart: number;
   syncFirstMeasureStart: boolean;
@@ -108,7 +108,7 @@ class AudioManagement extends React.Component<AllProps> {
         this.props.secondsPerMeasure,
         this.props.audioSampleRate,
         document.getElementById(ZOOMVIEW_CONTAINER)!.clientWidth,
-        this.props.measures.length
+        this.props.measures.allIds.length
       )
     );
   }
@@ -117,10 +117,10 @@ class AudioManagement extends React.Component<AllProps> {
     if (this.props.sections && this.peaks) {
       this.peaks.segments.removeAll();
       this.peaks.segments.add(
-        PeaksOptions.sectionsToSegment(this.props.sections)
+        PeaksOptions.sectionsToSegment(this.props.sections, this.props.measures)
       );
       this.peaks.points.removeAll();
-      this.peaks.points.add(this.props.measures);
+      this.peaks.points.add(PeaksOptions.measuresToPoints(this.props.measures));
       this.peaks.zoom.setZoom(this.props.zoomLevel);
     }
   }

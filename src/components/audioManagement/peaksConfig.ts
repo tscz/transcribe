@@ -1,6 +1,6 @@
-import { SegmentAddOptions } from "peaks.js";
+import { PointAddOptions, SegmentAddOptions } from "peaks.js";
 
-import { Section, SectionType } from "../../states/analysisSlice";
+import { Measure, Section, SectionType } from "../../states/analysisSlice";
 import { NormalizedObjects } from "../../states/store";
 
 export const AUDIO_DOM_ELEMENT = "audio_dom_element";
@@ -31,19 +31,19 @@ class PeaksOptions {
     };
   };
 
-  static sectionsToSegment = (sections: NormalizedObjects<Section>) => {
+  static sectionsToSegment = (
+    sections: NormalizedObjects<Section>,
+    measures: NormalizedObjects<Measure>
+  ) => {
     let segments: SegmentAddOptions[] = [];
     sections.allIds.forEach(id => {
       const section = sections.byId[id];
 
       let segment: SegmentAddOptions = {
-        id:
-          section.type + "_" + section.firstMeasure + "-" + section.lastMeasure,
+        id,
         labelText: section.type,
-        startTime: PeaksOptions.measureStartToMilliseconds(
-          section.firstMeasure
-        ),
-        endTime: PeaksOptions.measureEndToMilliseconds(section.lastMeasure),
+        startTime: measures.byId[section.firstMeasure].time,
+        endTime: measures.byId[section.lastMeasure].time,
         color: PeaksOptions.SECTIONTYPE_TO_COLOR.get(section.type),
         editable: false
       };
@@ -52,6 +52,19 @@ class PeaksOptions {
     });
 
     return segments;
+  };
+
+  static measuresToPoints = (measures: NormalizedObjects<Measure>) => {
+    let points: PointAddOptions[] = [];
+    measures.allIds.forEach(id => {
+      const measure = measures.byId[id];
+
+      let point: PointAddOptions = measure;
+
+      points.push(point);
+    });
+
+    return points;
   };
 
   static measureStartToMilliseconds = (measureStart: number) => measureStart;

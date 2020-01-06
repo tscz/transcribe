@@ -11,7 +11,7 @@ export interface AnalysisState {
   readonly secondsPerMeasure: number;
   readonly timeSignature: TimeSignatureType;
   readonly bpm: number;
-  readonly measures: Measure[];
+  readonly measures: NormalizedObjects<Measure>;
 }
 
 export interface Section {
@@ -49,7 +49,7 @@ export const initialAnalysisState: AnalysisState = {
   secondsPerMeasure: 2,
   audioLength: 180,
   audioSampleRate: 44400,
-  measures: [],
+  measures: { allIds: [], byId: {} },
   timeSignature: TimeSignatureType.FOUR_FOUR
 };
 
@@ -124,8 +124,8 @@ const analysisSlice = createSlice({
 
       var lengthOfOneMeasure = (60 * timeSignature.beatsPerMeasure) / bpm;
 
-      var measures = new Array<Measure>(Math.floor(numberOfMeasures));
-
+      state.measures.allIds = new Array<string>(Math.floor(numberOfMeasures));
+      state.measures.byId = {};
       var index = 0;
 
       for (
@@ -133,7 +133,8 @@ const analysisSlice = createSlice({
         start < length;
         start += lengthOfOneMeasure
       ) {
-        measures[index] = {
+        state.measures.allIds.push("" + index);
+        state.measures.byId[index] = {
           time: start,
           color: "",
           editable: false,
@@ -143,7 +144,6 @@ const analysisSlice = createSlice({
         index++;
       }
 
-      state.measures = measures;
       state.bpm = bpm;
       state.timeSignature = timeSignatureType;
       state.firstMeasureStart = firstMeasureStart;
