@@ -29,7 +29,7 @@ class ModalDialog extends Component<ModalDialogProps> {
         <DialogContent>{this.props.children}</DialogContent>
         <DialogActions>
           {this.props.actions?.map((value, index) => (
-            <Button onClick={value.onClick} color="primary">
+            <Button key={value.label} onClick={value.onClick} color="primary">
               {value.label}
             </Button>
           ))}

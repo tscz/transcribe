@@ -107,12 +107,12 @@ class WaveControlView extends Component<AllProps> {
             <WaveformControlButton
               title="Zoom in"
               icon={<ZoomInIcon />}
-              onClick={this.props.zoomedIn}
+              onClick={() => this.props.zoomedIn()}
             />
             <WaveformControlButton
               title="Zoom out"
               icon={<ZoomOutIcon />}
-              onClick={this.props.zoomedOut}
+              onClick={() => this.props.zoomedOut()}
             />
             <WaveformControlButton title="Loop" icon={<LoopIcon />} />
             <WaveformControlButton title="Metronome" icon={<TimerIcon />} />
