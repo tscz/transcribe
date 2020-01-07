@@ -14,7 +14,6 @@ import AlbumIcon from "@material-ui/icons/Album";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import HomeIcon from "@material-ui/icons/Home";
-import MenuIcon from "@material-ui/icons/Menu";
 import MusicVideoIcon from "@material-ui/icons/MusicVideo";
 import PrintIcon from "@material-ui/icons/Print";
 import RadioIcon from "@material-ui/icons/Radio";
@@ -39,6 +38,7 @@ import VersionInfo from "../versionInfo/versionInfo";
 interface PropsFromState {
   currentPage: Page;
   loaded: boolean;
+  title: string;
 }
 
 interface PropsFromDispatch {
@@ -82,23 +82,12 @@ class App extends React.Component<AllProps, State> {
             })}
           >
             <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={this.handleDrawerOpen}
-                edge="start"
-                className={clsx(this.props.classes.menuButton, {
-                  [this.props.classes.hide]: this.state.open
-                })}
-              >
-                <MenuIcon />
-              </IconButton>
               <Typography
                 variant="h6"
                 noWrap
                 className={this.props.classes.title}
               >
-                Transcribe{" "}
+                Transcribe ( {this.props.title} )
               </Typography>
               <Button
                 color="inherit"
@@ -249,7 +238,8 @@ const Toggle: FunctionComponent<{ show: boolean }> = props => {
 const mapStateToProps = ({ project, dialog }: ApplicationState) => {
   return {
     currentPage: project.currentPage,
-    loaded: project.loaded
+    loaded: project.loaded,
+    title: project.title
   };
 };
 
