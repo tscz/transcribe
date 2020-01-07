@@ -51,6 +51,16 @@ export const sliceReducer = combineReducers({
   wave: waveReducer
 });
 
-export default configureStore({
-  reducer: createRootReducer
-});
+const createAppStore = () => {
+  const store = configureStore({
+    reducer: createRootReducer,
+    preloadedState: undefined
+  });
+
+  if (process.env.NODE_ENV !== "production" && module.hot) {
+    module.hot.accept("./store", () => store.replaceReducer(createRootReducer));
+  }
+  return store;
+};
+
+export default createAppStore();
