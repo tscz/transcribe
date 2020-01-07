@@ -117,14 +117,9 @@ const analysisSlice = createSlice({
           break;
       }
 
-      let numberOfMeasures =
-        (state.audioLength - firstMeasureStart) *
-        (bpm / 60) *
-        (1 / timeSignature.beatsPerMeasure);
-
       var lengthOfOneMeasure = (60 * timeSignature.beatsPerMeasure) / bpm;
 
-      state.measures.allIds = new Array<string>(Math.floor(numberOfMeasures));
+      state.measures.allIds = [];
       state.measures.byId = {};
       var index = 0;
 

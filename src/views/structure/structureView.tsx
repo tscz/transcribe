@@ -24,6 +24,7 @@ import { ApplicationState, NormalizedObjects } from "../../states/store";
 
 interface PropsFromState {
   readonly sections: NormalizedObjects<Section>;
+  readonly measuresCount: number;
 }
 
 interface PropsFromDispatch {
@@ -86,7 +87,7 @@ class StructureView extends Component<AllProps> {
                   <MeasureSelect
                     value={section.firstMeasure}
                     min={0}
-                    max={99}
+                    max={this.props.measuresCount - 1}
                     onChange={measure =>
                       this.handleUpdatedSection(id, section, {
                         ...section,
@@ -99,7 +100,7 @@ class StructureView extends Component<AllProps> {
                   <MeasureSelect
                     value={section.lastMeasure}
                     min={0}
-                    max={99}
+                    max={this.props.measuresCount - 1}
                     onChange={measure =>
                       this.handleUpdatedSection(id, section, {
                         ...section,
@@ -137,7 +138,8 @@ class StructureView extends Component<AllProps> {
 
 const mapStateToProps = ({ analysis }: ApplicationState) => {
   return {
-    sections: analysis.sections
+    sections: analysis.sections,
+    measuresCount: analysis.measures.allIds.length
   };
 };
 

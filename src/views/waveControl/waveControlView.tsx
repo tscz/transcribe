@@ -3,9 +3,7 @@ import {
   FormControl,
   Input,
   InputLabel,
-  MenuItem,
   NativeSelect,
-  Select,
   Tooltip
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
@@ -92,17 +90,18 @@ class WaveControlView extends Component<AllProps> {
               <WaveformControlButton
                 title="Pause"
                 icon={<PauseIcon />}
-                onClick={this.props.triggeredPause}
+                onClick={() => this.props.triggeredPause()}
               />
             ) : (
               <WaveformControlButton
                 title="Play"
                 icon={<PlayArrowIcon />}
-                onClick={this.props.triggeredPlay}
+                onClick={() => this.props.triggeredPlay()}
               />
             )}
-            <MeasureSwitch id="startMeasure" />
-            <MeasureSwitch id="endMeasure" />
+
+            <WaveformControlButton title="Loop" icon={<LoopIcon />} />
+            <WaveformControlButton title="Metronome" icon={<TimerIcon />} />
 
             <WaveformControlButton
               title="Zoom in"
@@ -114,8 +113,6 @@ class WaveControlView extends Component<AllProps> {
               icon={<ZoomOutIcon />}
               onClick={() => this.props.zoomedOut()}
             />
-            <WaveformControlButton title="Loop" icon={<LoopIcon />} />
-            <WaveformControlButton title="Metronome" icon={<TimerIcon />} />
           </Grid>
           <Grid item>
             <FormControl fullWidth={true}>
@@ -202,17 +199,6 @@ const WaveformControlButton = (props: {
     <Tooltip title={props.title}>
       <IconButton onClick={props.onClick}>{props.icon}</IconButton>
     </Tooltip>
-  );
-};
-
-const MeasureSwitch = (props: { id: string }) => {
-  return (
-    <Select id={props.id} value={0}>
-      <MenuItem value={0}>0</MenuItem>
-      <MenuItem value={1}>1</MenuItem>
-      <MenuItem value={2}>2</MenuItem>
-      <MenuItem value={3}>3</MenuItem>
-    </Select>
   );
 };
 
