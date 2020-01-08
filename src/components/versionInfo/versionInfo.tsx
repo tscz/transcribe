@@ -1,18 +1,18 @@
 import React from "react";
 
-class VersionInfo extends React.Component {
+class VersionInfo extends React.Component<{
+  version: string;
+  hash: string;
+  description: string;
+}> {
   render() {
     return (
       <>
-        {process.env.REACT_APP_VERSION} (
+        {this.props.version} (
         <a
-          href={
-            "https://github.com/tscz/transcribe/commit/" +
-            process.env.REACT_APP_VERSION_HASH
-          }
+          href={"https://github.com/tscz/transcribe/commit/" + this.props.hash}
         >
-          {process.env.REACT_APP_VERSION_HASH} -{" "}
-          {process.env.REACT_APP_VERSION_DESCRIPTION}
+          {this.props.hash} - {this.props.description}
         </a>
         )
       </>

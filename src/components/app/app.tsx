@@ -221,7 +221,12 @@ class App extends React.Component<AllProps, State> {
                 <PrintPage />
               </Toggle>
             </div>
-            Version: <VersionInfo />
+            Version:{" "}
+            <VersionInfo
+              version={process.env.REACT_APP_VERSION ?? ""}
+              hash={process.env.REACT_APP_VERSION_HASH ?? ""}
+              description={process.env.REACT_APP_VERSION_DESCRIPTION ?? ""}
+            />
           </main>
         </div>
       </>
