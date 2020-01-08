@@ -10,6 +10,8 @@ import Paper from "@material-ui/core/Paper";
 import MenuIcon from "@material-ui/icons/OpenInBrowser";
 import React from "react";
 
+import PersistenceApi from "../../api/persistenceApi";
+
 export enum FileType {
   AUDIO = "audio/*",
   ZIP = ".zip"
@@ -67,7 +69,7 @@ class FileInput extends React.Component<Props, State> {
     if (fileList === null) return;
 
     var file = fileList[0];
-    var fileURL = window.URL.createObjectURL(file);
+    var fileURL = PersistenceApi.getLocalFileUrl(file);
 
     this.setState({ display: file.name });
     this.props.callback(file, fileURL);

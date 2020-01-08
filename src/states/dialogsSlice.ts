@@ -1,4 +1,4 @@
-import { Action, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface DialogState {
   readonly currentDialog: DialogType;
@@ -22,7 +22,7 @@ const dialogsSlice = createSlice({
     openedDialog(state, action: PayloadAction<DialogType>) {
       state.currentDialog = action.payload;
     },
-    closedDialog(state, action: Action) {
+    closedDialog(state) {
       state.currentDialog = DialogType.NONE;
     }
   }

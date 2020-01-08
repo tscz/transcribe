@@ -1,11 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+import { PersistedState } from "./store";
+
 export interface ProjectState {
+  readonly status: LoadingStatus;
   readonly currentPage: Page;
   readonly title: string;
   readonly audioUrl: string;
   readonly syncFirstMeasureStart: boolean;
-  readonly loaded: boolean;
+}
+
+export enum LoadingStatus {
+  NOT_INITIALIZED = "not_initialized",
+  INITIALIZING = "initializing",
+  INITIALIZED = "initialized"
 }
 
 export enum Page {
@@ -18,11 +26,11 @@ export enum Page {
 }
 
 export const initialProjectState: ProjectState = {
+  status: LoadingStatus.NOT_INITIALIZED,
   currentPage: Page.DEFAULT,
   title: "",
   audioUrl: "",
-  syncFirstMeasureStart: false,
-  loaded: false
+  syncFirstMeasureStart: false
 };
 
 const projectSlice = createSlice({
@@ -32,13 +40,14 @@ const projectSlice = createSlice({
     switchedPage(state, action: PayloadAction<Page>) {
       state.currentPage = action.payload;
     },
-    createdProject(
+    createdProject(state, action: PayloadAction<PersistedState>) {
+      return { ...action.payload.project, status: LoadingStatus.INITIALIZING };
+    },
+    initializedProject(
       state,
-      action: PayloadAction<{ title: string; audioUrl: string }>
+      action: PayloadAction<{ audioDuration: number; audioSampleRate: number }>
     ) {
-      state.title = action.payload.title;
-      state.audioUrl = action.payload.audioUrl;
-      state.loaded = true;
+      state.status = LoadingStatus.INITIALIZED;
     },
     enabledSyncFirstMeasureStart(state, action: PayloadAction<boolean>) {
       state.syncFirstMeasureStart = action.payload;
@@ -49,6 +58,7 @@ const projectSlice = createSlice({
 export const {
   switchedPage,
   createdProject,
+  initializedProject,
   enabledSyncFirstMeasureStart
 } = projectSlice.actions;
 

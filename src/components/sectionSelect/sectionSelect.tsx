@@ -3,7 +3,7 @@ import Select from "@material-ui/core/Select/Select";
 import React, { FunctionComponent } from "react";
 
 import { SectionType } from "../../states/analysisSlice";
-import PeaksOptions from "../audioManagement/peaksConfig";
+import PeaksConfig from "../audioManagement/peaksConfig";
 
 const SectionSelect: FunctionComponent<{
   value: SectionType;
@@ -19,7 +19,7 @@ const SectionSelect: FunctionComponent<{
       value={props.value}
       onChange={handleChange}
       style={{
-        backgroundColor: PeaksOptions.SECTIONTYPE_TO_COLOR.get(props.value),
+        backgroundColor: PeaksConfig.SECTIONTYPE_TO_COLOR.get(props.value),
         minWidth: "140px"
       }}
     >
@@ -29,9 +29,7 @@ const SectionSelect: FunctionComponent<{
             key={sectionType}
             value={sectionType}
             style={{
-              backgroundColor: PeaksOptions.SECTIONTYPE_TO_COLOR.get(
-                sectionType
-              )
+              backgroundColor: PeaksConfig.SECTIONTYPE_TO_COLOR.get(sectionType)
             }}
           >
             {sectionType}

@@ -241,9 +241,8 @@ const mapStateToProps = ({
     detune: audio.detune,
     playbackRate: audio.playbackRate,
     zoom: wave.zoom,
-    status: audio.status,
-    isPlaying: audio.isPlaying,
-    loaded: project.loaded
+    status: project.status,
+    isPlaying: audio.isPlaying
   };
 };
 

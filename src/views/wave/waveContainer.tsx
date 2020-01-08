@@ -2,59 +2,44 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import { startedInit } from "../../states/audioSlice";
+import { LoadingStatus } from "../../states/projectSlice";
 import { ApplicationState } from "../../states/store";
 import WaveView from "./waveView";
 
 interface PropsFromState {
-  waveformLoaded: boolean;
+  audioLoaded: LoadingStatus;
   audioUrl: string;
 }
 
-interface PropsFromDispatch {
-  startedInit: typeof startedInit;
-}
+interface PropsFromDispatch {}
 
 interface Props {}
 
 type AllProps = PropsFromState & PropsFromDispatch & Props;
 
 class WaveContainer extends Component<AllProps> {
-  componentDidMount() {
-    this.props.startedInit();
-  }
-
-  componentDidUpdate(prevProps: AllProps) {
-    console.log(
-      "WaveContainer.componentDidUpdate with props=" +
-        JSON.stringify(this.props)
-    );
-
-    if (prevProps.audioUrl !== this.props.audioUrl) {
-      this.props.startedInit();
-    }
-  }
-
   render() {
-    console.log("render waveContainer");
+    console.log(
+      "render waveContainer  with props=" + JSON.stringify(this.props)
+    );
     return (
       <div>
-        {!this.props.waveformLoaded && <CircularProgress />}
+        {this.props.audioLoaded !== LoadingStatus.INITIALIZED && (
+          <CircularProgress />
+        )}
         <WaveView url={this.props.audioUrl} />
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ project, wave }: ApplicationState) => {
+const mapStateToProps = ({ project }: ApplicationState) => {
   return {
     audioUrl: project.audioUrl,
-    waveformLoaded: wave.isLoaded
+    audioLoaded: project.status
   };
 };
 
-const mapDispatchToProps = {
-  startedInit
-};
+const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(WaveContainer);

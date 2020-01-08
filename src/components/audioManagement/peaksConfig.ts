@@ -7,7 +7,7 @@ export const AUDIO_DOM_ELEMENT = "audio_dom_element";
 export const ZOOMVIEW_CONTAINER = "zoomview-container";
 export const OVERVIEW_CONTAINER = "overview-container";
 
-class PeaksOptions {
+class PeaksConfig {
   static create = (audioBuffer: AudioBuffer) => {
     let mediaelement = document!.getElementById(
       AUDIO_DOM_ELEMENT
@@ -44,7 +44,7 @@ class PeaksOptions {
         labelText: section.type,
         startTime: measures.byId[section.firstMeasure].time,
         endTime: measures.byId[section.lastMeasure].time,
-        color: PeaksOptions.SECTIONTYPE_TO_COLOR.get(section.type),
+        color: PeaksConfig.SECTIONTYPE_TO_COLOR.get(section.type),
         editable: false
       };
 
@@ -67,8 +67,24 @@ class PeaksOptions {
     return points;
   };
 
-  static measureStartToMilliseconds = (measureStart: number) => measureStart;
-  static measureEndToMilliseconds = (measureStart: number) => measureStart;
+  static computeZoomLevels = (
+    secondsPerMeasure: number,
+    audioSampleRate: number,
+    zoomviewWidth: number,
+    measuresCount: number
+  ) => {
+    const baseZoom = Math.floor(
+      (secondsPerMeasure * audioSampleRate) / zoomviewWidth
+    );
+
+    let levels = new Array<number>(measuresCount);
+
+    for (let index = 0; index < levels.length; index++) {
+      levels[index] = baseZoom * (index + 1);
+    }
+
+    return levels;
+  };
 
   static SECTIONTYPE_TO_COLOR = new Map<SectionType, string>([
     [SectionType.INTRO, "#FF0000"],
@@ -82,4 +98,4 @@ class PeaksOptions {
   ]) as ReadonlyMap<SectionType, string>;
 }
 
-export default PeaksOptions;
+export default PeaksConfig;

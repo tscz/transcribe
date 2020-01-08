@@ -3,22 +3,13 @@ import React from "react";
 import { connect } from "react-redux";
 import Tone from "tone";
 
-import {
-  Measure,
-  Section,
-  updatedRhythm,
-  updatedSource
-} from "../../states/analysisSlice";
-import {
-  computeZoomLevels,
-  endedInit,
-  LoadingStatus,
-  triggeredPause
-} from "../../states/audioSlice";
+import PersistenceApi from "../../api/persistenceApi";
+import { Measure, Section, updatedRhythm } from "../../states/analysisSlice";
+import { triggeredPause } from "../../states/audioSlice";
+import { initializedProject, LoadingStatus } from "../../states/projectSlice";
 import { ApplicationState, NormalizedObjects } from "../../states/store";
-import { initializedWaveform } from "../../states/waveSlice";
 import AudioPlayer from "./audioPlayer";
-import PeaksOptions, {
+import PeaksConfig, {
   AUDIO_DOM_ELEMENT,
   ZOOMVIEW_CONTAINER
 } from "./peaksConfig";
@@ -29,7 +20,6 @@ interface PropsFromState {
   sections: NormalizedObjects<Section>;
   measures: NormalizedObjects<Measure>;
   zoomLevel: number;
-  firstMeasureStart: number;
   syncFirstMeasureStart: boolean;
   isPlaying: boolean;
   detune: number;
@@ -39,11 +29,9 @@ interface PropsFromState {
 }
 
 interface PropsFromDispatch {
-  endedInit: typeof endedInit;
+  initializedProject: typeof initializedProject;
   updatedRhythm: typeof updatedRhythm;
-  updatedSource: typeof updatedSource;
   triggeredPause: typeof triggeredPause;
-  initializedWaveform: typeof initializedWaveform;
 }
 
 interface Props {}
@@ -54,79 +42,136 @@ class AudioManagement extends React.Component<AllProps> {
   peaks: Peaks.PeaksInstance | undefined;
   player: AudioPlayer | undefined;
 
+  private getPeaks = () => this.peaks;
+  private getPlayer = () => this.player;
+
   componentDidUpdate(prevProps: AllProps) {
     console.log(
-      "AudioManagement.componentDidUpdate with status " + this.props.status
+      "AudioManagement.componentDidUpdate with status " +
+        prevProps.status +
+        " -> " +
+        this.props.status
     );
 
-    // Initialize audio
-    if (prevProps.status !== this.props.status) {
-      switch (this.props.status) {
-        case LoadingStatus.NOT_INITIALIZED:
-          return;
-        case LoadingStatus.INITIALIZING:
-          console.log("Initialize audio engine.");
-          if (prevProps.audioUrl !== this.props.audioUrl) {
-            console.log(
-              "switch from " + prevProps.audioUrl + " to " + this.props.audioUrl
-            );
-            window.URL.revokeObjectURL(prevProps.audioUrl);
-          }
-          if (this.peaks) this.peaks.destroy();
-          this.initAudioManagement(this);
-          break;
+    // Early return if there is no audio file initialized yet.
+    if (this.props.status === LoadingStatus.NOT_INITIALIZED) return;
+
+    // Early return if an initialization is still in progress
+    if (
+      prevProps.status === this.props.status &&
+      this.props.status === LoadingStatus.INITIALIZING
+    )
+      return;
+
+    // Initialize audio management if status changed to init
+    if (
+      prevProps.status !== this.props.status &&
+      this.props.status === LoadingStatus.INITIALIZING
+    ) {
+      console.log("Initialize audio engine.");
+      if (prevProps.audioUrl !== this.props.audioUrl) {
+        console.log(
+          "Switch from " + prevProps.audioUrl + " to " + this.props.audioUrl
+        );
+        PersistenceApi.revokeLocalFile(prevProps.audioUrl);
       }
+      this.init();
+      return;
     }
 
-    this.recomputeZoomlevels();
-    this.repaintWaveform();
-
-    if (prevProps.playbackRate !== this.props.playbackRate && this.player) {
-      this.player.setPlaybackRate(this.props.playbackRate);
-    }
-
-    if (prevProps.detune !== this.props.detune && this.player) {
-      this.player.setDetune(this.props.detune);
-    }
-
-    if (prevProps.isPlaying !== this.props.isPlaying && this.player) {
-      if (this.props.isPlaying) {
-        this.player.play();
-      } else {
-        this.player.pause();
-      }
-    }
-  }
-
-  private recomputeZoomlevels() {
-    if (!this.peaks) return;
-
-    //TODO: Ignored because setZoomlevel is not API. See https://github.com/bbc/peaks.js/issues/295.
-    //@ts-ignore
-    this.peaks.zoom.setZoomLevels(
-      computeZoomLevels(
+    if (
+      prevProps.status !== this.props.status &&
+      this.props.status === LoadingStatus.INITIALIZED
+    ) {
+      this.recomputeZoomlevels(
         this.props.secondsPerMeasure,
         this.props.audioSampleRate,
-        document.getElementById(ZOOMVIEW_CONTAINER)!.clientWidth,
         this.props.measures.allIds.length
-      )
-    );
-  }
-
-  private repaintWaveform() {
-    if (this.props.sections && this.peaks) {
-      this.peaks.segments.removeAll();
-      this.peaks.segments.add(
-        PeaksOptions.sectionsToSegment(this.props.sections, this.props.measures)
       );
-      this.peaks.points.removeAll();
-      this.peaks.points.add(PeaksOptions.measuresToPoints(this.props.measures));
-      this.peaks.zoom.setZoom(this.props.zoomLevel);
+      this.repaintWaveform(
+        this.props.sections,
+        this.props.measures,
+        this.props.zoomLevel
+      );
+    }
+
+    if (
+      prevProps.secondsPerMeasure !== this.props.secondsPerMeasure ||
+      prevProps.audioSampleRate !== this.props.audioSampleRate ||
+      prevProps.measures.allIds.length !== this.props.measures.allIds.length
+    ) {
+      this.recomputeZoomlevels(
+        this.props.secondsPerMeasure,
+        this.props.audioSampleRate,
+        this.props.measures.allIds.length
+      );
+    }
+
+    if (
+      prevProps.sections !== this.props.sections ||
+      prevProps.measures !== this.props.measures ||
+      prevProps.zoomLevel !== this.props.zoomLevel
+    ) {
+      this.repaintWaveform(
+        this.props.sections,
+        this.props.measures,
+        this.props.zoomLevel
+      );
+    }
+
+    if (prevProps.playbackRate !== this.props.playbackRate) {
+      this.getPlayer()?.setPlaybackRate(this.props.playbackRate);
+    }
+
+    if (prevProps.detune !== this.props.detune) {
+      this.getPlayer()?.setDetune(this.props.detune);
+    }
+
+    if (prevProps.isPlaying !== this.props.isPlaying) {
+      if (this.props.isPlaying) {
+        this.getPlayer()?.play();
+      } else {
+        this.getPlayer()?.pause();
+      }
     }
   }
 
-  private initAudioManagement = (audio: AudioManagement) => {
+  private recomputeZoomlevels(
+    secondsPerMeasure: number,
+    audioSampleRate: number,
+    measuresCount: number
+  ) {
+    let newZoomLevels = PeaksConfig.computeZoomLevels(
+      secondsPerMeasure,
+      audioSampleRate,
+      document.getElementById(ZOOMVIEW_CONTAINER)!.clientWidth,
+      measuresCount
+    );
+
+    //TODO: Used any because setZoomlevel is not API. See https://github.com/bbc/peaks.js/issues/295.
+    (this.getPeaks()?.zoom as any).setZoomLevels(newZoomLevels);
+  }
+
+  private repaintWaveform(
+    sections: NormalizedObjects<Section>,
+    measures: NormalizedObjects<Measure>,
+    zoomLevel: number
+  ) {
+    this.getPeaks()?.segments.removeAll();
+    this.getPeaks()?.segments.add(
+      PeaksConfig.sectionsToSegment(sections, measures)
+    );
+    this.getPeaks()?.points.removeAll();
+    this.getPeaks()?.points.add(PeaksConfig.measuresToPoints(measures));
+    this.getPeaks()?.zoom.setZoom(zoomLevel);
+  }
+
+  private init = () => {
     const audioCtx: AudioContext = (Tone.context as unknown) as AudioContext;
+
+    this.getPeaks()?.destroy();
+
+    let audio = this;
 
     // Load audioFile into audio buffer
     fetch(this.props.audioUrl)
@@ -137,34 +182,32 @@ class AudioManagement extends React.Component<AllProps> {
         return audioCtx.decodeAudioData(buffer);
       })
       .then(function(audioBuffer) {
-        audio.props.updatedSource({
-          audioLength: audioBuffer.duration,
-          audioSampleRate: audioBuffer.sampleRate
-        });
-        audio.initPeaks(audio, audioBuffer);
+        audio.initPeaks(audioBuffer);
       });
   };
 
-  private initPeaks(audio: AudioManagement, audioBuffer: AudioBuffer) {
+  private initPeaks(audioBuffer: AudioBuffer) {
     console.log("initPeaks()");
 
-    Peaks.init(PeaksOptions.create(audioBuffer), function(err, peaks) {
-      //TODO: Error handling
-      if (peaks !== undefined) {
-        initPlayer(peaks, audioBuffer);
-        replacePlayer(peaks, audioBuffer);
+    Peaks.init(PeaksConfig.create(audioBuffer), (err, peaks) => {
+      if (err) throw err;
+      if (peaks === undefined)
+        throw new Error("Peaks instance is not correctly initialized.");
 
-        peaks.on("player_seek", (time: number) => {
-          if (audio.props.syncFirstMeasureStart)
-            audio.props.updatedRhythm({ firstMeasureStart: time });
-        });
+      initPlayer(peaks, audioBuffer);
+      replacePlayer(peaks, audioBuffer);
 
-        audio.peaks = peaks;
+      peaks.on("player_seek", (time: number) => {
+        if (this.props.syncFirstMeasureStart)
+          this.props.updatedRhythm({ firstMeasureStart: time });
+      });
 
-        audio.props.updatedRhythm({});
-        audio.props.endedInit();
-        audio.props.initializedWaveform();
-      }
+      this.peaks = peaks;
+
+      this.props.initializedProject({
+        audioDuration: audioBuffer.duration,
+        audioSampleRate: audioBuffer.sampleRate
+      });
     });
 
     let initPlayer = (peaks: Peaks.PeaksInstance, audioBuffer: AudioBuffer) => {
@@ -177,10 +220,8 @@ class AudioManagement extends React.Component<AllProps> {
       peaks: Peaks.PeaksInstance,
       audioBuffer: AudioBuffer
     ) => {
-      //@ts-ignore
-      peaks.player.destroy();
-      //@ts-ignore
-      peaks.player = this.player;
+      (peaks.player as any).destroy();
+      peaks.player = (this.player as unknown) as PeaksInstance["player"];
     };
   }
 
@@ -207,22 +248,20 @@ const mapStateToProps = ({
     sections: analysis.sections,
     measures: analysis.measures,
     zoomLevel: wave.zoom,
-    status: audio.status,
-    firstMeasureStart: analysis.firstMeasureStart,
+    status: project.status,
     syncFirstMeasureStart: project.syncFirstMeasureStart,
     isPlaying: audio.isPlaying,
     detune: audio.detune,
     playbackRate: audio.playbackRate,
-    secondsPerMeasure: analysis.secondsPerMeasure,
+    secondsPerMeasure:
+      analysis.measures.byId["1"]?.time - analysis.measures.byId["0"]?.time,
     audioSampleRate: analysis.audioSampleRate
   };
 };
 
 const mapDispatchToProps = {
-  endedInit,
+  initializedProject,
   updatedRhythm,
-  updatedSource,
-  triggeredPause,
-  initializedWaveform
+  triggeredPause
 };
 export default connect(mapStateToProps, mapDispatchToProps)(AudioManagement);

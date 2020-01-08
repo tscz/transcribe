@@ -1,14 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { PointAddOptions } from "peaks.js";
 
-import { NormalizedObjects, PersistedState } from "./store";
+import { createdProject, initializedProject } from "./projectSlice";
+import { NormalizedObjects } from "./store";
 
 export interface AnalysisState {
   readonly sections: NormalizedObjects<Section>;
-  readonly audioLength: number;
+  readonly audioDuration: number;
   readonly audioSampleRate: number;
   readonly firstMeasureStart: number;
-  readonly secondsPerMeasure: number;
   readonly timeSignature: TimeSignatureType;
   readonly bpm: number;
   readonly measures: NormalizedObjects<Measure>;
@@ -32,6 +32,15 @@ export enum TimeSignatureType {
   THREE_FOUR = "THREE_FOUR"
 }
 
+export const toTimeSignature = (type: TimeSignatureType) => {
+  switch (type) {
+    case TimeSignatureType.FOUR_FOUR:
+      return { beatUnit: 4, beatsPerMeasure: 4 };
+    case TimeSignatureType.THREE_FOUR:
+      return { beatUnit: 4, beatsPerMeasure: 3 };
+  }
+};
+
 export enum SectionType {
   INTRO = "INTRO",
   VERSE = "VERSE",
@@ -46,16 +55,60 @@ export const initialAnalysisState: AnalysisState = {
   sections: { allIds: [], byId: {} },
   bpm: 120,
   firstMeasureStart: 0,
-  secondsPerMeasure: 2,
-  audioLength: 180,
+  audioDuration: 180,
   audioSampleRate: 44400,
   measures: { allIds: [], byId: {} },
   timeSignature: TimeSignatureType.FOUR_FOUR
 };
 
+const generateMeasures = (
+  timeSignatureType: TimeSignatureType,
+  bpm: number,
+  firstMeasureStart: number,
+  length: number
+) => {
+  const timeSignature = toTimeSignature(timeSignatureType);
+  const lengthOfOneMeasure = (60 * timeSignature.beatsPerMeasure) / bpm;
+  const measures: NormalizedObjects<Measure> = { allIds: [], byId: {} };
+
+  let index = 0;
+  for (
+    let start = firstMeasureStart;
+    start < length;
+    start += lengthOfOneMeasure
+  ) {
+    measures.allIds.push("" + index);
+    measures.byId[index] = {
+      time: start,
+      color: "",
+      editable: false,
+      id: "" + index,
+      labelText: "" + index
+    };
+    index++;
+  }
+
+  return measures;
+};
+
 const analysisSlice = createSlice({
   name: "analysis",
   initialState: initialAnalysisState,
+  extraReducers: builder =>
+    builder
+      .addCase(createdProject, (state, action) => {
+        return action.payload.analysis;
+      })
+      .addCase(initializedProject, (state, action) => {
+        state.audioDuration = action.payload.audioDuration;
+        state.audioSampleRate = action.payload.audioSampleRate;
+        state.measures = generateMeasures(
+          state.timeSignature,
+          state.bpm,
+          state.firstMeasureStart,
+          state.audioDuration
+        );
+      }),
   reducers: {
     addedSection(state, action: PayloadAction<Section>) {
       const id = generateSectionId(action.payload);
@@ -83,11 +136,6 @@ const analysisSlice = createSlice({
 
       delete state.sections.byId[action.payload];
     },
-    resettedAnalysis(state, action: PayloadAction<{ state?: PersistedState }>) {
-      if (action.payload.state?.analysis) {
-        return action.payload.state.analysis;
-      } else return initialAnalysisState;
-    },
     updatedRhythm(
       state,
       action: PayloadAction<{
@@ -96,60 +144,18 @@ const analysisSlice = createSlice({
         timeSignatureType?: TimeSignatureType;
       }>
     ) {
-      let length = state.audioLength;
-      var { firstMeasureStart, bpm, timeSignatureType } = action.payload;
+      state.bpm = action.payload.bpm ?? state.bpm;
+      state.firstMeasureStart =
+        action.payload.firstMeasureStart ?? state.firstMeasureStart;
+      state.timeSignature =
+        action.payload.timeSignatureType ?? state.timeSignature;
 
-      if (firstMeasureStart == null)
-        firstMeasureStart = state.firstMeasureStart;
-
-      if (bpm == null) bpm = state.bpm;
-
-      if (timeSignatureType == null) timeSignatureType = state.timeSignature;
-
-      let timeSignature: TimeSignature = { beatUnit: 4, beatsPerMeasure: 4 };
-
-      switch (timeSignatureType) {
-        case TimeSignatureType.FOUR_FOUR:
-          timeSignature = { beatUnit: 4, beatsPerMeasure: 4 };
-          break;
-        case TimeSignatureType.THREE_FOUR:
-          timeSignature = { beatUnit: 4, beatsPerMeasure: 3 };
-          break;
-      }
-
-      var lengthOfOneMeasure = (60 * timeSignature.beatsPerMeasure) / bpm;
-
-      state.measures.allIds = [];
-      state.measures.byId = {};
-      var index = 0;
-
-      for (
-        let start = firstMeasureStart;
-        start < length;
-        start += lengthOfOneMeasure
-      ) {
-        state.measures.allIds.push("" + index);
-        state.measures.byId[index] = {
-          time: start,
-          color: "",
-          editable: false,
-          id: "" + index,
-          labelText: "" + index
-        };
-        index++;
-      }
-
-      state.bpm = bpm;
-      state.timeSignature = timeSignatureType;
-      state.firstMeasureStart = firstMeasureStart;
-      state.secondsPerMeasure = lengthOfOneMeasure;
-    },
-    updatedSource(
-      state,
-      action: PayloadAction<{ audioLength: number; audioSampleRate: number }>
-    ) {
-      state.audioLength = action.payload.audioLength;
-      state.audioSampleRate = action.payload.audioSampleRate;
+      state.measures = generateMeasures(
+        state.timeSignature,
+        state.bpm,
+        state.firstMeasureStart,
+        state.audioDuration
+      );
     }
   }
 });
@@ -160,10 +166,8 @@ const generateSectionId = (section: Section) =>
 export const {
   addedSection,
   removedSection,
-  resettedAnalysis,
   updatedRhythm,
-  updatedSection,
-  updatedSource
+  updatedSection
 } = analysisSlice.actions;
 
 export default analysisSlice.reducer;

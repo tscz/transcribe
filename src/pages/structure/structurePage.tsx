@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 
 import ContentLayout from "../../components/contentLayout/contentLayout";
 import View from "../../components/view/view";
+import { LoadingStatus } from "../../states/projectSlice";
 import { ApplicationState } from "../../states/store";
 import StructureView from "../../views/structure/structureView";
 import WaveContainer from "../../views/wave/waveContainer";
@@ -23,12 +24,8 @@ class StructurePage extends React.Component<AllProps> {
     console.log("render structurePage");
     return (
       <ContentLayout
-        topLeft={
-          <View body={this.props.loaded ? <WaveContainer /> : <></>}></View>
-        }
-        topRight={
-          <View body={this.props.loaded ? <WaveControlView /> : <></>}></View>
-        }
+        topLeft={<View body={<WaveContainer />}></View>}
+        topRight={<View body={<WaveControlView />}></View>}
         bottom={<View body={<StructureView />}></View>}
       ></ContentLayout>
     );
@@ -37,7 +34,7 @@ class StructurePage extends React.Component<AllProps> {
 
 const mapStateToProps = ({ project }: ApplicationState) => {
   return {
-    loaded: project.loaded
+    loaded: project.status === LoadingStatus.INITIALIZED
   };
 };
 

@@ -38,6 +38,14 @@ class PersistenceApi {
 
     return { audioBlob, state };
   }
+
+  static revokeLocalFile(url: string) {
+    window.URL.revokeObjectURL(url);
+  }
+
+  static getLocalFileUrl(blob: Blob) {
+    return window.URL.createObjectURL(blob);
+  }
 }
 
 export default PersistenceApi;

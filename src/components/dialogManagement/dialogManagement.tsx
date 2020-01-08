@@ -4,9 +4,14 @@ import React, { Component, FunctionComponent, useState } from "react";
 import { connect } from "react-redux";
 
 import PersistenceApi from "../../api/persistenceApi";
-import { resettedAnalysis } from "../../states/analysisSlice";
+import { initialAnalysisState } from "../../states/analysisSlice";
 import { closedDialog, DialogType } from "../../states/dialogsSlice";
-import { createdProject, Page, switchedPage } from "../../states/projectSlice";
+import {
+  createdProject,
+  initialProjectState,
+  Page,
+  switchedPage
+} from "../../states/projectSlice";
 import store, { ApplicationState } from "../../states/store";
 import FileInput, { FileType } from "../fileInput/fileInput";
 import ModalDialog from "../modalDialog/modalDialog";
@@ -18,7 +23,6 @@ interface PropsFromState {
 
 interface PropsFromDispatch {
   switchedPage: typeof switchedPage;
-  resettedAnalysis: typeof resettedAnalysis;
   closedDialog: typeof closedDialog;
   createdProject: typeof createdProject;
 }
@@ -35,8 +39,10 @@ class DialogManagement extends Component<AllProps> {
           <NewDialog
             onCancel={() => this.props.closedDialog()}
             onSubmit={(title: string, audioUrl: string) => {
-              this.props.resettedAnalysis({});
-              this.props.createdProject({ title, audioUrl });
+              this.props.createdProject({
+                analysis: initialAnalysisState,
+                project: { ...initialProjectState, audioUrl, title }
+              });
               this.props.switchedPage(Page.STRUCTURE);
               this.props.closedDialog();
             }}
@@ -48,13 +54,13 @@ class DialogManagement extends Component<AllProps> {
             onCancel={() => this.props.closedDialog()}
             onSubmit={(zip: File, zipUrl: string) => {
               PersistenceApi.open(zip).then(({ audioBlob, state }) => {
-                let audioUrl = window.URL.createObjectURL(audioBlob);
-                this.props.resettedAnalysis({ state });
+                let audioUrl = PersistenceApi.getLocalFileUrl(audioBlob);
+                PersistenceApi.revokeLocalFile(zipUrl);
+
                 this.props.createdProject({
-                  title: state.project.title,
-                  audioUrl
+                  analysis: state.analysis,
+                  project: { ...state.project, audioUrl }
                 });
-                window.URL.revokeObjectURL(zipUrl);
                 this.props.switchedPage(Page.STRUCTURE);
                 this.props.closedDialog();
               });
@@ -173,7 +179,6 @@ const mapStateToProps = ({ dialog, project }: ApplicationState) => {
 const mapDispatchToProps = {
   closedDialog,
   switchedPage,
-  resettedAnalysis,
   createdProject
 };
 

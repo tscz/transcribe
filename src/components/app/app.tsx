@@ -28,8 +28,8 @@ import GuitarPage from "../../pages/guitar/guitarPage";
 import HarmonyPage from "../../pages/harmony/harmonyPage";
 import PrintPage from "../../pages/print/printPage";
 import StructurePage from "../../pages/structure/structurePage";
-import { resettedAnalysis } from "../../states/analysisSlice";
 import { DialogType, openedDialog } from "../../states/dialogsSlice";
+import { LoadingStatus } from "../../states/projectSlice";
 import { Page, switchedPage } from "../../states/projectSlice";
 import { ApplicationState } from "../../states/store";
 import { stylesForApp } from "../../styles/styles";
@@ -37,13 +37,12 @@ import VersionInfo from "../versionInfo/versionInfo";
 
 interface PropsFromState {
   currentPage: Page;
-  loaded: boolean;
+  status: LoadingStatus;
   title: string;
 }
 
 interface PropsFromDispatch {
   switchedPage: typeof switchedPage;
-  resettedAnalysis: typeof resettedAnalysis;
   openedDialog: typeof openedDialog;
 }
 
@@ -92,19 +91,21 @@ class App extends React.Component<AllProps, State> {
               <Button
                 color="inherit"
                 onClick={() => this.props.openedDialog(DialogType.NEW)}
+                disabled={this.props.status === LoadingStatus.INITIALIZING}
               >
                 New
               </Button>
               <Button
                 color="inherit"
                 onClick={() => this.props.openedDialog(DialogType.OPEN)}
+                disabled={this.props.status === LoadingStatus.INITIALIZING}
               >
                 Open
               </Button>
               <Button
                 color="inherit"
                 onClick={() => this.props.openedDialog(DialogType.SAVE)}
-                disabled={!this.props.loaded}
+                disabled={this.props.status !== LoadingStatus.INITIALIZED}
               >
                 Save
               </Button>
@@ -139,7 +140,7 @@ class App extends React.Component<AllProps, State> {
                 button
                 key="Structure"
                 onClick={() => this.props.switchedPage(Page.STRUCTURE)}
-                disabled={!this.props.loaded}
+                disabled={this.props.status !== LoadingStatus.INITIALIZED}
               >
                 <ListItemIcon>
                   <HomeIcon />
@@ -150,7 +151,7 @@ class App extends React.Component<AllProps, State> {
                 button
                 key="Harmony"
                 onClick={() => this.props.switchedPage(Page.HARMONY)}
-                disabled={!this.props.loaded}
+                disabled={this.props.status !== LoadingStatus.INITIALIZED}
               >
                 <ListItemIcon>
                   <MusicVideoIcon />
@@ -161,7 +162,7 @@ class App extends React.Component<AllProps, State> {
                 button
                 key="Guitar"
                 onClick={() => this.props.switchedPage(Page.GUITAR)}
-                disabled={!this.props.loaded}
+                disabled={this.props.status !== LoadingStatus.INITIALIZED}
               >
                 <ListItemIcon>
                   <RadioIcon />
@@ -172,7 +173,7 @@ class App extends React.Component<AllProps, State> {
                 button
                 key="Drum"
                 onClick={() => this.props.switchedPage(Page.DRUM)}
-                disabled={!this.props.loaded}
+                disabled={this.props.status !== LoadingStatus.INITIALIZED}
               >
                 <ListItemIcon>
                   <AlbumIcon />
@@ -183,7 +184,7 @@ class App extends React.Component<AllProps, State> {
                 button
                 key="Print"
                 onClick={() => this.props.switchedPage(Page.PRINT)}
-                disabled={!this.props.loaded}
+                disabled={this.props.status !== LoadingStatus.INITIALIZED}
               >
                 <ListItemIcon>
                   <PrintIcon />
@@ -235,17 +236,16 @@ const Toggle: FunctionComponent<{ show: boolean }> = props => {
   }
 };
 
-const mapStateToProps = ({ project, dialog }: ApplicationState) => {
+const mapStateToProps = ({ project }: ApplicationState) => {
   return {
     currentPage: project.currentPage,
-    loaded: project.loaded,
+    status: project.status,
     title: project.title
   };
 };
 
 const mapDispatchToProps = {
   switchedPage,
-  resettedAnalysis,
   openedDialog
 };
 

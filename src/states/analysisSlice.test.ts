@@ -1,24 +1,20 @@
 import reducer, {
   addedSection,
   AnalysisState,
-  initialAnalysisState,
   removedSection,
-  resettedAnalysis,
   Section,
   SectionType,
   TimeSignatureType,
-  updatedRhythm,
-  updatedSource
+  updatedRhythm
 } from "./analysisSlice";
-import { Page } from "./projectSlice";
+import { createdProject, LoadingStatus, Page } from "./projectSlice";
 import { PersistedState } from "./store";
 
 const initialState: AnalysisState = {
   sections: { allIds: [], byId: {} },
   bpm: 42,
   firstMeasureStart: 3,
-  secondsPerMeasure: 2.423,
-  audioLength: 180,
+  audioDuration: 180,
   audioSampleRate: 44400,
   measures: { allIds: [], byId: {} },
   timeSignature: TimeSignatureType.FOUR_FOUR
@@ -28,8 +24,7 @@ const persistedAnalysisState: AnalysisState = {
   sections: { allIds: [], byId: {} },
   bpm: 120,
   firstMeasureStart: 1,
-  secondsPerMeasure: 3,
-  audioLength: 190,
+  audioDuration: 190,
   audioSampleRate: 48000,
   measures: { allIds: [], byId: {} },
   timeSignature: TimeSignatureType.THREE_FOUR
@@ -38,36 +33,30 @@ const persistedAnalysisState: AnalysisState = {
 const persistedState: PersistedState = {
   analysis: persistedAnalysisState,
   project: {
+    status: LoadingStatus.NOT_INITIALIZED,
     currentPage: Page.DEFAULT,
     title: "",
     audioUrl: "blob:http://localhost:3000/01453364-ce0c-44ba-9f3a-e85a3d167d65",
-    syncFirstMeasureStart: false,
-    loaded: true
+    syncFirstMeasureStart: false
   }
 };
-
-it("can reset an analysis to the initial state", () => {
-  let state: AnalysisState = reducer(initialState, resettedAnalysis({}));
-
-  expect(state).toEqual(initialAnalysisState);
-});
 
 it("can reset an analysis from a persisted state", () => {
   let state: AnalysisState = reducer(
     initialState,
-    resettedAnalysis({ state: persistedState })
+    createdProject(persistedState)
   );
   expect(state).toEqual({
     sections: { allIds: [], byId: {} },
     bpm: 120,
     firstMeasureStart: 1,
-    secondsPerMeasure: 3,
-    audioLength: 190,
+    audioDuration: 190,
     audioSampleRate: 48000,
     measures: { allIds: [], byId: {} },
     timeSignature: TimeSignatureType.THREE_FOUR
   });
 });
+
 it("can update the rhythm", () => {
   let state: AnalysisState = reducer(
     initialState,
@@ -110,15 +99,6 @@ it("can update the rhythm (only time signature)", () => {
     })
   );
   expect(state.timeSignature).toEqual(TimeSignatureType.THREE_FOUR);
-});
-
-it("can update the audio source", () => {
-  let state: AnalysisState = reducer(
-    initialState,
-    updatedSource({ audioLength: 42, audioSampleRate: 44400 })
-  );
-  expect(state.audioLength).toEqual(42);
-  expect(state.audioSampleRate).toEqual(44400);
 });
 
 it("can add a section", () => {

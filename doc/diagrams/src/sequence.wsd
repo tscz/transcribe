@@ -1,0 +1,38 @@
+@startuml Sequence Diagrams
+
+title     Startup Process
+
+actor User 
+participant "Local Filesystem" as File
+participant Browser
+participant Webserver 
+participant "React App" as App
+participant "Redux Store" as Store
+participant "Audio Management" as Audio
+participant "Peaks.js Waveform" as Wave
+participant "Tone.js Player" as Player
+
+User -> Browser : Open App Url
+Browser -> Webserver : Initial http request
+Webserver -> Browser : Deliver app
+Browser -> App : Initialize app
+App -> Store : Initialize store
+App <- Store : Return default store
+App -> Browser : Render start page
+Browser -> User : Display start page
+User -> Browser : Create new project
+Browser -> File: Aquire link to local audio file 
+File -> Browser: Return local audio file
+Browser -> App : Read audio file into Audiobuffer
+App -> Audio: Initialize AudioManagement
+Audio -> Wave: Initialize Wave
+Audio <- Wave: Init Instance
+Audio -> Player: Init Player
+Audio <- Player: Player
+Audio -> Wave: Replace Player
+Audio <- Wave: PLayer
+Audio -> Store: Save Measures based on initial bpm
+Store -> Wave: Inform Waveform
+Browser <- Wave: Rerender measures
+Browser -> User: Display new project with loaded audiofile
+@enduml
