@@ -7,7 +7,6 @@ import { Provider } from "react-redux";
 import App from "./components/app/app";
 import AudioManagement from "./components/audioManagement/audioManagement";
 import DialogManagement from "./components/dialogManagement/dialogManagement";
-import * as serviceWorker from "./serviceWorker";
 import store from "./states/store";
 import theme from "./styles/theme";
 
@@ -34,8 +33,3 @@ if (process.env.NODE_ENV !== "production" && module.hot) {
 }
 
 renderApp();
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
