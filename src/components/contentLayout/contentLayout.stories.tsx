@@ -7,4 +7,21 @@ export default {
   component: ContentLayout
 };
 
-export const Basic = () => <>Todo</>;
+export const Basic = () => (
+  <ContentLayout
+    topLeft={Rectangle("topLeft")}
+    topRight={Rectangle("topRight")}
+    bottom={Rectangle("bottom")}
+  ></ContentLayout>
+);
+
+const Rectangle = (content: string) => (
+  <div
+    style={{
+      border: "2px solid #000",
+      height: "100%"
+    }}
+  >
+    {content}
+  </div>
+);
