@@ -12,9 +12,7 @@ export const Zip = () => (
   <FileInput
     id="zipFileInput"
     fileType={FileType.ZIP}
-    callback={(file, url) => {
-      action(file + url);
-    }}
+    callback={action("callback")}
   ></FileInput>
 );
 
@@ -22,8 +20,6 @@ export const Audio = () => (
   <FileInput
     id="audioFileInput"
     fileType={FileType.AUDIO}
-    callback={(file, url) => {
-      action(file + url);
-    }}
+    callback={action("callback")}
   ></FileInput>
 );
