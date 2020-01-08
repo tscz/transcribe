@@ -4,6 +4,7 @@ import {
   OVERVIEW_CONTAINER,
   ZOOMVIEW_CONTAINER
 } from "../../components/audioManagement/peaksConfig";
+import Log from "../../components/log/log";
 
 interface Props {
   url: string;
@@ -15,7 +16,7 @@ export default class WaveView extends Component<Props> {
   }
 
   render() {
-    console.log("render waveView with url=" + this.props.url);
+    Log.info("render with url=" + this.props.url, WaveView.name);
     return (
       <div>
         <div id="waveform-container">

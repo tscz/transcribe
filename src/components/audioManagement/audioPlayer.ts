@@ -33,8 +33,6 @@ class AudioPlayer implements Player {
     audioBuffer: AudioBuffer,
     onSongComplete: () => void
   ) {
-    console.log("AudioPlayer constructor");
-
     this.peaks = peaks as PeaksInstanceEmitAware;
 
     this.player = new Tone.Player(audioBuffer);
@@ -70,7 +68,6 @@ class AudioPlayer implements Player {
   }
 
   destroy = () => {
-    console.log("AudioPlayer destroy()");
     Tone.context.dispose();
     ((Tone as unknown) as Tone & {
       setContext: (ctx: AudioContext) => void;

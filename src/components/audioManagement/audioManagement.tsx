@@ -8,6 +8,7 @@ import { Measure, Section, updatedRhythm } from "../../states/analysisSlice";
 import { triggeredPause } from "../../states/audioSlice";
 import { initializedProject, LoadingStatus } from "../../states/projectSlice";
 import { ApplicationState, NormalizedObjects } from "../../states/store";
+import Log from "../log/log";
 import AudioPlayer from "./audioPlayer";
 import PeaksConfig, {
   AUDIO_DOM_ELEMENT,
@@ -46,11 +47,12 @@ class AudioManagement extends React.Component<AllProps> {
   private getPlayer = () => this.player;
 
   componentDidUpdate(prevProps: AllProps) {
-    console.log(
-      "AudioManagement.componentDidUpdate with status " +
+    Log.info(
+      "componentDidUpdate with status " +
         prevProps.status +
         " -> " +
-        this.props.status
+        this.props.status,
+      AudioManagement.name
     );
 
     // Early return if there is no audio file initialized yet.
@@ -68,10 +70,11 @@ class AudioManagement extends React.Component<AllProps> {
       prevProps.status !== this.props.status &&
       this.props.status === LoadingStatus.INITIALIZING
     ) {
-      console.log("Initialize audio engine.");
+      Log.info("initialize audio engine", AudioManagement.name);
       if (prevProps.audioUrl !== this.props.audioUrl) {
-        console.log(
-          "Switch from " + prevProps.audioUrl + " to " + this.props.audioUrl
+        Log.info(
+          "switch from " + prevProps.audioUrl + " to " + this.props.audioUrl,
+          AudioManagement.name
         );
         PersistenceApi.revokeLocalFile(prevProps.audioUrl);
       }
@@ -187,7 +190,7 @@ class AudioManagement extends React.Component<AllProps> {
   };
 
   private initPeaks(audioBuffer: AudioBuffer) {
-    console.log("initPeaks()");
+    Log.info("init peaks", AudioManagement.name);
 
     Peaks.init(PeaksConfig.create(audioBuffer), (err, peaks) => {
       if (err) throw err;

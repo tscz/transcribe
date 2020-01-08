@@ -11,6 +11,10 @@ import * as serviceWorker from "./serviceWorker";
 import store from "./states/store";
 import theme from "./styles/theme";
 
+if (process.env.NODE_ENV !== "production") {
+  localStorage.setItem("debug", "transcribe:*");
+}
+
 const renderApp = () =>
   render(
     <Provider store={store}>

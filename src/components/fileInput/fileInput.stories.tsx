@@ -1,3 +1,4 @@
+import { action } from "@storybook/addon-actions";
 import React from "react";
 
 import FileInput, { FileType } from "./fileInput";
@@ -12,7 +13,7 @@ export const Zip = () => (
     id="zipFileInput"
     fileType={FileType.ZIP}
     callback={(file, url) => {
-      console.log(file + url);
+      action(file + url);
     }}
   ></FileInput>
 );
@@ -22,7 +23,7 @@ export const Audio = () => (
     id="audioFileInput"
     fileType={FileType.AUDIO}
     callback={(file, url) => {
-      console.log(file + url);
+      action(file + url);
     }}
   ></FileInput>
 );

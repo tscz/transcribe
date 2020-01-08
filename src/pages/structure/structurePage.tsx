@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 
 import ContentLayout from "../../components/contentLayout/contentLayout";
+import Log from "../../components/log/log";
 import View from "../../components/view/view";
 import { LoadingStatus } from "../../states/projectSlice";
 import { ApplicationState } from "../../states/store";
@@ -21,7 +22,7 @@ type AllProps = PropsFromState & PropsFromDispatch & Props;
 
 class StructurePage extends React.Component<AllProps> {
   render() {
-    console.log("render structurePage");
+    Log.info("render", StructurePage.name);
     return (
       <ContentLayout
         topLeft={<View body={<WaveContainer />}></View>}

@@ -64,7 +64,6 @@ class StructureView extends Component<AllProps> {
         <TableBody>
           {this.props.sections.allIds.map((id: string) => {
             let section = this.props.sections.byId[id];
-            console.log("render with " + JSON.stringify(this.props.sections));
             return (
               <TableRow key={id}>
                 <TableCell component="th" scope="row">

@@ -2,6 +2,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
+import Log from "../../components/log/log";
 import { LoadingStatus } from "../../states/projectSlice";
 import { ApplicationState } from "../../states/store";
 import WaveView from "./waveView";
@@ -19,9 +20,11 @@ type AllProps = PropsFromState & PropsFromDispatch & Props;
 
 class WaveContainer extends Component<AllProps> {
   render() {
-    console.log(
-      "render waveContainer  with props=" + JSON.stringify(this.props)
+    Log.info(
+      "render with props=" + JSON.stringify(this.props),
+      WaveContainer.name
     );
+
     return (
       <div>
         {this.props.audioLoaded !== LoadingStatus.INITIALIZED && (

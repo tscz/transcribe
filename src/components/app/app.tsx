@@ -33,6 +33,7 @@ import { LoadingStatus } from "../../states/projectSlice";
 import { Page, switchedPage } from "../../states/projectSlice";
 import { ApplicationState } from "../../states/store";
 import { stylesForApp } from "../../styles/styles";
+import Log from "../log/log";
 import VersionInfo from "../versionInfo/versionInfo";
 
 interface PropsFromState {
@@ -70,7 +71,7 @@ class App extends React.Component<AllProps, State> {
   };
 
   render() {
-    console.log("render app");
+    Log.info("render", App.name);
     return (
       <>
         <div className={this.props.classes.root}>
