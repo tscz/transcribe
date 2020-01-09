@@ -1,8 +1,7 @@
+import { Grid } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Button from "@material-ui/core/Button";
-import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
-import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -11,13 +10,10 @@ import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import AlbumIcon from "@material-ui/icons/Album";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import HomeIcon from "@material-ui/icons/Home";
 import MusicVideoIcon from "@material-ui/icons/MusicVideo";
 import PrintIcon from "@material-ui/icons/Print";
 import RadioIcon from "@material-ui/icons/Radio";
-import clsx from "clsx";
 import React from "react";
 import { FunctionComponent } from "react";
 import { connect } from "react-redux";
@@ -62,32 +58,19 @@ class App extends React.Component<AllProps, State> {
     open: false
   };
 
-  handleDrawerOpen = () => {
-    this.setState({ open: true });
-  };
-
-  handleDrawerClose = () => {
-    this.setState({ open: false });
-  };
-
   render() {
     Log.info("render", App.name);
     return (
       <>
         <div className={this.props.classes.root}>
-          <AppBar
-            position="fixed"
-            className={clsx(this.props.classes.appBar, {
-              [this.props.classes.appBarShift]: this.state.open
-            })}
-          >
+          <AppBar position="fixed" className={this.props.classes.appBar}>
             <Toolbar>
               <Typography
                 variant="h6"
                 noWrap
                 className={this.props.classes.title}
               >
-                Transcribe ( {this.props.title} )
+                Transcribe ({this.props.title})
               </Typography>
               <Button
                 color="inherit"
@@ -113,29 +96,13 @@ class App extends React.Component<AllProps, State> {
             </Toolbar>
           </AppBar>
           <Drawer
+            className={this.props.classes.drawer}
             variant="permanent"
-            className={clsx(this.props.classes.drawer, {
-              [this.props.classes.drawerOpen]: this.state.open,
-              [this.props.classes.drawerClose]: !this.state.open
-            })}
             classes={{
-              paper: clsx({
-                [this.props.classes.drawerOpen]: this.state.open,
-                [this.props.classes.drawerClose]: !this.state.open
-              })
+              paper: this.props.classes.drawerPaper
             }}
-            open={this.state.open}
           >
-            <div className={this.props.classes.toolbar}>
-              <IconButton onClick={this.handleDrawerClose}>
-                {this.props.theme.direction === "rtl" ? (
-                  <ChevronRightIcon />
-                ) : (
-                  <ChevronLeftIcon />
-                )}
-              </IconButton>
-            </div>
-            <Divider />
+            <div className={this.props.classes.toolbar} />
             <List>
               <ListItem
                 button
@@ -196,37 +163,39 @@ class App extends React.Component<AllProps, State> {
           </Drawer>
           <main className={this.props.classes.content}>
             <div className={this.props.classes.toolbar} />
-            <div id="page-content-wrapper">
-              <Toggle show={this.props.currentPage === Page.DEFAULT}>
-                <DefaultPage />
-              </Toggle>
-
-              <Toggle show={this.props.currentPage === Page.STRUCTURE}>
-                <StructurePage />
-              </Toggle>
-
-              <Toggle show={this.props.currentPage === Page.HARMONY}>
-                <HarmonyPage />
-              </Toggle>
-
-              <Toggle show={this.props.currentPage === Page.GUITAR}>
-                <GuitarPage />
-              </Toggle>
-
-              <Toggle show={this.props.currentPage === Page.DRUM}>
-                <DrumPage />
-              </Toggle>
-
-              <Toggle show={this.props.currentPage === Page.PRINT}>
-                <PrintPage />
-              </Toggle>
-            </div>
-            Version:{" "}
-            <VersionInfo
-              version={process.env.REACT_APP_VERSION ?? ""}
-              hash={process.env.REACT_APP_VERSION_HASH ?? ""}
-              description={process.env.REACT_APP_VERSION_DESCRIPTION ?? ""}
-            />
+            <Toggle show={this.props.currentPage === Page.DEFAULT}>
+              <DefaultPage />
+            </Toggle>
+            <Toggle show={this.props.currentPage === Page.STRUCTURE}>
+              <StructurePage />
+            </Toggle>
+            <Toggle show={this.props.currentPage === Page.HARMONY}>
+              <HarmonyPage />
+            </Toggle>
+            <Toggle show={this.props.currentPage === Page.GUITAR}>
+              <GuitarPage />
+            </Toggle>
+            <Toggle show={this.props.currentPage === Page.DRUM}>
+              <DrumPage />
+            </Toggle>
+            <Toggle show={this.props.currentPage === Page.PRINT}>
+              <PrintPage />
+            </Toggle>
+            <Grid
+              container
+              direction="row"
+              justify="flex-end"
+              alignItems="center"
+            >
+              <Grid item>
+                App version:{" "}
+                <VersionInfo
+                  version={process.env.REACT_APP_VERSION ?? ""}
+                  hash={process.env.REACT_APP_VERSION_HASH ?? ""}
+                  description={process.env.REACT_APP_VERSION_DESCRIPTION ?? ""}
+                />
+              </Grid>
+            </Grid>
           </main>
         </div>
       </>
