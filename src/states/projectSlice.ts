@@ -43,6 +43,9 @@ const projectSlice = createSlice({
     createdProject(state, action: PayloadAction<PersistedState>) {
       return { ...action.payload.project, status: LoadingStatus.INITIALIZING };
     },
+    hotReloaded(state) {
+      state.status = LoadingStatus.INITIALIZING;
+    },
     initializedProject(
       state,
       action: PayloadAction<{ audioDuration: number; audioSampleRate: number }>
@@ -59,6 +62,7 @@ export const {
   switchedPage,
   createdProject,
   initializedProject,
+  hotReloaded,
   enabledSyncFirstMeasureStart
 } = projectSlice.actions;
 

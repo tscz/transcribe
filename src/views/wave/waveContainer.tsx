@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import Log from "../../components/log/log";
-import { LoadingStatus } from "../../states/projectSlice";
+import { hotReloaded, LoadingStatus } from "../../states/projectSlice";
 import { ApplicationState } from "../../states/store";
 import WaveView from "./waveView";
 
@@ -12,13 +12,24 @@ interface PropsFromState {
   audioUrl: string;
 }
 
-interface PropsFromDispatch {}
+interface PropsFromDispatch {
+  hotReloaded: typeof hotReloaded;
+}
 
 interface Props {}
 
 type AllProps = PropsFromState & PropsFromDispatch & Props;
 
 class WaveContainer extends Component<AllProps> {
+  constructor(props: AllProps) {
+    super(props);
+
+    if (process.env.NODE_ENV !== "production" && props.audioUrl) {
+      Log.info("Hot reload with url=" + props.audioUrl, WaveContainer.name);
+      this.props.hotReloaded();
+    }
+  }
+
   render() {
     Log.info(
       "render with props=" + JSON.stringify(this.props),
@@ -43,6 +54,8 @@ const mapStateToProps = ({ project }: ApplicationState) => {
   };
 };
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  hotReloaded
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(WaveContainer);
