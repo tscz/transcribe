@@ -1,5 +1,6 @@
 import React from "react";
 
+import { Rectangle } from "../../tests/TestUtil";
 import ContentLayout from "./contentLayout";
 
 export default {
@@ -7,21 +8,11 @@ export default {
   component: ContentLayout
 };
 
-export const Basic = () => (
-  <ContentLayout
-    topLeft={Rectangle("topLeft")}
-    topRight={Rectangle("topRight")}
-    bottom={Rectangle("bottom")}
-  ></ContentLayout>
-);
-
-const Rectangle = (content: string) => (
-  <div
-    style={{
-      border: "2px solid #000",
-      height: "100%"
-    }}
-  >
-    {content}
-  </div>
-);
+export const Basic = () =>
+  Rectangle(
+    <ContentLayout
+      topLeft={Rectangle("topLeft")}
+      topRight={Rectangle("topRight")}
+      bottom={Rectangle("bottom")}
+    ></ContentLayout>
+  );

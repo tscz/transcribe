@@ -1,5 +1,6 @@
 import React from "react";
 
+import { Rectangle } from "../../tests/TestUtil";
 import View from "./view";
 
 export default {
@@ -7,4 +8,4 @@ export default {
   component: View
 };
 
-export const Basic = () => <>Todo</>;
+export const Basic = () => Rectangle(<View body={<p>Test</p>}></View>);
