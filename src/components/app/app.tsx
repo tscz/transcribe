@@ -31,6 +31,7 @@ import { ApplicationState } from "../../states/store";
 import { stylesForApp } from "../../styles/styles";
 import Log from "../log/log";
 import VersionInfo from "../versionInfo/versionInfo";
+import { ReactComponent as Logo } from "./logo.svg";
 
 interface PropsFromState {
   currentPage: Page;
@@ -65,29 +66,32 @@ class App extends React.Component<AllProps, State> {
         <div className={this.props.classes.root}>
           <AppBar position="fixed" className={this.props.classes.appBar}>
             <Toolbar>
+              <Logo height="40px" style={{ marginRight: "5px" }}></Logo>
+              <Typography color="textPrimary" variant="h4" noWrap>
+                Transcribe
+              </Typography>
               <Typography
-                variant="h6"
+                color="textPrimary"
+                variant="caption"
                 noWrap
                 className={this.props.classes.title}
               >
-                Transcribe ({this.props.title})
+                [{this.props.title !== "" ? this.props.title : "no file loaded"}
+                ]
               </Typography>
               <Button
-                color="inherit"
                 onClick={() => this.props.openedDialog(DialogType.NEW)}
                 disabled={this.props.status === LoadingStatus.INITIALIZING}
               >
                 New
               </Button>
               <Button
-                color="inherit"
                 onClick={() => this.props.openedDialog(DialogType.OPEN)}
                 disabled={this.props.status === LoadingStatus.INITIALIZING}
               >
                 Open
               </Button>
               <Button
-                color="inherit"
                 onClick={() => this.props.openedDialog(DialogType.SAVE)}
                 disabled={this.props.status !== LoadingStatus.INITIALIZED}
               >
@@ -103,14 +107,14 @@ class App extends React.Component<AllProps, State> {
             }}
           >
             <div className={this.props.classes.toolbar} />
-            <List>
+            <List style={{ color: "#abb1b7" }}>
               <ListItem
                 button
                 key="Structure"
                 onClick={() => this.props.switchedPage(Page.STRUCTURE)}
                 disabled={this.props.status !== LoadingStatus.INITIALIZED}
               >
-                <ListItemIcon>
+                <ListItemIcon style={{ color: "#abb1b7" }}>
                   <HomeIcon />
                 </ListItemIcon>
                 <ListItemText primary="Structure" />
@@ -121,7 +125,7 @@ class App extends React.Component<AllProps, State> {
                 onClick={() => this.props.switchedPage(Page.HARMONY)}
                 disabled={this.props.status !== LoadingStatus.INITIALIZED}
               >
-                <ListItemIcon>
+                <ListItemIcon style={{ color: "#abb1b7" }}>
                   <MusicVideoIcon />
                 </ListItemIcon>
                 <ListItemText primary="Harmony" />
@@ -132,7 +136,7 @@ class App extends React.Component<AllProps, State> {
                 onClick={() => this.props.switchedPage(Page.GUITAR)}
                 disabled={this.props.status !== LoadingStatus.INITIALIZED}
               >
-                <ListItemIcon>
+                <ListItemIcon style={{ color: "#abb1b7" }}>
                   <RadioIcon />
                 </ListItemIcon>
                 <ListItemText primary="Guitar" />
@@ -143,7 +147,7 @@ class App extends React.Component<AllProps, State> {
                 onClick={() => this.props.switchedPage(Page.DRUM)}
                 disabled={this.props.status !== LoadingStatus.INITIALIZED}
               >
-                <ListItemIcon>
+                <ListItemIcon style={{ color: "#abb1b7" }}>
                   <AlbumIcon />
                 </ListItemIcon>
                 <ListItemText primary="Drum" />
@@ -154,7 +158,7 @@ class App extends React.Component<AllProps, State> {
                 onClick={() => this.props.switchedPage(Page.PRINT)}
                 disabled={this.props.status !== LoadingStatus.INITIALIZED}
               >
-                <ListItemIcon>
+                <ListItemIcon style={{ color: "#abb1b7" }}>
                   <PrintIcon />
                 </ListItemIcon>
                 <ListItemText primary="Print" />
@@ -183,9 +187,10 @@ class App extends React.Component<AllProps, State> {
             </Toggle>
             <Grid
               container
-              direction="row"
+              direction="column"
               justify="flex-end"
-              alignItems="center"
+              alignItems="flex-end"
+              style={{ marginTop: "20px" }}
             >
               <Grid item>
                 App version:{" "}

@@ -6,6 +6,7 @@ class DefaultPage extends React.Component {
   render() {
     return (
       <View
+        title="Info"
         body={
           <>
             <p>No Transcription started!!</p>

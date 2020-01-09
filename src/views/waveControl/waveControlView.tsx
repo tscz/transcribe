@@ -7,29 +7,17 @@ import {
   Tooltip
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
-import IconButton from "@material-ui/core/IconButton";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Slider from "@material-ui/core/Slider";
-import LoopIcon from "@material-ui/icons/Loop";
-import PauseIcon from "@material-ui/icons/Pause";
-import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import SyncAltIcon from "@material-ui/icons/SyncAlt";
-import TimerIcon from "@material-ui/icons/Timer";
-import ZoomInIcon from "@material-ui/icons/ZoomIn";
-import ZoomOutIcon from "@material-ui/icons/ZoomOut";
 import ToggleButton from "@material-ui/lab/ToggleButton";
-import React, { Component, ReactElement } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { TimeSignatureType, updatedRhythm } from "../../states/analysisSlice";
-import {
-  triggeredPause,
-  triggeredPlay,
-  updatedPlaybackSettings
-} from "../../states/audioSlice";
+import { updatedPlaybackSettings } from "../../states/audioSlice";
 import { enabledSyncFirstMeasureStart } from "../../states/projectSlice";
 import { ApplicationState } from "../../states/store";
-import { zoomedIn, zoomedOut } from "../../states/waveSlice";
 
 interface PropsFromState {
   readonly firstMeasureStart: number;
@@ -39,17 +27,12 @@ interface PropsFromState {
   readonly detune: number;
   readonly playbackRate: number;
   readonly zoom: number;
-  readonly isPlaying: boolean;
 }
 
 interface PropsFromDispatch {
   updatedRhythm: typeof updatedRhythm;
   enabledSyncFirstMeasureStart: typeof enabledSyncFirstMeasureStart;
   updatedPlaybackSettings: typeof updatedPlaybackSettings;
-  zoomedIn: typeof zoomedIn;
-  zoomedOut: typeof zoomedOut;
-  triggeredPlay: typeof triggeredPlay;
-  triggeredPause: typeof triggeredPause;
 }
 
 type AllProps = PropsFromState & PropsFromDispatch;
@@ -84,36 +67,6 @@ class WaveControlView extends Component<AllProps> {
     return (
       <>
         <Grid container direction="column" spacing={3}>
-          <Grid item>
-            <InputLabel shrink>Actions</InputLabel>
-            {this.props.isPlaying ? (
-              <WaveformControlButton
-                title="Pause"
-                icon={<PauseIcon />}
-                onClick={() => this.props.triggeredPause()}
-              />
-            ) : (
-              <WaveformControlButton
-                title="Play"
-                icon={<PlayArrowIcon />}
-                onClick={() => this.props.triggeredPlay()}
-              />
-            )}
-
-            <WaveformControlButton title="Loop" icon={<LoopIcon />} />
-            <WaveformControlButton title="Metronome" icon={<TimerIcon />} />
-
-            <WaveformControlButton
-              title="Zoom in"
-              icon={<ZoomInIcon />}
-              onClick={() => this.props.zoomedIn()}
-            />
-            <WaveformControlButton
-              title="Zoom out"
-              icon={<ZoomOutIcon />}
-              onClick={() => this.props.zoomedOut()}
-            />
-          </Grid>
           <Grid item>
             <FormControl fullWidth={true}>
               <InputLabel>Start Measure 1</InputLabel>
@@ -190,18 +143,6 @@ class WaveControlView extends Component<AllProps> {
   }
 }
 
-const WaveformControlButton = (props: {
-  title: string;
-  icon: ReactElement;
-  onClick?: () => void;
-}) => {
-  return (
-    <Tooltip title={props.title}>
-      <IconButton onClick={props.onClick}>{props.icon}</IconButton>
-    </Tooltip>
-  );
-};
-
 const SliderInput = (props: {
   title: string;
   min: number;
@@ -241,18 +182,13 @@ const mapStateToProps = ({
     detune: audio.detune,
     playbackRate: audio.playbackRate,
     zoom: wave.zoom,
-    status: project.status,
-    isPlaying: audio.isPlaying
+    status: project.status
   };
 };
 
 const mapDispatchToProps = {
   updatedRhythm,
   enabledSyncFirstMeasureStart,
-  updatedPlaybackSettings,
-  zoomedIn,
-  zoomedOut,
-  triggeredPlay,
-  triggeredPause
+  updatedPlaybackSettings
 };
 export default connect(mapStateToProps, mapDispatchToProps)(WaveControlView);

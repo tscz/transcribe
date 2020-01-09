@@ -8,4 +8,5 @@ export default {
   component: View
 };
 
-export const Basic = () => Rectangle(<View body={<p>Test</p>}></View>);
+export const Basic = () =>
+  Rectangle(<View title="test" body={<p>Test</p>}></View>);

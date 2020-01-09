@@ -5,25 +5,28 @@ const drawerWidth = 190;
 export const stylesForApp = (theme: Theme) =>
   createStyles({
     root: {
-      display: "flex"
+      display: "flex",
+      backgroundColor: "#d5d8da"
     },
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
-      boxShadow: "none"
+      backgroundColor: "#FFFFFF"
     },
     drawer: {
       width: drawerWidth,
       flexShrink: 0
     },
     drawerPaper: {
-      width: drawerWidth
+      width: drawerWidth,
+      backgroundColor: "#202a2f"
     },
     content: {
       flexGrow: 1,
-      padding: theme.spacing(0)
+      padding: theme.spacing(3)
     },
     toolbar: theme.mixins.toolbar,
     title: {
-      flexGrow: 1
+      flexGrow: 1,
+      marginLeft: "50px"
     }
   });

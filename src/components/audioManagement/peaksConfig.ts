@@ -87,14 +87,14 @@ class PeaksConfig {
   };
 
   static SECTIONTYPE_TO_COLOR = new Map<SectionType, string>([
-    [SectionType.INTRO, "#FF0000"],
-    [SectionType.VERSE, "#FFFF00"],
-    [SectionType.PRECHORUS, "#00FF00"],
-    [SectionType.CHORUS, "#008000"],
-    [SectionType.SOLO, "#000080"],
-    [SectionType.OUTRO, "#800080"],
-    [SectionType.BRIDGE, "#00FFFF"],
-    [SectionType.VERSE, "#800000"]
+    [SectionType.INTRO, "#FFCA28"],
+    [SectionType.VERSE, "#FFA726"],
+    [SectionType.PRECHORUS, "#FF7043"],
+    [SectionType.CHORUS, "#9CCC65"],
+    [SectionType.SOLO, "#26C6DA"],
+    [SectionType.OUTRO, "#5C6BC0"],
+    [SectionType.BRIDGE, "#EC407A"],
+    [SectionType.VERSE, "#78909C"]
   ]) as ReadonlyMap<SectionType, string>;
 }
 
