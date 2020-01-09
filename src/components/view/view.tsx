@@ -9,7 +9,11 @@ interface Props {
 class View extends Component<Props> {
   render() {
     return (
-      <Card style={{ height: "100%" }}>
+      <Card
+        style={{ height: "100%", boxShadow: "none" }}
+        raised={true}
+        square={true}
+      >
         <CardContent>{this.props.body}</CardContent>
       </Card>
     );

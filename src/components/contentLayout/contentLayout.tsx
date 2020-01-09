@@ -10,11 +10,11 @@ interface Props {
 class ContentLayout extends React.Component<Props> {
   render() {
     return (
-      <Grid container spacing={3} alignItems="stretch">
-        <Grid item xs={9} style={{ minHeight: "400px" }}>
+      <Grid container spacing={0} alignItems="stretch">
+        <Grid item xs={10}>
           {this.props.topLeft}
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={2}>
           {this.props.topRight}
         </Grid>
         <Grid item xs={12}>
