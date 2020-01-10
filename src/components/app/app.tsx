@@ -50,15 +50,7 @@ interface Props extends WithStyles<typeof stylesForApp> {
 
 type AllProps = Props & PropsFromState & PropsFromDispatch;
 
-interface State {
-  open: boolean;
-}
-
-class App extends React.Component<AllProps, State> {
-  state: State = {
-    open: false
-  };
-
+class App extends React.Component<AllProps> {
   render() {
     Log.info("render", App.name);
     return (
