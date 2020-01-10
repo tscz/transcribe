@@ -2,10 +2,17 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch Chrome against localhost",
+            "name": "Debug Application",
             "type": "chrome",
             "request": "launch",
             "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "name": "Debug Storybook",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:9009",
             "webRoot": "${workspaceFolder}"
         },
         {
