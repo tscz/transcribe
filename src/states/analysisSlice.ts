@@ -16,8 +16,7 @@ export interface AnalysisState {
 
 export interface Section {
   type: SectionType;
-  firstMeasure: number;
-  lastMeasure: number;
+  measures: string[];
 }
 
 export interface Measure extends PointAddOptions {}
@@ -48,7 +47,8 @@ export enum SectionType {
   CHORUS = "CHORUS",
   BRIDGE = "BRIDGE",
   SOLO = "SOLO",
-  OUTRO = "OUTRO"
+  OUTRO = "OUTRO",
+  UNDEFINED = "UNDEFINED"
 }
 
 export const initialAnalysisState: AnalysisState = {
@@ -161,7 +161,11 @@ const analysisSlice = createSlice({
 });
 
 const generateSectionId = (section: Section) =>
-  section.type + "_" + section.firstMeasure + "_" + section.lastMeasure;
+  section.type +
+  "_" +
+  section.measures[0] +
+  "_" +
+  section.measures[section.measures.length - 1];
 
 export const {
   addedSection,

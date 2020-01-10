@@ -11,11 +11,11 @@ import {
 } from "../../states/projectSlice";
 import store, { PersistedState } from "../../states/store";
 import theme from "../../styles/theme";
-import StructureView from "./structureView";
+import StructureNavigationView from "./structureNavigationView";
 
 export default {
-  title: "Views|StructureView",
-  component: StructureView
+  title: "Views|StructureNavigationView",
+  component: StructureNavigationView
 };
 
 export const Default = () => {
@@ -68,7 +68,7 @@ export const Default = () => {
       <ThemeProvider theme={theme}>
         <CssBaseline />
 
-        <StructureView></StructureView>
+        <StructureNavigationView></StructureNavigationView>
       </ThemeProvider>
     </Provider>
   );

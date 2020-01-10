@@ -1,4 +1,4 @@
-import { IconButton, Tooltip } from "@material-ui/core";
+import { IconButton, Popover, Tooltip } from "@material-ui/core";
 import LoopIcon from "@material-ui/icons/Loop";
 import PauseIcon from "@material-ui/icons/Pause";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
@@ -16,6 +16,7 @@ import { LoadingStatus } from "../../states/projectSlice";
 import { ApplicationState } from "../../states/store";
 import { zoomedIn, zoomedOut } from "../../states/waveSlice";
 import StructureView from "../../views/structure/structureView";
+import StructureNavigationView from "../../views/structureNavigation/structureNavigationView";
 import WaveContainer from "../../views/wave/waveContainer";
 import WaveControlView from "../../views/waveControl/waveControlView";
 
@@ -35,7 +36,23 @@ interface Props {}
 
 type AllProps = PropsFromState & PropsFromDispatch & Props;
 
-class StructurePage extends React.Component<AllProps> {
+interface State {
+  anchorEl: HTMLButtonElement | null;
+}
+
+class StructurePage extends React.Component<AllProps, State> {
+  state: State = {
+    anchorEl: null
+  };
+
+  handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    this.setState({ anchorEl: event.currentTarget });
+  };
+
+  handleClose = () => {
+    this.setState({ anchorEl: null });
+  };
+
   render() {
     Log.info("render", StructurePage.name);
     return (
@@ -61,8 +78,27 @@ class StructurePage extends React.Component<AllProps> {
                 )}
 
                 <WaveformControlButton title="Loop" icon={<LoopIcon />} />
-                <WaveformControlButton title="Metronome" icon={<TimerIcon />} />
-
+                <WaveformControlButton
+                  title="Metronome"
+                  icon={<TimerIcon />}
+                  onClick={e => this.handleClick(e)}
+                />
+                <Popover
+                  style={{ height: "400px" }}
+                  open={Boolean(this.state.anchorEl)}
+                  anchorEl={this.state.anchorEl}
+                  onClose={() => this.handleClose()}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "left"
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "left"
+                  }}
+                >
+                  <WaveControlView></WaveControlView>
+                </Popover>
                 <WaveformControlButton
                   title="Zoom in"
                   icon={<ZoomInIcon />}
@@ -78,7 +114,10 @@ class StructurePage extends React.Component<AllProps> {
           ></View>
         }
         topRight={
-          <View title="Playback Settings" body={<WaveControlView />}></View>
+          <View
+            title="Song Navigation"
+            body={<StructureNavigationView />}
+          ></View>
         }
         bottom={<View title="Song Structure" body={<StructureView />}></View>}
       ></ContentLayout>
@@ -89,7 +128,7 @@ class StructurePage extends React.Component<AllProps> {
 const WaveformControlButton = (props: {
   title: string;
   icon: ReactElement;
-  onClick?: () => void;
+  onClick?: (e?: any) => void;
 }) => {
   return (
     <Tooltip title={props.title}>

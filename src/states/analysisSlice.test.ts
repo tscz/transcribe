@@ -104,32 +104,27 @@ it("can update the rhythm (only time signature)", () => {
 it("can add a section", () => {
   let section: Section = {
     type: SectionType.BRIDGE,
-    firstMeasure: 0,
-    lastMeasure: 10
+    measures: ["0", "1", "2", "3", "4"]
   };
-
-  let id =
-    section.type + "_" + section.firstMeasure + "_" + section.lastMeasure;
 
   let state: AnalysisState = reducer(undefined, addedSection(section));
 
-  expect(state.sections.allIds).toContainEqual(id);
-  expect(state.sections.byId[id]).toEqual(section);
+  expect(state.sections.allIds).toContainEqual("BRIDGE_0_4");
+  expect(state.sections.byId["BRIDGE_0_4"]).toEqual(section);
 });
 
 it("can remove a section", () => {
   let section: Section = {
     type: SectionType.BRIDGE,
-    firstMeasure: 0,
-    lastMeasure: 10
+    measures: ["0", "1", "2", "3", "4"]
   };
 
   let state: AnalysisState = reducer(undefined, addedSection(section));
 
   expect(state.sections.allIds.length).toBe(1);
-  expect(state.sections.byId["BRIDGE_0_10"]).toEqual(section);
+  expect(state.sections.byId["BRIDGE_0_4"]).toEqual(section);
 
-  state = reducer(state, removedSection("BRIDGE_0_10"));
+  state = reducer(state, removedSection("BRIDGE_0_4"));
   expect(state.sections.allIds.length).toBe(0);
-  expect(state.sections.byId["BRIDGE_0_10"]).toEqual(undefined);
+  expect(state.sections.byId["BRIDGE_0_4"]).toEqual(undefined);
 });

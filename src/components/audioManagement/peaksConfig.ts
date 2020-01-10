@@ -42,8 +42,9 @@ class PeaksConfig {
       let segment: SegmentAddOptions = {
         id,
         labelText: section.type,
-        startTime: measures.byId[section.firstMeasure].time,
-        endTime: measures.byId[section.lastMeasure].time,
+        startTime: measures.byId[section.measures[0]].time,
+        endTime:
+          measures.byId[section.measures[section.measures.length - 1]].time,
         color: PeaksConfig.SECTIONTYPE_TO_COLOR.get(section.type),
         editable: false
       };
@@ -94,7 +95,8 @@ class PeaksConfig {
     [SectionType.SOLO, "#26C6DA"],
     [SectionType.OUTRO, "#5C6BC0"],
     [SectionType.BRIDGE, "#EC407A"],
-    [SectionType.VERSE, "#78909C"]
+    [SectionType.VERSE, "#78909C"],
+    [SectionType.UNDEFINED, "#ffffff"]
   ]) as ReadonlyMap<SectionType, string>;
 }
 
