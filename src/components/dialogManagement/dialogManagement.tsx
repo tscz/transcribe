@@ -14,7 +14,7 @@ import {
 } from "../../states/projectSlice";
 import store, { ApplicationState } from "../../states/store";
 import FileInput, { FileType } from "../fileInput/fileInput";
-import ModalDialog from "../modalDialog/modalDialog";
+import ModalDialog, { DialogAction } from "../modalDialog/modalDialog";
 
 interface PropsFromState {
   type: DialogType;
@@ -71,8 +71,13 @@ class DialogManagement extends Component<AllProps> {
         return (
           <ModalDialog
             title="Save Transcription"
+            subTitle="Please click on 'save' to generate a transcription.zip file. It contains the transcription and the source audio file."
             onCancel={this.props.closedDialog}
             actions={[
+              {
+                label: "Cancel",
+                onClick: () => this.props.closedDialog()
+              },
               {
                 label: "Save",
                 onClick: () => {
@@ -84,9 +89,7 @@ class DialogManagement extends Component<AllProps> {
                 }
               }
             ]}
-          >
-            <p>Save Transcription</p>
-          </ModalDialog>
+          ></ModalDialog>
         );
       default:
         return null;
@@ -100,18 +103,27 @@ const NewDialog: FunctionComponent<{
 }> = props => {
   const [fileUrl, setFileUrl] = useState("");
   const [title, setTitle] = useState("");
+  const actions: () => DialogAction[] = () => {
+    return [
+      {
+        label: "Cancel",
+        onClick: () => props.onCancel()
+      },
+      {
+        label: "Create",
+        onClick: () => props.onSubmit(title, fileUrl),
+        disabled: fileUrl === "" || title === ""
+      }
+    ];
+  };
 
   const handleTitleChange = (event: any) => setTitle(event.target.value);
 
   return (
     <ModalDialog
       title="Create new Transcription"
-      actions={[
-        {
-          label: "Create",
-          onClick: () => props.onSubmit(title, fileUrl)
-        }
-      ]}
+      subTitle="Please add a project title and select an audio file from your hard disk below."
+      actions={actions()}
       onCancel={props.onCancel}
     >
       <FormControl fullWidth>
@@ -143,19 +155,28 @@ const OpenDialog: FunctionComponent<{
 }> = props => {
   const [fileUrl, setFileUrl] = useState("");
   const [file, setFile] = useState<File>();
+  const actions: () => DialogAction[] = () => {
+    return [
+      {
+        label: "Cancel",
+        onClick: () => props.onCancel()
+      },
+      {
+        label: "Open",
+        onClick: () => props.onSubmit(file!, fileUrl),
+        disabled: fileUrl === ""
+      }
+    ];
+  };
 
   return (
     <ModalDialog
       title="Open Transcription"
+      subTitle="Please select a project zip file from your hard disk below."
       onCancel={props.onCancel}
-      actions={[
-        {
-          label: "Open",
-          onClick: () => props.onSubmit(file!, fileUrl)
-        }
-      ]}
+      actions={actions()}
     >
-      <FormControl>
+      <FormControl fullWidth>
         <FileInput
           fileType={FileType.ZIP}
           id="zip_file"
