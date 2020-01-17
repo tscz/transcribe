@@ -114,10 +114,7 @@ class StructurePage extends React.Component<AllProps, State> {
           ></View>
         }
         topRight={
-          <View
-            title="Song Navigation"
-            body={<StructureNavigationView />}
-          ></View>
+          <View title="Song Measures" body={<StructureNavigationView />}></View>
         }
         bottom={<View title="Song Structure" body={<StructureView />}></View>}
       ></ContentLayout>

@@ -1,6 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { PointAddOptions } from "peaks.js";
 
+import ArrayUtil from "../util/ArrayUtil";
+import {
+  distributeMeasures,
+  enclosingSectionOf,
+  mergeSections,
+  replaceSections,
+  sectionInvalid,
+  undefinedSection
+} from "./analysisUtil";
 import { createdProject, initializedProject } from "./projectSlice";
 import { NormalizedObjects } from "./store";
 
@@ -31,15 +40,6 @@ export enum TimeSignatureType {
   THREE_FOUR = "THREE_FOUR"
 }
 
-export const toTimeSignature = (type: TimeSignatureType) => {
-  switch (type) {
-    case TimeSignatureType.FOUR_FOUR:
-      return { beatUnit: 4, beatsPerMeasure: 4 };
-    case TimeSignatureType.THREE_FOUR:
-      return { beatUnit: 4, beatsPerMeasure: 3 };
-  }
-};
-
 export enum SectionType {
   INTRO = "INTRO",
   VERSE = "VERSE",
@@ -61,36 +61,6 @@ export const initialAnalysisState: AnalysisState = {
   timeSignature: TimeSignatureType.FOUR_FOUR
 };
 
-const generateMeasures = (
-  timeSignatureType: TimeSignatureType,
-  bpm: number,
-  firstMeasureStart: number,
-  length: number
-) => {
-  const timeSignature = toTimeSignature(timeSignatureType);
-  const lengthOfOneMeasure = (60 * timeSignature.beatsPerMeasure) / bpm;
-  const measures: NormalizedObjects<Measure> = { allIds: [], byId: {} };
-
-  let index = 0;
-  for (
-    let start = firstMeasureStart;
-    start < length;
-    start += lengthOfOneMeasure
-  ) {
-    measures.allIds.push("" + index);
-    measures.byId[index] = {
-      time: start,
-      color: "",
-      editable: false,
-      id: "" + index,
-      labelText: "" + index
-    };
-    index++;
-  }
-
-  return measures;
-};
-
 const analysisSlice = createSlice({
   name: "analysis",
   initialState: initialAnalysisState,
@@ -102,39 +72,31 @@ const analysisSlice = createSlice({
       .addCase(initializedProject, (state, action) => {
         state.audioDuration = action.payload.audioDuration;
         state.audioSampleRate = action.payload.audioSampleRate;
-        state.measures = generateMeasures(
+
+        state.measures = distributeMeasures(
           state.timeSignature,
           state.bpm,
           state.firstMeasureStart,
           state.audioDuration
         );
+
+        state.sections = undefinedSection(state.measures.allIds.length - 1);
       }),
   reducers: {
     addedSection(state, action: PayloadAction<Section>) {
-      const id = generateSectionId(action.payload);
-      state.sections.allIds.push(id);
-      state.sections.byId[id] = action.payload;
+      return addSection(state, action.payload);
     },
     updatedSection(
       state,
       action: PayloadAction<{ before: string; after: Section }>
     ) {
-      state.sections.allIds = state.sections.allIds.filter(
-        id => id !== action.payload.before
-      );
-
-      delete state.sections.byId[action.payload.before];
-
-      const id = generateSectionId(action.payload.after);
-      state.sections.allIds.push(id);
-      state.sections.byId[id] = action.payload.after;
+      removeSection(state, action.payload.before);
+      return addSection(state, action.payload.after);
     },
     removedSection(state, action: PayloadAction<string>) {
-      state.sections.allIds = state.sections.allIds.filter(
-        id => id !== action.payload
-      );
+      removeSection(state, action.payload);
 
-      delete state.sections.byId[action.payload];
+      return state;
     },
     updatedRhythm(
       state,
@@ -150,7 +112,7 @@ const analysisSlice = createSlice({
       state.timeSignature =
         action.payload.timeSignatureType ?? state.timeSignature;
 
-      state.measures = generateMeasures(
+      state.measures = distributeMeasures(
         state.timeSignature,
         state.bpm,
         state.firstMeasureStart,
@@ -160,12 +122,66 @@ const analysisSlice = createSlice({
   }
 });
 
-const generateSectionId = (section: Section) =>
-  section.type +
-  "_" +
-  section.measures[0] +
-  "_" +
-  section.measures[section.measures.length - 1];
+const addSection: (
+  state: AnalysisState,
+  newSection: Section
+) => AnalysisState = (state, newSection) => {
+  if (sectionInvalid(newSection)) return state;
+
+  let enclosingSection = enclosingSectionOf(newSection, state.sections);
+  if (
+    enclosingSection === undefined ||
+    enclosingSection.section.type !== SectionType.UNDEFINED
+  )
+    return state;
+
+  let mergedSections = mergeSections(enclosingSection.section, newSection);
+
+  replaceSections(state.sections, enclosingSection.position, 1, mergedSections);
+
+  return state;
+};
+
+const removeSection: (state: AnalysisState, sectionId: string) => void = (
+  state,
+  sectionId
+) => {
+  let position = state.sections.allIds.indexOf(sectionId);
+  let section = state.sections.byId[sectionId];
+
+  let before = state.sections.allIds[position - 1];
+  let after = state.sections.allIds[position + 1];
+
+  let { start: firstMeasure, end: lastMeasure } = ArrayUtil.bordersOf(
+    section.measures
+  );
+  let removalStart = position;
+  let removalCount = 1;
+
+  if (
+    before !== undefined &&
+    state.sections.byId[before].type === SectionType.UNDEFINED
+  ) {
+    removalStart--;
+    removalCount++;
+    firstMeasure = parseInt(state.sections.byId[before].measures[0]);
+  }
+
+  if (
+    after !== undefined &&
+    state.sections.byId[after].type === SectionType.UNDEFINED
+  ) {
+    removalCount++;
+    lastMeasure = parseInt(ArrayUtil.last(state.sections.byId[after].measures));
+  }
+
+  replaceSections(state.sections, removalStart, removalCount, [
+    {
+      measures: ArrayUtil.range(firstMeasure, lastMeasure),
+      type: SectionType.UNDEFINED
+    }
+  ]);
+};
 
 export const {
   addedSection,

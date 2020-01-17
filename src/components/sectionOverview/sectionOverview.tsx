@@ -34,12 +34,12 @@ class SectionOverview extends React.Component<AllProps> {
           {sections.allIds.map(sectionId => (
             <Grid item key={sectionId}>
               <Grid container direction="column">
-                <Grid item>
+                <Grid item key={sectionId + "_caption"}>
                   <Typography variant="caption">
                     {sections.byId[sectionId].type.toLowerCase()}
                   </Typography>
                 </Grid>
-                <Grid item>
+                <Grid item key={sectionId + "_body"}>
                   <Grid
                     container
                     direction="column"
@@ -47,7 +47,11 @@ class SectionOverview extends React.Component<AllProps> {
                   >
                     {generateMatrix(sections.byId[sectionId].measures, 8).map(
                       row => (
-                        <ButtonGroup orientation="horizontal" size="small">
+                        <ButtonGroup
+                          key={sectionId + "_buttonGroup_" + row[0]}
+                          orientation="horizontal"
+                          size="small"
+                        >
                           {row.map(measureId => {
                             let measure: Measure = measures.byId[measureId];
 

@@ -1,10 +1,15 @@
+import { FormLabel } from "@material-ui/core";
 import FormControl from "@material-ui/core/FormControl";
 import TextField from "@material-ui/core/TextField";
 import React, { Component, FunctionComponent, useState } from "react";
 import { connect } from "react-redux";
 
 import PersistenceApi from "../../api/persistenceApi";
-import { initialAnalysisState } from "../../states/analysisSlice";
+import {
+  addedSection,
+  initialAnalysisState,
+  SectionType
+} from "../../states/analysisSlice";
 import { closedDialog, DialogType } from "../../states/dialogsSlice";
 import {
   createdProject,
@@ -13,8 +18,11 @@ import {
   switchedPage
 } from "../../states/projectSlice";
 import store, { ApplicationState } from "../../states/store";
+import ArrayUtil from "../../util/ArrayUtil";
 import FileInput, { FileType } from "../fileInput/fileInput";
+import MeasureSelect from "../measureSelect/measureSelect";
 import ModalDialog, { DialogAction } from "../modalDialog/modalDialog";
+import SectionSelect from "../sectionSelect/sectionSelect";
 
 interface PropsFromState {
   type: DialogType;
@@ -25,6 +33,7 @@ interface PropsFromDispatch {
   switchedPage: typeof switchedPage;
   closedDialog: typeof closedDialog;
   createdProject: typeof createdProject;
+  addedSection: typeof addedSection;
 }
 
 type AllProps = PropsFromState & PropsFromDispatch;
@@ -91,8 +100,21 @@ class DialogManagement extends Component<AllProps> {
             ]}
           ></ModalDialog>
         );
+      case DialogType.ADD_SECTION:
+        return (
+          <AddSectionDialog
+            onCancel={() => this.props.closedDialog()}
+            onSubmit={(sectionType, start, end) => {
+              this.props.addedSection({
+                measures: ArrayUtil.range(start, end),
+                type: sectionType
+              });
+              this.props.closedDialog();
+            }}
+          ></AddSectionDialog>
+        );
       default:
-        return null;
+        throw Error();
     }
   }
 }
@@ -190,6 +212,63 @@ const OpenDialog: FunctionComponent<{
   );
 };
 
+const AddSectionDialog: FunctionComponent<{
+  onSubmit: (sectionType: SectionType, start: number, end: number) => void;
+  onCancel: () => void;
+}> = props => {
+  const [sectionType, setSectionType] = useState(SectionType.UNDEFINED);
+  const [start, setStart] = useState(1);
+  const [end, setEnd] = useState(2);
+  const actions: () => DialogAction[] = () => {
+    return [
+      {
+        label: "Cancel",
+        onClick: () => props.onCancel()
+      },
+      {
+        label: "Add",
+        onClick: () => props.onSubmit(sectionType, start, end),
+        disabled: sectionType === SectionType.UNDEFINED || start > end
+      }
+    ];
+  };
+
+  return (
+    <ModalDialog
+      title="Add new Section"
+      subTitle="Please define section and add it to the song structure."
+      actions={actions()}
+      onCancel={props.onCancel}
+    >
+      <FormControl fullWidth style={{ marginBottom: "20px" }}>
+        <FormLabel component="legend">Section Type</FormLabel>
+        <SectionSelect
+          value={sectionType}
+          onChange={sectionType => setSectionType(sectionType)}
+        ></SectionSelect>
+      </FormControl>
+      <FormControl fullWidth style={{ marginBottom: "20px" }}>
+        <FormLabel component="legend">First Measure</FormLabel>
+        <MeasureSelect
+          value={start}
+          min={0}
+          max={42}
+          onChange={value => setStart(value)}
+        />
+      </FormControl>
+      <FormControl fullWidth style={{ marginBottom: "20px" }}>
+        <FormLabel component="legend">Last Measure</FormLabel>
+        <MeasureSelect
+          value={end}
+          min={0}
+          max={42}
+          onChange={value => setEnd(value)}
+        />
+      </FormControl>
+    </ModalDialog>
+  );
+};
+
 const mapStateToProps = ({ dialog, project }: ApplicationState) => {
   return {
     type: dialog.currentDialog,
@@ -200,7 +279,8 @@ const mapStateToProps = ({ dialog, project }: ApplicationState) => {
 const mapDispatchToProps = {
   closedDialog,
   switchedPage,
-  createdProject
+  createdProject,
+  addedSection
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DialogManagement);

@@ -23,6 +23,7 @@ import {
   SectionType,
   updatedSection
 } from "../../states/analysisSlice";
+import { DialogType, openedDialog } from "../../states/dialogsSlice";
 import { ApplicationState, NormalizedObjects } from "../../states/store";
 import ArrayUtil from "../../util/ArrayUtil";
 
@@ -35,6 +36,7 @@ interface PropsFromDispatch {
   addedSection: typeof addedSection;
   updatedSection: typeof updatedSection;
   removedSection: typeof removedSection;
+  openedDialog: typeof openedDialog;
 }
 
 type AllProps = PropsFromState & PropsFromDispatch;
@@ -55,7 +57,11 @@ class StructureView extends Component<AllProps> {
       StructureView.name
     );
 
-    if (after.measures[0] > after.measures[after.measures.length - 1]) return;
+    if (
+      parseInt(after.measures[0]) >
+      parseInt(after.measures[after.measures.length - 1])
+    )
+      return;
 
     this.props.updatedSection({ before: id, after });
   };
@@ -82,26 +88,33 @@ class StructureView extends Component<AllProps> {
               return (
                 <TableRow key={id}>
                   <TableCell component="th" scope="row">
-                    <IconButton
-                      onClick={() => this.handleRemoveSection(id)}
-                      size="small"
-                    >
-                      <RemoveIcon></RemoveIcon>
-                    </IconButton>
+                    {section.type !== SectionType.UNDEFINED && (
+                      <IconButton
+                        onClick={() => this.handleRemoveSection(id)}
+                        size="small"
+                      >
+                        <RemoveIcon></RemoveIcon>
+                      </IconButton>
+                    )}
                   </TableCell>
                   <TableCell>
-                    <SectionSelect
-                      value={section.type}
-                      onChange={sectionType =>
-                        this.handleUpdatedSection(id, section, {
-                          ...section,
-                          type: sectionType
-                        })
-                      }
-                    ></SectionSelect>
+                    {section.type === SectionType.UNDEFINED ? (
+                      "UNDEFINED"
+                    ) : (
+                      <SectionSelect
+                        value={section.type}
+                        onChange={sectionType =>
+                          this.handleUpdatedSection(id, section, {
+                            ...section,
+                            type: sectionType
+                          })
+                        }
+                      ></SectionSelect>
+                    )}
                   </TableCell>
                   <TableCell>
                     <MeasureSelect
+                      disabled={section.type === SectionType.UNDEFINED}
                       value={parseInt(section.measures[0])}
                       min={0}
                       max={this.props.measuresCount - 1}
@@ -120,6 +133,7 @@ class StructureView extends Component<AllProps> {
                   </TableCell>
                   <TableCell>
                     <MeasureSelect
+                      disabled={section.type === SectionType.UNDEFINED}
                       value={parseInt(
                         section.measures[section.measures.length - 1]
                       )}
@@ -142,12 +156,9 @@ class StructureView extends Component<AllProps> {
             <TableRow key="last">
               <TableCell component="th" scope="row">
                 <IconButton
-                  onClick={() => {
-                    this.handleAddSection({
-                      type: SectionType.SOLO,
-                      measures: ["1", "2", "3", "4"]
-                    });
-                  }}
+                  onClick={() =>
+                    this.props.openedDialog(DialogType.ADD_SECTION)
+                  }
                   size="small"
                 >
                   <AddIcon></AddIcon>
@@ -174,6 +185,7 @@ const mapStateToProps = ({ analysis }: ApplicationState) => {
 const mapDispatchToProps = {
   addedSection,
   updatedSection,
-  removedSection
+  removedSection,
+  openedDialog
 };
 export default connect(mapStateToProps, mapDispatchToProps)(StructureView);

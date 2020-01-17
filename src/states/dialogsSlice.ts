@@ -8,7 +8,8 @@ export enum DialogType {
   NONE = "none",
   NEW = "new",
   OPEN = "open",
-  SAVE = "save"
+  SAVE = "save",
+  ADD_SECTION = "add_section"
 }
 
 const initialDialogState: DialogState = {

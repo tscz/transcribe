@@ -7,6 +7,7 @@ const MeasureSelect: FunctionComponent<{
   min: number;
   max: number;
   onChange: (value: number) => void;
+  disabled?: boolean;
 }> = props => {
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     let newMeasure = event.target.value as number;
@@ -20,6 +21,7 @@ const MeasureSelect: FunctionComponent<{
       style={{
         minWidth: "40px"
       }}
+      disabled={props.disabled}
     >
       {new Array<number>(props.max - props.min + 1)
         .fill(0)
