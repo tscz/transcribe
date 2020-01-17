@@ -24,7 +24,9 @@ const SectionSelect: FunctionComponent<{
       }}
     >
       {Object.values(SectionType).map(sectionType => {
-        return (
+        return sectionType === SectionType.UNDEFINED ? (
+          undefined
+        ) : (
           <MenuItem
             key={sectionType}
             value={sectionType}
