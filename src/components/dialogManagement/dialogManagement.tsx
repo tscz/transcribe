@@ -27,6 +27,7 @@ import SectionSelect from "../sectionSelect/sectionSelect";
 interface PropsFromState {
   type: DialogType;
   audioUrl: string;
+  maxMeasure: number;
 }
 
 interface PropsFromDispatch {
@@ -103,6 +104,7 @@ class DialogManagement extends Component<AllProps> {
       case DialogType.ADD_SECTION:
         return (
           <AddSectionDialog
+            maxMeasure={this.props.maxMeasure}
             onCancel={() => this.props.closedDialog()}
             onSubmit={(sectionType, start, end) => {
               this.props.addedSection({
@@ -213,12 +215,13 @@ const OpenDialog: FunctionComponent<{
 };
 
 const AddSectionDialog: FunctionComponent<{
+  maxMeasure: number;
   onSubmit: (sectionType: SectionType, start: number, end: number) => void;
   onCancel: () => void;
 }> = props => {
-  const [sectionType, setSectionType] = useState(SectionType.UNDEFINED);
-  const [start, setStart] = useState(1);
-  const [end, setEnd] = useState(2);
+  const [sectionType, setSectionType] = useState(SectionType.INTRO);
+  const [start, setStart] = useState(0);
+  const [end, setEnd] = useState(0);
   const actions: () => DialogAction[] = () => {
     return [
       {
@@ -252,7 +255,7 @@ const AddSectionDialog: FunctionComponent<{
         <MeasureSelect
           value={start}
           min={0}
-          max={42}
+          max={props.maxMeasure}
           onChange={value => setStart(value)}
         />
       </FormControl>
@@ -261,7 +264,7 @@ const AddSectionDialog: FunctionComponent<{
         <MeasureSelect
           value={end}
           min={0}
-          max={42}
+          max={props.maxMeasure}
           onChange={value => setEnd(value)}
         />
       </FormControl>
@@ -269,10 +272,11 @@ const AddSectionDialog: FunctionComponent<{
   );
 };
 
-const mapStateToProps = ({ dialog, project }: ApplicationState) => {
+const mapStateToProps = ({ dialog, project, analysis }: ApplicationState) => {
   return {
     type: dialog.currentDialog,
-    audioUrl: project.audioUrl
+    audioUrl: project.audioUrl,
+    maxMeasure: analysis.measures.allIds.length - 1
   };
 };
 
