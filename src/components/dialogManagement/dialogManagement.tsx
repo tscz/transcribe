@@ -9,14 +9,14 @@ import {
   addedSection,
   initialAnalysisState,
   SectionType
-} from "../../states/analysisSlice";
-import { closedDialog, DialogType } from "../../states/dialogsSlice";
+} from "../../states/analysis/analysisSlice";
+import { closedDialog, DialogType } from "../../states/dialog/dialogsSlice";
 import {
   createdProject,
   initialProjectState,
   Page,
   switchedPage
-} from "../../states/projectSlice";
+} from "../../states/project/projectSlice";
 import store, { ApplicationState } from "../../states/store";
 import ArrayUtil from "../../util/ArrayUtil";
 import FileInput, { FileType } from "../fileInput/fileInput";

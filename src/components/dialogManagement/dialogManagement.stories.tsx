@@ -5,7 +5,7 @@ import { createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 
 import DialogManagement from "../../components/dialogManagement/dialogManagement";
-import { DialogType, openedDialog } from "../../states/dialogsSlice";
+import { DialogType, openedDialog } from "../../states/dialog/dialogsSlice";
 import { createRootReducer } from "../../states/store";
 
 export default {

@@ -14,9 +14,12 @@ import ToggleButton from "@material-ui/lab/ToggleButton";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import { TimeSignatureType, updatedRhythm } from "../../states/analysisSlice";
-import { updatedPlaybackSettings } from "../../states/audioSlice";
-import { enabledSyncFirstMeasureStart } from "../../states/projectSlice";
+import {
+  TimeSignatureType,
+  updatedRhythm
+} from "../../states/analysis/analysisSlice";
+import { updatedPlaybackSettings } from "../../states/audio/audioSlice";
+import { enabledSyncFirstMeasureStart } from "../../states/project/projectSlice";
 import { ApplicationState } from "../../states/store";
 
 interface PropsFromState {

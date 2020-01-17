@@ -2,7 +2,7 @@ import { Button, ButtonGroup, Grid, Typography } from "@material-ui/core";
 import React from "react";
 import { connect } from "react-redux";
 
-import { Measure, Section } from "../../states/analysisSlice";
+import { Measure, Section } from "../../states/analysis/analysisSlice";
 import { ApplicationState, NormalizedObjects } from "../../states/store";
 import PeaksConfig from "../audioManagement/peaksConfig";
 

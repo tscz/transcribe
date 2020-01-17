@@ -1,4 +1,6 @@
-import ArrayUtil from "../util/ArrayUtil";
+import ArrayUtil from "../../util/ArrayUtil";
+import { createdProject, LoadingStatus, Page } from "../project/projectSlice";
+import { PersistedState } from "../store";
 import reducer, {
   addedSection,
   AnalysisState,
@@ -8,8 +10,6 @@ import reducer, {
   TimeSignatureType,
   updatedRhythm
 } from "./analysisSlice";
-import { createdProject, LoadingStatus, Page } from "./projectSlice";
-import { PersistedState } from "./store";
 
 const initialState: AnalysisState = {
   sections: { allIds: [], byId: {} },

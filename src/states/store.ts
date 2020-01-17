@@ -1,11 +1,11 @@
 import { configureStore, createAction } from "@reduxjs/toolkit";
 import { AnyAction, combineReducers, Reducer } from "redux";
 
-import analysisReducer, { AnalysisState } from "./analysisSlice";
-import audioReducer, { AudioState } from "./audioSlice";
-import dialogReducer, { DialogState } from "./dialogsSlice";
-import projectReducer, { ProjectState } from "./projectSlice";
-import waveReducer, { WaveState } from "./waveSlice";
+import analysisReducer, { AnalysisState } from "./analysis/analysisSlice";
+import audioReducer, { AudioState } from "./audio/audioSlice";
+import dialogReducer, { DialogState } from "./dialog/dialogsSlice";
+import projectReducer, { ProjectState } from "./project/projectSlice";
+import waveReducer, { WaveState } from "./wave/waveSlice";
 
 /** The top-level application state object. */
 export interface ApplicationState {

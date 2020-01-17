@@ -1,11 +1,11 @@
-import ArrayUtil from "../util/ArrayUtil";
+import ArrayUtil from "../../util/ArrayUtil";
+import { NormalizedObjects } from "../store";
 import {
   Measure,
   Section,
   SectionType,
   TimeSignatureType
 } from "./analysisSlice";
-import { NormalizedObjects } from "./store";
 
 export const toTimeSignature = (type: TimeSignatureType) => {
   switch (type) {

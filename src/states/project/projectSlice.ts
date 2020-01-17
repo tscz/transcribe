@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { PersistedState } from "./store";
+import { PersistedState } from "../store";
 
 export interface ProjectState {
   readonly status: LoadingStatus;

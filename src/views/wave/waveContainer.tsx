@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import Log from "../../components/log/log";
-import { hotReloaded, LoadingStatus } from "../../states/projectSlice";
+import { hotReloaded, LoadingStatus } from "../../states/project/projectSlice";
 import { ApplicationState } from "../../states/store";
 import WaveView from "./waveView";
 

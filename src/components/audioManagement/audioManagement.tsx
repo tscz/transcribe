@@ -4,9 +4,16 @@ import { connect } from "react-redux";
 import Tone from "tone";
 
 import PersistenceApi from "../../api/persistenceApi";
-import { Measure, Section, updatedRhythm } from "../../states/analysisSlice";
-import { triggeredPause } from "../../states/audioSlice";
-import { initializedProject, LoadingStatus } from "../../states/projectSlice";
+import {
+  Measure,
+  Section,
+  updatedRhythm
+} from "../../states/analysis/analysisSlice";
+import { triggeredPause } from "../../states/audio/audioSlice";
+import {
+  initializedProject,
+  LoadingStatus
+} from "../../states/project/projectSlice";
 import { ApplicationState, NormalizedObjects } from "../../states/store";
 import Log from "../log/log";
 import AudioPlayer from "./audioPlayer";

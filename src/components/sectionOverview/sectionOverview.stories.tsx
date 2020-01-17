@@ -3,13 +3,16 @@ import { Provider } from "react-redux";
 import { createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 
-import { SectionType, TimeSignatureType } from "../../states/analysisSlice";
+import {
+  SectionType,
+  TimeSignatureType
+} from "../../states/analysis/analysisSlice";
 import {
   createdProject,
   initializedProject,
   LoadingStatus,
   Page
-} from "../../states/projectSlice";
+} from "../../states/project/projectSlice";
 import { createRootReducer, PersistedState } from "../../states/store";
 import ArrayUtil from "../../util/ArrayUtil";
 import SectionOverview from "./sectionOverview";

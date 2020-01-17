@@ -1,7 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { PointAddOptions } from "peaks.js";
 
-import ArrayUtil from "../util/ArrayUtil";
+import ArrayUtil from "../../util/ArrayUtil";
+import { createdProject, initializedProject } from "../project/projectSlice";
+import { NormalizedObjects } from "../store";
 import {
   distributeMeasures,
   enclosingSectionOf,
@@ -10,8 +12,6 @@ import {
   sectionInvalid,
   undefinedSection
 } from "./analysisUtil";
-import { createdProject, initializedProject } from "./projectSlice";
-import { NormalizedObjects } from "./store";
 
 export interface AnalysisState {
   readonly sections: NormalizedObjects<Section>;

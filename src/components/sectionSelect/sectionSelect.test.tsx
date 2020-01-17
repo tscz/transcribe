@@ -1,6 +1,6 @@
 import React from "react";
 
-import { SectionType } from "../../states/analysisSlice";
+import { SectionType } from "../../states/analysis/analysisSlice";
 import TestEnvironment from "../../tests/TestEnvironment";
 import SectionSelect from "./sectionSelect";
 

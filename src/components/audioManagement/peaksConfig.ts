@@ -1,6 +1,10 @@
 import { PointAddOptions, SegmentAddOptions } from "peaks.js";
 
-import { Measure, Section, SectionType } from "../../states/analysisSlice";
+import {
+  Measure,
+  Section,
+  SectionType
+} from "../../states/analysis/analysisSlice";
 import { NormalizedObjects } from "../../states/store";
 
 export const AUDIO_DOM_ELEMENT = "audio_dom_element";

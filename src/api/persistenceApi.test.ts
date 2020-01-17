@@ -1,8 +1,8 @@
 import FileSaver from "file-saver";
 import JSZip from "jszip";
 
-import { initialAnalysisState } from "../states/analysisSlice";
-import { initialProjectState } from "../states/projectSlice";
+import { initialAnalysisState } from "../states/analysis/analysisSlice";
+import { initialProjectState } from "../states/project/projectSlice";
 import { PersistedState } from "../states/store";
 import PersistenceApi from "./persistenceApi";
 

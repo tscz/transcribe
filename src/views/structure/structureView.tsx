@@ -22,8 +22,8 @@ import {
   Section,
   SectionType,
   updatedSection
-} from "../../states/analysisSlice";
-import { DialogType, openedDialog } from "../../states/dialogsSlice";
+} from "../../states/analysis/analysisSlice";
+import { DialogType, openedDialog } from "../../states/dialog/dialogsSlice";
 import { ApplicationState, NormalizedObjects } from "../../states/store";
 import ArrayUtil from "../../util/ArrayUtil";
 
