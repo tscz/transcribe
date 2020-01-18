@@ -147,3 +147,24 @@ it("can remove a section", () => {
   expect(state.sections.byId["BRIDGE_0_4"]).toBeUndefined();
   expect(state.sections.byId["UNDEFINED_0_99"]).toBeDefined();
 });
+
+it("can remove sections after changing rhythm", () => {
+  let bridgeSection: Section = {
+    type: SectionType.BRIDGE,
+    measures: ArrayUtil.range(0, 98)
+  };
+
+  let state: AnalysisState = reducer(
+    initialState2,
+    addedSection(bridgeSection)
+  );
+
+  expect(state.sections.allIds.length).toBe(2);
+  expect(state.sections.byId["BRIDGE_0_98"]).toBeDefined();
+  expect(state.sections.byId["UNDEFINED_98_99"]).toBeDefined();
+
+  state = reducer(state, updatedRhythm({ bpm: 60 }));
+
+  expect(state.sections.allIds.length).toBe(1);
+  expect(state.sections.byId["UNDEFINED_0_44"]).toBeDefined();
+});

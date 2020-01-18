@@ -7,6 +7,7 @@ import { NormalizedObjects } from "../store";
 import {
   distributeMeasures,
   enclosingSectionOf,
+  generateSectionId,
   mergeSections,
   replaceSections,
   sectionInvalid,
@@ -118,9 +119,72 @@ const analysisSlice = createSlice({
         state.firstMeasureStart,
         state.audioDuration
       );
+
+      const lastSection =
+        state.sections.byId[
+          state.sections.allIds[state.sections.allIds.length - 1]
+        ];
+
+      if (lastSection === undefined) return state;
+
+      if (
+        parseInt(ArrayUtil.last(state.measures.allIds)) >
+        parseInt(lastSection.measures[lastSection.measures.length - 1])
+      ) {
+        const newLastSection: Section = {
+          type: lastSection.type,
+          measures: ArrayUtil.range(
+            parseInt(lastSection.measures[0]),
+            parseInt(ArrayUtil.last(state.measures.allIds))
+          )
+        };
+        const id = generateSectionId(newLastSection);
+        delete state.sections.byId[
+          state.sections.allIds[state.sections.allIds.length - 1]
+        ];
+        state.sections.allIds[state.sections.allIds.length - 1] = id;
+        state.sections.byId[id] = newLastSection;
+      }
+
+      removeSectionsAfterLastMeasure(state);
+
+      return state;
     }
   }
 });
+
+const removeSectionsAfterLastMeasure: (
+  state: AnalysisState
+) => void = state => {
+  const lastMeasure = state.measures.allIds.length - 1;
+  let removalStart = -1;
+  let removalStartMeasure = -1;
+
+  for (let index = 0; index <= state.sections.allIds.length - 1; index++) {
+    const section = state.sections.byId[state.sections.allIds[index]];
+    const sectionEnd = parseInt(ArrayUtil.last(section.measures));
+
+    if (sectionEnd > lastMeasure) {
+      removalStart = index;
+      removalStartMeasure = parseInt(section.measures[0]);
+      break;
+    }
+  }
+
+  if (removalStart === -1) return; // No sections after last measure
+
+  replaceSections(
+    state.sections,
+    removalStart,
+    state.sections.allIds.length - removalStart,
+    [
+      {
+        measures: ArrayUtil.range(removalStartMeasure, lastMeasure),
+        type: SectionType.UNDEFINED
+      }
+    ]
+  );
+};
 
 const addSection: (
   state: AnalysisState,
