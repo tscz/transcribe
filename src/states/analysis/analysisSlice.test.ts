@@ -161,7 +161,7 @@ it("can remove sections after changing rhythm", () => {
 
   expect(state.sections.allIds.length).toBe(2);
   expect(state.sections.byId["BRIDGE_0_98"]).toBeDefined();
-  expect(state.sections.byId["UNDEFINED_98_99"]).toBeDefined();
+  expect(state.sections.byId["UNDEFINED_99_99"]).toBeDefined();
 
   state = reducer(state, updatedRhythm({ bpm: 60 }));
 

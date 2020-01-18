@@ -101,7 +101,8 @@ class AudioManagement extends React.Component<AllProps> {
       this.repaintWaveform(
         this.props.sections,
         this.props.measures,
-        this.props.zoomLevel
+        this.props.zoomLevel,
+        this.props.secondsPerMeasure
       );
     }
 
@@ -125,7 +126,8 @@ class AudioManagement extends React.Component<AllProps> {
       this.repaintWaveform(
         this.props.sections,
         this.props.measures,
-        this.props.zoomLevel
+        this.props.zoomLevel,
+        this.props.secondsPerMeasure
       );
     }
 
@@ -165,11 +167,12 @@ class AudioManagement extends React.Component<AllProps> {
   private repaintWaveform(
     sections: NormalizedObjects<Section>,
     measures: NormalizedObjects<Measure>,
-    zoomLevel: number
+    zoomLevel: number,
+    timePerMeasure: number
   ) {
     this.getPeaks()?.segments.removeAll();
     this.getPeaks()?.segments.add(
-      PeaksConfig.sectionsToSegment(sections, measures)
+      PeaksConfig.sectionsToSegment(sections, measures, timePerMeasure)
     );
     this.getPeaks()?.points.removeAll();
     this.getPeaks()?.points.add(PeaksConfig.measuresToPoints(measures));

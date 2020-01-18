@@ -37,18 +37,21 @@ class PeaksConfig {
 
   static sectionsToSegment = (
     sections: NormalizedObjects<Section>,
-    measures: NormalizedObjects<Measure>
+    measures: NormalizedObjects<Measure>,
+    timePerMeasure: number
   ) => {
     let segments: SegmentAddOptions[] = [];
     sections.allIds.forEach(id => {
       const section = sections.byId[id];
 
+      const start = measures.byId[section.measures[0]].time;
+      const end = start + timePerMeasure;
+
       let segment: SegmentAddOptions = {
         id,
         labelText: section.type,
-        startTime: measures.byId[section.measures[0]].time,
-        endTime:
-          measures.byId[section.measures[section.measures.length - 1]].time,
+        startTime: start,
+        endTime: end,
         color: PeaksConfig.SECTIONTYPE_TO_COLOR.get(section.type),
         editable: false
       };

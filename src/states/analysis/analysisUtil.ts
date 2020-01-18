@@ -35,7 +35,7 @@ export const undefinedSection = (length: number) => {
 
 export const sectionInvalid = (section: Section) => {
   return (
-    parseInt(section.measures[0]) >=
+    parseInt(section.measures[0]) >
     parseInt(section.measures[section.measures.length - 1])
   );
 };
@@ -82,7 +82,7 @@ export const mergeSections: (
   //Add a new undefined block before the new section
   if (newSectionStart > currentSectionStart) {
     let section: Section = {
-      measures: ArrayUtil.range(currentSectionStart, newSectionStart),
+      measures: ArrayUtil.range(currentSectionStart, newSectionStart - 1),
       type: SectionType.UNDEFINED
     };
     newSections.push(section);
@@ -94,7 +94,7 @@ export const mergeSections: (
   //Add a new undefined block after the new section
   if (newSectionEnd < currentSectionEnd) {
     let section: Section = {
-      measures: ArrayUtil.range(newSectionEnd, currentSectionEnd),
+      measures: ArrayUtil.range(newSectionEnd + 1, currentSectionEnd),
       type: SectionType.UNDEFINED
     };
     newSections.push(section);
