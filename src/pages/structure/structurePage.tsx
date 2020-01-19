@@ -10,6 +10,7 @@ import {
   Popover,
   Tooltip
 } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
 import LoopIcon from "@material-ui/icons/Loop";
 import PauseIcon from "@material-ui/icons/Pause";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
@@ -34,6 +35,7 @@ import {
   triggeredPlay,
   updatedPlaybackSettings
 } from "../../states/audio/audioSlice";
+import { DialogType, openedDialog } from "../../states/dialog/dialogsSlice";
 import {
   enabledSyncFirstMeasureStart,
   LoadingStatus
@@ -63,6 +65,7 @@ interface PropsFromDispatch {
   enabledSyncFirstMeasureStart: typeof enabledSyncFirstMeasureStart;
   updatedRhythm: typeof updatedRhythm;
   updatedPlaybackSettings: typeof updatedPlaybackSettings;
+  openedDialog: typeof openedDialog;
 }
 
 interface Props {}
@@ -214,11 +217,16 @@ class StructurePage extends React.Component<AllProps, State> {
                   />
                 )}
 
-                <WaveformControlButton title="Loop" icon={<LoopIcon />} />
+                <WaveformControlButton
+                  title="Loop"
+                  icon={<LoopIcon />}
+                  disabled={true}
+                />
                 <WaveformControlButton
                   title="Metronome"
                   icon={<TimerIcon />}
                   onClick={e => this.handleClick(e)}
+                  disabled={true}
                 />
                 <Popover
                   style={{ height: "400px" }}
@@ -253,7 +261,23 @@ class StructurePage extends React.Component<AllProps, State> {
         topRight={
           <View title="Song Measures" body={<StructureNavigationView />}></View>
         }
-        bottom={<View title="Song Structure" body={<StructureView />}></View>}
+        bottom={
+          <View
+            title="Song Structure"
+            action={
+              <>
+                <WaveformControlButton
+                  title="Add section"
+                  icon={<AddIcon />}
+                  onClick={() =>
+                    this.props.openedDialog(DialogType.ADD_SECTION)
+                  }
+                />
+              </>
+            }
+            body={<StructureView />}
+          ></View>
+        }
       ></ContentLayout>
     );
   }
@@ -262,17 +286,21 @@ class StructurePage extends React.Component<AllProps, State> {
 const WaveformControlButton = (props: {
   title: string;
   icon: ReactElement;
+  disabled?: boolean;
   onClick?: (e?: any) => void;
 }) => {
   return (
     <Tooltip title={props.title}>
-      <IconButton
-        onClick={props.onClick}
-        size="small"
-        style={{ marginTop: "8px", marginRight: "5px" }}
-      >
-        {props.icon}
-      </IconButton>
+      <>
+        <IconButton
+          onClick={props.onClick}
+          size="small"
+          style={{ marginTop: "8px", marginRight: "5px" }}
+          disabled={props.disabled}
+        >
+          {props.icon}
+        </IconButton>
+      </>
     </Tooltip>
   );
 };
@@ -297,6 +325,7 @@ const mapDispatchToProps = {
   triggeredPause,
   enabledSyncFirstMeasureStart,
   updatedRhythm,
-  updatedPlaybackSettings
+  updatedPlaybackSettings,
+  openedDialog
 };
 export default connect(mapStateToProps, mapDispatchToProps)(StructurePage);

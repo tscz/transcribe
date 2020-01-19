@@ -81,7 +81,8 @@ const analysisSlice = createSlice({
           state.audioDuration
         );
 
-        state.sections = undefinedSection(state.measures.allIds.length - 1);
+        if (state.sections.allIds.length === 0)
+          state.sections = undefinedSection(state.measures.allIds.length - 1);
       }),
   reducers: {
     addedSection(state, action: PayloadAction<Section>) {

@@ -8,7 +8,6 @@ import {
   TableHead,
   TableRow
 } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import React, { Component } from "react";
 import { connect } from "react-redux";
@@ -23,7 +22,6 @@ import {
   SectionType,
   updatedSection
 } from "../../states/analysis/analysisSlice";
-import { DialogType, openedDialog } from "../../states/dialog/dialogsSlice";
 import { ApplicationState, NormalizedObjects } from "../../states/store";
 import ArrayUtil from "../../util/ArrayUtil";
 
@@ -36,7 +34,6 @@ interface PropsFromDispatch {
   addedSection: typeof addedSection;
   updatedSection: typeof updatedSection;
   removedSection: typeof removedSection;
-  openedDialog: typeof openedDialog;
 }
 
 type AllProps = PropsFromState & PropsFromDispatch;
@@ -153,21 +150,6 @@ class StructureView extends Component<AllProps> {
                 </TableRow>
               );
             })}
-            <TableRow key="last">
-              <TableCell component="th" scope="row">
-                <IconButton
-                  onClick={() =>
-                    this.props.openedDialog(DialogType.ADD_SECTION)
-                  }
-                  size="small"
-                >
-                  <AddIcon></AddIcon>
-                </IconButton>
-              </TableCell>
-              <TableCell />
-              <TableCell />
-              <TableCell />
-            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
@@ -185,7 +167,6 @@ const mapStateToProps = ({ analysis }: ApplicationState) => {
 const mapDispatchToProps = {
   addedSection,
   updatedSection,
-  removedSection,
-  openedDialog
+  removedSection
 };
 export default connect(mapStateToProps, mapDispatchToProps)(StructureView);
