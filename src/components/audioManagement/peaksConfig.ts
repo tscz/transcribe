@@ -45,7 +45,9 @@ class PeaksConfig {
       const section = sections.byId[id];
 
       const start = measures.byId[section.measures[0]].time;
-      const end = start + timePerMeasure;
+      const end =
+        measures.byId[section.measures[section.measures.length - 1]].time +
+        timePerMeasure;
 
       let segment: SegmentAddOptions = {
         id,

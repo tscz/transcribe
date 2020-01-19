@@ -109,10 +109,8 @@ class AudioPlayer implements Player {
     if (this.isPlaying()) {
       Tone.Transport.stop();
       Tone.Transport.start(Tone.now(), normalizedTime);
-    } else {
-      Tone.Transport.start(Tone.now(), normalizedTime);
-      Tone.Transport.pause();
     }
+
     this.peaks.emit("player_time_update", normalizedTime);
     this.peaks.emit("player_seek", normalizedTime);
   };
