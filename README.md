@@ -12,28 +12,30 @@
 
 - [Quick start](#quick-start)
 - [Status](#status)
-- [Documentation](#documentation)
+- [Usage](#usage)
 - [Versioning](#versioning)
 - [Copyright and license](#copyright-and-license)
 
 ## Quick start
 
-Run the demo app in your Browser: [Transcribe Demo App](https://tscz.github.com/transcribe).
-
-Read the [Documentation](#documentation) for developing and building infos.
+Run the [Transcribe Demo App](https://tscz.github.com/transcribe) in your Browser.
 
 ## Status
 
 [![](https://github.com/tscz/transcribe/workflows/Build%20application/badge.svg)](https://github.com/tscz/transcribe/actions?query=workflow%3A%22Build+application%22)
 [![Coverage Status](https://coveralls.io/repos/github/tscz/transcribe/badge.svg?branch=master)](https://coveralls.io/github/tscz/transcribe?branch=master)
 [![Coverage Status](https://david-dm.org/tscz/transcribe.svg)](https://david-dm.org/tscz/transcribe)
-
 [![](https://github.com/tscz/transcribe/workflows/Deploy%20release/badge.svg)](https://github.com/tscz/transcribe/releases/latest)
 [![](https://github.com/tscz/transcribe/workflows/Deploy%20storybook/badge.svg)](https://transcribe-storybook.herokuapp.com)
 
 ## Usage
+Simply create a new transcription project and select an audio file of the song you want to transcribe.
+
+Todo
 
 ## Developer Documentation
+The app is a standalone React app using Webaudio APIs locally without any backend system. 
+
 ### Project Structure
 ```text
 transcribe/
@@ -54,6 +56,8 @@ transcribe/
 
 ```
 ### Application State
+The state management is based on Redux. It integrates Tone.js (for audio playback and sequencer) and Peaks.js (for waveform rendering and audio navigation).
+
 <img src="./doc/diagrams/out/state/Application State Overview.svg" alt="app state overview">
 
 
@@ -61,7 +65,7 @@ transcribe/
 See [Storybook](https://transcribe-storybook.herokuapp.com) for Component Documentation.
 
 ## Build
-<img src="./doc/diagrams/out/build/Application build.svg" alt="app build">
+See [Build](https://github.com/tscz/transcribe/wiki/Build) description in project wiki.
 
 ## Deployment
 <img src="./doc/diagrams/out/deployment/Deployment Overview.svg" alt="app deployment">
