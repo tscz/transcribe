@@ -79,4 +79,6 @@ See [Build](https://github.com/tscz/transcribe/wiki/Build) description in projec
 | 0.1 | First running version (see https://github.com/tscz/transcribe/projects/1)
 
 ## Copyright and license
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
 <div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
