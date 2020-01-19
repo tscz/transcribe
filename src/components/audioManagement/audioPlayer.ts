@@ -27,6 +27,7 @@ class AudioPlayer implements Player {
   peaks: PeaksInstanceEmitAware;
   player: Tone.Player;
   pitchShift: Tone.PitchShift;
+  detune: number;
 
   constructor(
     peaks: PeaksInstance,
@@ -40,6 +41,7 @@ class AudioPlayer implements Player {
     this.player.start();
 
     this.pitchShift = new Tone.PitchShift();
+    this.detune = 0;
 
     Tone.connectSeries(this.player, this.pitchShift, Tone.Master);
 
@@ -59,10 +61,18 @@ class AudioPlayer implements Player {
   setPlaybackRate(playbackRate: number) {
     this.player.playbackRate = playbackRate;
 
-    this.pitchShift.pitch = this.shiftToSemitones(playbackRate);
+    // Detune to keep consistent pitch, even if the playback speed changed
+    this.setDetune(this.detune);
+
+    // Adjust playback to new playbackrate
+    if (this.isPlaying()) {
+      this.seek(this.getCurrentTime());
+    }
   }
 
   setDetune(detune: number) {
+    this.detune = detune;
+
     this.pitchShift.pitch =
       this.shiftToSemitones(this.player.playbackRate) + detune;
   }
@@ -75,8 +85,14 @@ class AudioPlayer implements Player {
   };
 
   play = () => {
-    Tone.Transport.start(Tone.now(), this.getCurrentTime());
-    this.peaks.emit("player_play", this.getCurrentTime());
+    Tone.Transport.start(
+      Tone.now(),
+      this.getCurrentTime() / this.player.playbackRate
+    );
+    this.peaks.emit(
+      "player_play",
+      this.getCurrentTime() / this.player.playbackRate
+    );
   };
 
   pause = () => {
@@ -104,15 +120,12 @@ class AudioPlayer implements Player {
   };
 
   seek = (time: number) => {
-    const normalizedTime = time * this.player.playbackRate;
+    const normalizedTime = time / this.player.playbackRate;
 
-    if (this.isPlaying()) {
-      Tone.Transport.stop();
-      Tone.Transport.start(Tone.now(), normalizedTime);
-    }
+    Tone.Transport.seconds = normalizedTime;
 
-    this.peaks.emit("player_time_update", normalizedTime);
-    this.peaks.emit("player_seek", normalizedTime);
+    this.peaks.emit("player_time_update", time);
+    this.peaks.emit("player_seek", time);
   };
 }
 
