@@ -13,6 +13,9 @@
 - [Quick start](#quick-start)
 - [Status](#status)
 - [Usage](#usage)
+- [Developer Documentation](#developer-documentation)
+- [Build](#build)
+- [Deployment](#deployment)
 - [Versioning](#versioning)
 - [Copyright and license](#copyright-and-license)
 
@@ -39,20 +42,20 @@ The app is a standalone React app using Webaudio APIs locally without any backen
 ### Project Structure
 ```text
 transcribe/
-└── .github/ (Github Action config)
-└── .storybook/ (Storybook config)
-└── .vscode/ (Visual Studio Code config)
-└── public/ (Static app content)
+└── .github/        (Github Action config)
+└── .storybook/     (Storybook config)
+└── .vscode/        (Visual Studio Code config)
+└── public/         (Static app content)
 └── src/
-    ├── api/ (External interfaces)
+    ├── api/        (External interfaces)
     ├── components/ (React components)
-    ├── pages/ (Application pages)
-    ├── states/ (Application state definition based on Redux)
-    ├── styles/ (CSS and theme definitions)
-    ├── views/ (Application views)
-    ├── index.tsx (Main Application Entry Point)
-└── package.json (Build and script config)
-└── tsconfig.json (Typescript compiler config)
+    ├── pages/      (Application pages)
+    ├── states/     (Application state definition based on Redux)
+    ├── styles/     (CSS and theme definitions)
+    ├── views/      (Application views)
+    ├── index.tsx   (Main Application Entry Point)
+└── package.json    (Build and script config)
+└── tsconfig.json   (Typescript compiler config)
 
 ```
 ### Application State
