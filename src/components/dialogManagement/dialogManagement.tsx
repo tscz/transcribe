@@ -82,7 +82,7 @@ class DialogManagement extends Component<AllProps> {
           <ModalDialog
             title="Save Transcription"
             subTitle="Please click on 'save' to generate a transcription.zip file. It contains the transcription and the source audio file."
-            onCancel={this.props.closedDialog}
+            onCancel={() => this.props.closedDialog()}
             actions={[
               {
                 label: "Cancel",
