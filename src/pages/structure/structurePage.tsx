@@ -289,20 +289,20 @@ const WaveformControlButton = (props: {
   disabled?: boolean;
   onClick?: (e?: any) => void;
 }) => {
-  return (
-    <Tooltip title={props.title}>
-      <>
-        <IconButton
-          onClick={props.onClick}
-          size="small"
-          style={{ marginTop: "8px", marginRight: "5px" }}
-          disabled={props.disabled}
-        >
-          {props.icon}
-        </IconButton>
-      </>
-    </Tooltip>
+  const button = (
+    <IconButton
+      onClick={props.onClick}
+      size="small"
+      style={{ marginTop: "8px", marginRight: "5px" }}
+      disabled={props.disabled}
+    >
+      {props.icon}
+    </IconButton>
   );
+
+  if (props.disabled) return button;
+
+  return <Tooltip title={props.title}>{button}</Tooltip>;
 };
 
 const mapStateToProps = ({ project, audio, analysis }: ApplicationState) => {
