@@ -24,9 +24,9 @@ export const stylesForApp = (theme: Theme) =>
       flexGrow: 1,
       padding: theme.spacing(3)
     },
-    toolbar: theme.mixins.toolbar,
     title: {
       flexGrow: 1,
       marginLeft: "50px"
-    }
+    },
+    toolbar: { ...theme.mixins.toolbar }
   });
