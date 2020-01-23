@@ -105,7 +105,7 @@ class PeaksConfig {
     [SectionType.OUTRO, "#5C6BC0"],
     [SectionType.BRIDGE, "#EC407A"],
     [SectionType.VERSE, "#78909C"],
-    [SectionType.UNDEFINED, "#ffffff"]
+    [SectionType.UNDEFINED, "#f2f2f2"]
   ]) as ReadonlyMap<SectionType, string>;
 }
 
