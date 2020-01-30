@@ -148,14 +148,6 @@ class StructurePage extends React.Component<AllProps, State> {
                   disabled={false}
                 />
                 <WaveformControlButton
-                  title="Start Measure 0"
-                  icon={<BorderLeftIcon />}
-                  onClick={e =>
-                    this.handlePopoverOpen(e, PopoverType.STARTMEASURE)
-                  }
-                  disabled={false}
-                />
-                <WaveformControlButton
                   title="Detune"
                   icon={<MusicNoteIcon />}
                   onClick={e => this.handlePopoverOpen(e, PopoverType.DETUNE)}
@@ -188,6 +180,16 @@ class StructurePage extends React.Component<AllProps, State> {
                     </div>
                   )}
                 </Popover>
+              </>
+            }
+          ></View>
+        }
+        topRight={
+          <View
+            title="Song Measures"
+            body={<StructureNavigationView />}
+            action={
+              <>
                 <WaveformControlButton
                   title="Zoom in"
                   icon={<ZoomInIcon />}
@@ -202,14 +204,19 @@ class StructurePage extends React.Component<AllProps, State> {
             }
           ></View>
         }
-        topRight={
-          <View title="Song Measures" body={<StructureNavigationView />}></View>
-        }
         bottom={
           <View
             title="Song Structure"
             action={
               <>
+                <WaveformControlButton
+                  title="Start Measure 0"
+                  icon={<BorderLeftIcon />}
+                  onClick={e =>
+                    this.handlePopoverOpen(e, PopoverType.STARTMEASURE)
+                  }
+                  disabled={false}
+                />
                 <WaveformControlButton
                   title="Add section"
                   icon={<AddIcon />}
@@ -321,7 +328,10 @@ const StartMeasurePopover = (props: {
       value={props.firstMeasureStart}
       startAdornment={
         <InputAdornment position="start">
-          <Tooltip title="Sync with play head">
+          <Tooltip
+            title="Toggle sync with mouse click.
+          If enabled, clicking into the waveform will update the start of measure 0 to the selected position."
+          >
             <ToggleButton
               style={{ width: "15px", height: "25px" }}
               value="check"
