@@ -51,6 +51,11 @@ class SectionOverview extends React.Component<AllProps> {
                           key={sectionId + "_buttonGroup_" + row[0]}
                           orientation="horizontal"
                           size="small"
+                          style={{
+                            height: "15px",
+                            width: "10px",
+                            padding: "0px"
+                          }}
                         >
                           {row.map(measureId => {
                             let measure: Measure = measures.byId[measureId];
