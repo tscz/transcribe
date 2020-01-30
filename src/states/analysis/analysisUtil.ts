@@ -16,6 +16,17 @@ export const toTimeSignature = (type: TimeSignatureType) => {
   }
 };
 
+export const toTimeSignatureType = (type: string) => {
+  switch (type) {
+    case TimeSignatureType.FOUR_FOUR.toString():
+      return TimeSignatureType.FOUR_FOUR;
+    case TimeSignatureType.THREE_FOUR.toString():
+      return TimeSignatureType.THREE_FOUR;
+    default:
+      throw Error("Unknown time signature type: " + type);
+  }
+};
+
 export const undefinedSection = (length: number) => {
   let undefinedSectionId = "UNDEFINED_0_" + length;
   let sections: NormalizedObjects<Section>;

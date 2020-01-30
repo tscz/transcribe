@@ -1,7 +1,5 @@
 import {
-  Divider,
   FormControl,
-  Grid,
   IconButton,
   Input,
   InputAdornment,
@@ -11,9 +9,12 @@ import {
   Tooltip
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import BorderLeftIcon from "@material-ui/icons/BorderLeft";
 import LoopIcon from "@material-ui/icons/Loop";
+import MusicNoteIcon from "@material-ui/icons/MusicNote";
 import PauseIcon from "@material-ui/icons/Pause";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
+import SpeedIcon from "@material-ui/icons/Speed";
 import SyncAltIcon from "@material-ui/icons/SyncAlt";
 import TimerIcon from "@material-ui/icons/Timer";
 import ZoomInIcon from "@material-ui/icons/ZoomIn";
@@ -30,6 +31,7 @@ import {
   TimeSignatureType,
   updatedRhythm
 } from "../../states/analysis/analysisSlice";
+import { toTimeSignatureType } from "../../states/analysis/analysisUtil";
 import {
   triggeredPause,
   triggeredPlay,
@@ -74,44 +76,32 @@ type AllProps = PropsFromState & PropsFromDispatch & Props;
 
 interface State {
   anchorEl: HTMLButtonElement | null;
+  activePopover: PopoverType;
+}
+
+enum PopoverType {
+  RHYTHM,
+  PLAYBACKRATE,
+  DETUNE,
+  STARTMEASURE,
+  NONE
 }
 
 class StructurePage extends React.Component<AllProps, State> {
   state: State = {
-    anchorEl: null
+    anchorEl: null,
+    activePopover: PopoverType.NONE
   };
 
-  handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    this.setState({ anchorEl: event.currentTarget });
+  handlePopoverOpen = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    type: PopoverType
+  ) => {
+    this.setState({ anchorEl: event.currentTarget, activePopover: type });
   };
 
-  handleClose = () => {
-    this.setState({ anchorEl: null });
-  };
-
-  handleBpmChange = (e: any, bpm: number | number[]) => {
-    if (!Array.isArray(bpm)) {
-      this.props.updatedRhythm({ bpm: bpm });
-    }
-  };
-
-  handleTimeSignatureChange = (e: any) => {
-    this.props.updatedRhythm({ timeSignatureType: e.target.value });
-  };
-
-  handleDetuneChange = (e: any, detune: number | number[]) => {
-    if (!Array.isArray(detune) && detune !== this.props.detune) {
-      this.props.updatedPlaybackSettings({ detune: detune });
-    }
-  };
-
-  handlePlaybackRateChange = (e: any, playbackRate: number | number[]) => {
-    if (
-      !Array.isArray(playbackRate) &&
-      playbackRate !== this.props.playbackRate
-    ) {
-      this.props.updatedPlaybackSettings({ playbackRate: playbackRate });
-    }
+  handlePopoverClose = () => {
+    this.setState({ anchorEl: null, activePopover: PopoverType.NONE });
   };
 
   render() {
@@ -121,86 +111,7 @@ class StructurePage extends React.Component<AllProps, State> {
         topLeft={
           <View
             title="Song Overview"
-            body={
-              <>
-                <WaveContainer />
-                <Divider style={{ marginBottom: "10px" }} />
-                <Grid container direction="row" spacing={2}>
-                  <Grid item xs={2}>
-                    <FormControl fullWidth={true}>
-                      <InputLabel>Start Measure 1</InputLabel>
-                      <Input
-                        type="text"
-                        id="startMeasure1"
-                        value={this.props.firstMeasureStart}
-                        startAdornment={
-                          <InputAdornment position="start">
-                            <Tooltip title="Sync with play head">
-                              <ToggleButton
-                                style={{ width: "15px", height: "25px" }}
-                                value="check"
-                                selected={this.props.syncFirstMeasureStart}
-                                onChange={() => {
-                                  this.props.enabledSyncFirstMeasureStart(
-                                    !this.props.syncFirstMeasureStart
-                                  );
-                                }}
-                              >
-                                <SyncAltIcon />
-                              </ToggleButton>
-                            </Tooltip>
-                          </InputAdornment>
-                        }
-                      />
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={2}>
-                    <SliderInput
-                      title="Bpm"
-                      value={this.props.bpm}
-                      min={40}
-                      max={220}
-                      step={1}
-                      onChange={this.handleBpmChange}
-                    ></SliderInput>{" "}
-                  </Grid>
-                  <Grid item xs={2}>
-                    <FormControl fullWidth={true}>
-                      <InputLabel>Time Signature</InputLabel>
-                      <NativeSelect
-                        value={this.props.timeSignature}
-                        onChange={this.handleTimeSignatureChange}
-                      >
-                        <option value={TimeSignatureType.FOUR_FOUR}>4/4</option>
-                        <option value={TimeSignatureType.THREE_FOUR}>
-                          3/4
-                        </option>
-                      </NativeSelect>
-                    </FormControl>{" "}
-                  </Grid>
-                  <Grid item xs={2}>
-                    <SliderInput
-                      title="Detune"
-                      value={this.props.detune}
-                      min={-12}
-                      max={12}
-                      step={0.5}
-                      onChange={this.handleDetuneChange}
-                    ></SliderInput>{" "}
-                  </Grid>
-                  <Grid item xs={2}>
-                    <SliderInput
-                      title="Playback rate"
-                      value={this.props.playbackRate}
-                      min={0.4}
-                      max={1.2}
-                      step={0.05}
-                      onChange={this.handlePlaybackRateChange}
-                    ></SliderInput>{" "}
-                  </Grid>
-                </Grid>
-              </>
-            }
+            body={<WaveContainer />}
             action={
               <>
                 {this.props.isPlaying ? (
@@ -223,26 +134,53 @@ class StructurePage extends React.Component<AllProps, State> {
                   disabled={true}
                 />
                 <WaveformControlButton
-                  title="Metronome"
+                  title="Rhythm & Metronome"
                   icon={<TimerIcon />}
-                  onClick={e => this.handleClick(e)}
-                  disabled={true}
+                  onClick={e => this.handlePopoverOpen(e, PopoverType.RHYTHM)}
+                  disabled={false}
+                />
+                <WaveformControlButton
+                  title="Playback Rate"
+                  icon={<SpeedIcon />}
+                  onClick={e =>
+                    this.handlePopoverOpen(e, PopoverType.PLAYBACKRATE)
+                  }
+                  disabled={false}
+                />
+                <WaveformControlButton
+                  title="Start Measure 0"
+                  icon={<BorderLeftIcon />}
+                  onClick={e =>
+                    this.handlePopoverOpen(e, PopoverType.STARTMEASURE)
+                  }
+                  disabled={false}
+                />
+                <WaveformControlButton
+                  title="Detune"
+                  icon={<MusicNoteIcon />}
+                  onClick={e => this.handlePopoverOpen(e, PopoverType.DETUNE)}
+                  disabled={false}
                 />
                 <Popover
                   style={{ height: "400px" }}
-                  open={Boolean(this.state.anchorEl)}
+                  open={this.state.activePopover !== PopoverType.NONE}
                   anchorEl={this.state.anchorEl}
-                  onClose={() => this.handleClose()}
+                  onClose={() => this.handlePopoverClose()}
                   anchorOrigin={{
                     vertical: "bottom",
                     horizontal: "left"
                   }}
+                  anchorPosition={{ top: 50, left: 0 }}
                   transformOrigin={{
                     vertical: "top",
-                    horizontal: "left"
+                    horizontal: "center"
                   }}
                 >
-                  TODO
+                  {this.state.activePopover !== PopoverType.NONE && (
+                    <div style={{ width: "200px", minHeight: "60px" }}>
+                      {PopoverContent(this.state.activePopover, this.props)}
+                    </div>
+                  )}
                 </Popover>
                 <WaveformControlButton
                   title="Zoom in"
@@ -304,6 +242,112 @@ const WaveformControlButton = (props: {
 
   return <Tooltip title={props.title}>{button}</Tooltip>;
 };
+
+const PopoverContent = (type: PopoverType, props: AllProps) => {
+  switch (type) {
+    case PopoverType.DETUNE:
+      return <DetunePopover {...props} />;
+    case PopoverType.PLAYBACKRATE:
+      return <PlaybackRatePopover {...props} />;
+    case PopoverType.RHYTHM:
+      return <RhythmPopover {...props} />;
+    case PopoverType.STARTMEASURE:
+      return <StartMeasurePopover {...props} />;
+    default:
+      throw Error("Popup type undefined: " + type);
+  }
+};
+
+const RhythmPopover = (props: AllProps) => (
+  <>
+    <SliderInput
+      title="Bpm"
+      value={props.bpm}
+      min={40}
+      max={220}
+      step={1}
+      onChange={(e, bpm) => {
+        if (!Array.isArray(bpm)) {
+          props.updatedRhythm({ bpm: bpm });
+        }
+      }}
+    ></SliderInput>
+    <FormControl fullWidth={true}>
+      <InputLabel>Time Signature</InputLabel>
+      <NativeSelect
+        value={props.timeSignature}
+        onChange={e =>
+          props.updatedRhythm({
+            timeSignatureType: toTimeSignatureType(e.target.value)
+          })
+        }
+      >
+        <option value={TimeSignatureType.FOUR_FOUR}>4/4</option>
+        <option value={TimeSignatureType.THREE_FOUR}>3/4</option>
+      </NativeSelect>
+    </FormControl>
+  </>
+);
+const DetunePopover = (props: AllProps) => (
+  <SliderInput
+    title="Detune"
+    value={props.detune}
+    min={-12}
+    max={12}
+    step={0.5}
+    onChange={(e, detune) => {
+      if (!Array.isArray(detune) && detune !== props.detune) {
+        props.updatedPlaybackSettings({ detune: detune });
+      }
+    }}
+  ></SliderInput>
+);
+const StartMeasurePopover = (props: {
+  firstMeasureStart: number;
+  syncFirstMeasureStart: boolean;
+  enabledSyncFirstMeasureStart: typeof enabledSyncFirstMeasureStart;
+}) => (
+  <FormControl fullWidth={true}>
+    <InputLabel>Start Measure 1</InputLabel>
+    <Input
+      type="text"
+      id="startMeasure1"
+      value={props.firstMeasureStart}
+      startAdornment={
+        <InputAdornment position="start">
+          <Tooltip title="Sync with play head">
+            <ToggleButton
+              style={{ width: "15px", height: "25px" }}
+              value="check"
+              selected={props.syncFirstMeasureStart}
+              onChange={() => {
+                props.enabledSyncFirstMeasureStart(
+                  !props.syncFirstMeasureStart
+                );
+              }}
+            >
+              <SyncAltIcon />
+            </ToggleButton>
+          </Tooltip>
+        </InputAdornment>
+      }
+    />
+  </FormControl>
+);
+const PlaybackRatePopover = (props: AllProps) => (
+  <SliderInput
+    title="Playback rate"
+    value={props.playbackRate}
+    min={0.4}
+    max={1.2}
+    step={0.05}
+    onChange={(e, playbackRate) => {
+      if (!Array.isArray(playbackRate) && playbackRate !== props.playbackRate) {
+        props.updatedPlaybackSettings({ playbackRate: playbackRate });
+      }
+    }}
+  ></SliderInput>
+);
 
 const mapStateToProps = ({ project, audio, analysis }: ApplicationState) => {
   return {
