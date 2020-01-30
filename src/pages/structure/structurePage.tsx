@@ -177,7 +177,13 @@ class StructurePage extends React.Component<AllProps, State> {
                   }}
                 >
                   {this.state.activePopover !== PopoverType.NONE && (
-                    <div style={{ width: "200px", minHeight: "60px" }}>
+                    <div
+                      style={{
+                        width: "200px",
+                        minHeight: "60px",
+                        margin: "10px"
+                      }}
+                    >
                       {PopoverContent(this.state.activePopover, this.props)}
                     </div>
                   )}
