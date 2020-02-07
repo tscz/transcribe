@@ -17,8 +17,6 @@ import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import SpeedIcon from "@material-ui/icons/Speed";
 import SyncAltIcon from "@material-ui/icons/SyncAlt";
 import TimerIcon from "@material-ui/icons/Timer";
-import ZoomInIcon from "@material-ui/icons/ZoomIn";
-import ZoomOutIcon from "@material-ui/icons/ZoomOut";
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import React, { ReactElement } from "react";
 import { connect } from "react-redux";
@@ -43,7 +41,6 @@ import {
   LoadingStatus
 } from "../../states/project/projectSlice";
 import { ApplicationState } from "../../states/store";
-import { zoomedIn, zoomedOut } from "../../states/wave/waveSlice";
 import StructureView from "../../views/structure/structureView";
 import StructureNavigationView from "../../views/structureNavigation/structureNavigationView";
 import WaveContainer from "../../views/wave/waveContainer";
@@ -60,8 +57,6 @@ interface PropsFromState {
 }
 
 interface PropsFromDispatch {
-  zoomedIn: typeof zoomedIn;
-  zoomedOut: typeof zoomedOut;
   triggeredPlay: typeof triggeredPlay;
   triggeredPause: typeof triggeredPause;
   enabledSyncFirstMeasureStart: typeof enabledSyncFirstMeasureStart;
@@ -186,24 +181,7 @@ class StructurePage extends React.Component<AllProps, State> {
           ></View>
         }
         topRight={
-          <View
-            title="Song Measures"
-            body={<StructureNavigationView />}
-            action={
-              <>
-                <WaveformControlButton
-                  title="Zoom in"
-                  icon={<ZoomInIcon />}
-                  onClick={() => this.props.zoomedIn()}
-                />
-                <WaveformControlButton
-                  title="Zoom out"
-                  icon={<ZoomOutIcon />}
-                  onClick={() => this.props.zoomedOut()}
-                />
-              </>
-            }
-          ></View>
+          <View title="Song Measures" body={<StructureNavigationView />}></View>
         }
         bottom={
           <View
@@ -380,8 +358,6 @@ const mapStateToProps = ({ project, audio, analysis }: ApplicationState) => {
 };
 
 const mapDispatchToProps = {
-  zoomedIn,
-  zoomedOut,
   triggeredPlay,
   triggeredPause,
   enabledSyncFirstMeasureStart,

@@ -17,23 +17,22 @@ import {
 import { ApplicationState, NormalizedObjects } from "../../states/store";
 import Log from "../log/log";
 import AudioPlayer from "./audioPlayer";
-import PeaksConfig, {
-  AUDIO_DOM_ELEMENT,
-  ZOOMVIEW_CONTAINER
-} from "./peaksConfig";
+import PeaksConfig, { AUDIO_DOM_ELEMENT } from "./peaksConfig";
 
 interface PropsFromState {
   audioUrl: string;
   status: LoadingStatus;
   sections: NormalizedObjects<Section>;
   measures: NormalizedObjects<Measure>;
-  zoomLevel: number;
   syncFirstMeasureStart: boolean;
   isPlaying: boolean;
   detune: number;
   playbackRate: number;
   secondsPerMeasure: number;
   audioSampleRate: number;
+  isLooping: boolean;
+  loopStart: number;
+  loopEnd: number;
 }
 
 interface PropsFromDispatch {
@@ -93,40 +92,20 @@ class AudioManagement extends React.Component<AllProps> {
       prevProps.status !== this.props.status &&
       this.props.status === LoadingStatus.INITIALIZED
     ) {
-      this.recomputeZoomlevels(
-        this.props.secondsPerMeasure,
-        this.props.audioSampleRate,
-        this.props.measures.allIds.length
-      );
       this.repaintWaveform(
         this.props.sections,
         this.props.measures,
-        this.props.zoomLevel,
         this.props.secondsPerMeasure
       );
     }
 
     if (
-      prevProps.secondsPerMeasure !== this.props.secondsPerMeasure ||
-      prevProps.audioSampleRate !== this.props.audioSampleRate ||
-      prevProps.measures.allIds.length !== this.props.measures.allIds.length
-    ) {
-      this.recomputeZoomlevels(
-        this.props.secondsPerMeasure,
-        this.props.audioSampleRate,
-        this.props.measures.allIds.length
-      );
-    }
-
-    if (
       prevProps.sections !== this.props.sections ||
-      prevProps.measures !== this.props.measures ||
-      prevProps.zoomLevel !== this.props.zoomLevel
+      prevProps.measures !== this.props.measures
     ) {
       this.repaintWaveform(
         this.props.sections,
         this.props.measures,
-        this.props.zoomLevel,
         this.props.secondsPerMeasure
       );
     }
@@ -146,28 +125,18 @@ class AudioManagement extends React.Component<AllProps> {
         this.getPlayer()?.pause();
       }
     }
-  }
 
-  private recomputeZoomlevels(
-    secondsPerMeasure: number,
-    audioSampleRate: number,
-    measuresCount: number
-  ) {
-    let newZoomLevels = PeaksConfig.computeZoomLevels(
-      secondsPerMeasure,
-      audioSampleRate,
-      document.getElementById(ZOOMVIEW_CONTAINER)!.clientWidth,
-      measuresCount
-    );
-
-    //TODO: Used any because setZoomlevel is not API. See https://github.com/bbc/peaks.js/issues/295.
-    (this.getPeaks()?.zoom as any).setZoomLevels(newZoomLevels);
+    if (
+      prevProps.loopStart !== this.props.loopStart ||
+      prevProps.loopEnd !== this.props.loopEnd
+    ) {
+      this.setZoom(this.props.loopStart, this.props.loopEnd);
+    }
   }
 
   private repaintWaveform(
     sections: NormalizedObjects<Section>,
     measures: NormalizedObjects<Measure>,
-    zoomLevel: number,
     timePerMeasure: number
   ) {
     this.getPeaks()?.segments.removeAll();
@@ -176,7 +145,6 @@ class AudioManagement extends React.Component<AllProps> {
     );
     this.getPeaks()?.points.removeAll();
     this.getPeaks()?.points.add(PeaksConfig.measuresToPoints(measures));
-    this.getPeaks()?.zoom.setZoom(zoomLevel);
   }
 
   private init = () => {
@@ -238,6 +206,13 @@ class AudioManagement extends React.Component<AllProps> {
     };
   }
 
+  private setZoom(start: number, end: number) {
+    const zoomview = this.getPeaks()?.views.getView("zoomview")!;
+    const duration = end - start;
+    zoomview.setZoom({ seconds: duration });
+    (zoomview as any).setStartTime(start);
+  }
+
   render() {
     return (
       <audio id={AUDIO_DOM_ELEMENT} controls hidden>
@@ -250,17 +225,11 @@ class AudioManagement extends React.Component<AllProps> {
   }
 }
 
-const mapStateToProps = ({
-  project,
-  analysis,
-  audio,
-  wave
-}: ApplicationState) => {
+const mapStateToProps = ({ project, analysis, audio }: ApplicationState) => {
   return {
     audioUrl: project.audioUrl,
     sections: analysis.sections,
     measures: analysis.measures,
-    zoomLevel: wave.zoom,
     status: project.status,
     syncFirstMeasureStart: project.syncFirstMeasureStart,
     isPlaying: audio.isPlaying,
@@ -268,7 +237,10 @@ const mapStateToProps = ({
     playbackRate: audio.playbackRate,
     secondsPerMeasure:
       analysis.measures.byId["1"]?.time - analysis.measures.byId["0"]?.time,
-    audioSampleRate: analysis.audioSampleRate
+    audioSampleRate: analysis.audioSampleRate,
+    isLooping: audio.isLooping,
+    loopStart: audio.loopStart,
+    loopEnd: audio.loopEnd
   };
 };
 

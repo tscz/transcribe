@@ -5,7 +5,6 @@ import analysisReducer, { AnalysisState } from "./analysis/analysisSlice";
 import audioReducer, { AudioState } from "./audio/audioSlice";
 import dialogReducer, { DialogState } from "./dialog/dialogsSlice";
 import projectReducer, { ProjectState } from "./project/projectSlice";
-import waveReducer, { WaveState } from "./wave/waveSlice";
 
 /** The top-level application state object. */
 export interface ApplicationState {
@@ -13,7 +12,6 @@ export interface ApplicationState {
   audio: AudioState;
   dialog: DialogState;
   project: ProjectState;
-  wave: WaveState;
 }
 
 export interface PersistedState {
@@ -47,8 +45,7 @@ export const sliceReducer = combineReducers({
   analysis: analysisReducer,
   audio: audioReducer,
   dialog: dialogReducer,
-  project: projectReducer,
-  wave: waveReducer
+  project: projectReducer
 });
 
 const createAppStore = () => {

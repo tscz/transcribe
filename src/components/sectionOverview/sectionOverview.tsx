@@ -3,6 +3,7 @@ import React from "react";
 import { connect } from "react-redux";
 
 import { Measure, Section } from "../../states/analysis/analysisSlice";
+import { updatedLoopSettings } from "../../states/audio/audioSlice";
 import { ApplicationState, NormalizedObjects } from "../../states/store";
 import PeaksConfig from "../audioManagement/peaksConfig";
 
@@ -11,7 +12,9 @@ interface PropsFromState {
   measures: NormalizedObjects<Measure>;
 }
 
-interface PropsFromDispatch {}
+interface PropsFromDispatch {
+  updatedLoopSettings: typeof updatedLoopSettings;
+}
 
 interface Props {}
 
@@ -59,7 +62,8 @@ class SectionOverview extends React.Component<AllProps> {
                         >
                           {row.map(measureId => {
                             let measure: Measure = measures.byId[measureId];
-
+                            let nextMeasure: Measure =
+                              measures.byId[Number(measureId) + 1];
                             return (
                               <Square
                                 key={measure.id}
@@ -68,6 +72,12 @@ class SectionOverview extends React.Component<AllProps> {
                                   PeaksConfig.SECTIONTYPE_TO_COLOR.get(
                                     sections.byId[sectionId].type
                                   )!
+                                }
+                                onClick={() =>
+                                  this.props.updatedLoopSettings({
+                                    start: measure.time,
+                                    end: nextMeasure.time
+                                  })
                                 }
                               ></Square>
                             );
@@ -89,6 +99,7 @@ class SectionOverview extends React.Component<AllProps> {
 class Square extends React.Component<{
   value: string;
   bg: string;
+  onClick: () => void;
 }> {
   render() {
     return (
@@ -97,6 +108,7 @@ class Square extends React.Component<{
         style={{
           backgroundColor: this.props.bg
         }}
+        onClick={() => this.props.onClick()}
       >
         {this.props.value}
       </Button>
@@ -111,5 +123,5 @@ const mapStateToProps = ({ analysis }: ApplicationState) => {
   };
 };
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = { updatedLoopSettings };
 export default connect(mapStateToProps, mapDispatchToProps)(SectionOverview);

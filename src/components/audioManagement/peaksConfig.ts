@@ -77,25 +77,6 @@ class PeaksConfig {
     return points;
   };
 
-  static computeZoomLevels = (
-    secondsPerMeasure: number,
-    audioSampleRate: number,
-    zoomviewWidth: number,
-    measuresCount: number
-  ) => {
-    const baseZoom = Math.floor(
-      (secondsPerMeasure * audioSampleRate) / zoomviewWidth
-    );
-
-    let levels = new Array<number>(measuresCount);
-
-    for (let index = 0; index < levels.length; index++) {
-      levels[index] = baseZoom * (index + 1);
-    }
-
-    return levels;
-  };
-
   static SECTIONTYPE_TO_COLOR = new Map<SectionType, string>([
     [SectionType.INTRO, "#FFCA28"],
     [SectionType.VERSE, "#FFA726"],

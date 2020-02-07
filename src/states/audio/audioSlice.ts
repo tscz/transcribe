@@ -4,6 +4,9 @@ export interface AudioState {
   readonly isPlaying: boolean;
   readonly detune: number;
   readonly playbackRate: number;
+  readonly isLooping: boolean;
+  readonly loopStart: number;
+  readonly loopEnd: number;
 }
 
 export interface PlaybackSettings {
@@ -14,7 +17,10 @@ export interface PlaybackSettings {
 export const initialAudioState: AudioState = {
   isPlaying: false,
   detune: 0,
-  playbackRate: 1
+  playbackRate: 1,
+  isLooping: false,
+  loopStart: 0,
+  loopEnd: 0
 };
 
 const audioSlice = createSlice({
@@ -35,6 +41,17 @@ const audioSlice = createSlice({
         state.detune = action.payload.detune;
       if (action.payload.playbackRate !== undefined)
         state.playbackRate = action.payload.playbackRate;
+    },
+    toggledLoop(state) {
+      state.isLooping = !state.isLooping;
+    },
+    updatedLoopSettings(
+      state,
+      action: PayloadAction<{ start?: number; end?: number }>
+    ) {
+      if (action.payload.start !== undefined)
+        state.loopStart = action.payload.start;
+      if (action.payload.end !== undefined) state.loopEnd = action.payload.end;
     }
   }
 });
@@ -42,7 +59,9 @@ const audioSlice = createSlice({
 export const {
   triggeredPause,
   triggeredPlay,
-  updatedPlaybackSettings
+  updatedPlaybackSettings,
+  toggledLoop,
+  updatedLoopSettings
 } = audioSlice.actions;
 
 export default audioSlice.reducer;
