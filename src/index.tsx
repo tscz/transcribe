@@ -12,15 +12,10 @@ import DialogManagement from "./components/dialogManagement/dialogManagement";
 import store from "./states/store";
 import theme from "./styles/theme";
 
-if (process.env.NODE_ENV !== "production") {
-  localStorage.setItem("debug", "transcribe:*");
-}
-
 const renderApp = () =>
   render(
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
         <AudioManagement />
         <DialogManagement />
@@ -30,6 +25,12 @@ const renderApp = () =>
     document.getElementById("root")
   );
 
+/** Enable logger in dev mode */
+if (process.env.NODE_ENV !== "production") {
+  localStorage.setItem("debug", "transcribe:*");
+}
+
+/** Enable hot reload while development */
 if (process.env.NODE_ENV !== "production" && module.hot) {
   module.hot.accept("./components/app/app", renderApp);
 }
