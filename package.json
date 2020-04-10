@@ -48,7 +48,8 @@
         "react-test-renderer": "16.12.0",
         "redux": "4.0.5",
         "redux-devtools-extension": "2.13.8",
-        "tone": "13.8.25"
+        "tone": "13.8.25",
+        "typeface-roboto": "0.0.75"
     },
     "devDependencies": {
         "@types/file-saver": "2.0.1",
