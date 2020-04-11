@@ -65,7 +65,7 @@ export const initialAnalysisState: AnalysisState = {
 const analysisSlice = createSlice({
   name: "analysis",
   initialState: initialAnalysisState,
-  extraReducers: builder =>
+  extraReducers: (builder) =>
     builder
       .addCase(createdProject, (state, action) => {
         return action.payload.analysis;
@@ -154,9 +154,9 @@ const analysisSlice = createSlice({
   }
 });
 
-const removeSectionsAfterLastMeasure: (
-  state: AnalysisState
-) => void = state => {
+const removeSectionsAfterLastMeasure: (state: AnalysisState) => void = (
+  state
+) => {
   const lastMeasure = state.measures.allIds.length - 1;
   let removalStart = -1;
   let removalStartMeasure = -1;
@@ -193,14 +193,14 @@ const addSection: (
 ) => AnalysisState = (state, newSection) => {
   if (sectionInvalid(newSection)) return state;
 
-  let enclosingSection = enclosingSectionOf(newSection, state.sections);
+  const enclosingSection = enclosingSectionOf(newSection, state.sections);
   if (
     enclosingSection === undefined ||
     enclosingSection.section.type !== SectionType.UNDEFINED
   )
     return state;
 
-  let mergedSections = mergeSections(enclosingSection.section, newSection);
+  const mergedSections = mergeSections(enclosingSection.section, newSection);
 
   replaceSections(state.sections, enclosingSection.position, 1, mergedSections);
 
@@ -211,11 +211,11 @@ const removeSection: (state: AnalysisState, sectionId: string) => void = (
   state,
   sectionId
 ) => {
-  let position = state.sections.allIds.indexOf(sectionId);
-  let section = state.sections.byId[sectionId];
+  const position = state.sections.allIds.indexOf(sectionId);
+  const section = state.sections.byId[sectionId];
 
-  let before = state.sections.allIds[position - 1];
-  let after = state.sections.allIds[position + 1];
+  const before = state.sections.allIds[position - 1];
+  const after = state.sections.allIds[position + 1];
 
   let { start: firstMeasure, end: lastMeasure } = ArrayUtil.bordersOf(
     section.measures

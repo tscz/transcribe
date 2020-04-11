@@ -7,21 +7,17 @@ import FileInput, { FileType } from "./fileInput";
 
 it("renders without crashing", () => {
   TestEnvironment.smokeTest(
-    <FileInput
-      id="zipFileInput"
-      fileType={FileType.ZIP}
-      callback={(file, fileUrl) => {}}
-    />
+    <FileInput id="zipFileInput" fileType={FileType.ZIP} callback={() => {}} />
   );
 });
 
 it("can select a file from local disk", () => {
-  const mockCallback = jest.fn((file: File, fileURL: string) => {});
+  const mockCallback = jest.fn();
   const mockUrl = "http://fileurl";
   const mockFile = new File([""], "project.zip");
 
   //Mock creating objectURL in the Browser
-  (global as any).URL.createObjectURL = jest.fn(file => mockUrl);
+  (global as any).URL.createObjectURL = jest.fn(() => mockUrl);
 
   //Render test component
   const wrapper = mount(
@@ -73,7 +69,7 @@ it("triggers the os file input dialog on icon button and text input click", () =
 });
 
 it("does not select a file if file chooser dialog is canceled", () => {
-  const mockCallback = jest.fn((file: File, fileURL: string) => {});
+  const mockCallback = jest.fn(() => {});
 
   //Render test component
   const wrapper = mount(
@@ -99,7 +95,7 @@ it("can be filtered for audio file types", () => {
     <FileInput
       id="audioFileInput"
       fileType={FileType.AUDIO}
-      callback={(file: File, fileURL: string) => {}}
+      callback={() => {}}
     />
   );
 
@@ -113,11 +109,7 @@ it("can be filtered for audio file types", () => {
 
 it("can be filtered for zip file types", () => {
   const wrapper = mount(
-    <FileInput
-      id="zipFileInput"
-      fileType={FileType.ZIP}
-      callback={(file: File, fileURL: string) => {}}
-    />
+    <FileInput id="zipFileInput" fileType={FileType.ZIP} callback={() => {}} />
   );
 
   expect(wrapper.find("input#zipFileInput").props().accept).toEqual(".zip");

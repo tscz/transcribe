@@ -23,9 +23,9 @@ export default {
 };
 
 export const Default = () => {
-  let store = createStore(createRootReducer, composeWithDevTools());
+  const store = createStore(createRootReducer, composeWithDevTools());
 
-  let persistedState: PersistedState = {
+  const persistedState: PersistedState = {
     analysis: {
       audioDuration: 100,
       audioSampleRate: 44400,

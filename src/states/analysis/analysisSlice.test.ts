@@ -43,7 +43,7 @@ const persistedState: PersistedState = {
 };
 
 it("can reset an analysis from a persisted state", () => {
-  let state: AnalysisState = reducer(
+  const state: AnalysisState = reducer(
     initialState,
     createdProject(persistedState)
   );
@@ -59,7 +59,7 @@ it("can reset an analysis from a persisted state", () => {
 });
 
 it("can update the rhythm", () => {
-  let state: AnalysisState = reducer(
+  const state: AnalysisState = reducer(
     initialState,
     updatedRhythm({
       bpm: 123,
@@ -73,7 +73,7 @@ it("can update the rhythm", () => {
 });
 
 it("can update the rythm (only bpm)", () => {
-  let state: AnalysisState = reducer(
+  const state: AnalysisState = reducer(
     initialState,
     updatedRhythm({
       bpm: 123
@@ -83,7 +83,7 @@ it("can update the rythm (only bpm)", () => {
 });
 
 it("can update the rhythm (only first measure start)", () => {
-  let state: AnalysisState = reducer(
+  const state: AnalysisState = reducer(
     initialState,
     updatedRhythm({
       firstMeasureStart: 23.2423
@@ -93,7 +93,7 @@ it("can update the rhythm (only first measure start)", () => {
 });
 
 it("can update the rhythm (only time signature)", () => {
-  let state: AnalysisState = reducer(
+  const state: AnalysisState = reducer(
     initialState,
     updatedRhythm({
       timeSignatureType: TimeSignatureType.THREE_FOUR
@@ -120,19 +120,19 @@ const initialState2: AnalysisState = {
   timeSignature: TimeSignatureType.FOUR_FOUR
 };
 it("can add a section", () => {
-  let section: Section = {
+  const section: Section = {
     type: SectionType.BRIDGE,
     measures: ["0", "1", "2", "3", "4"]
   };
 
-  let state: AnalysisState = reducer(initialState2, addedSection(section));
+  const state: AnalysisState = reducer(initialState2, addedSection(section));
 
   expect(state.sections.allIds).toContainEqual("BRIDGE_0_4");
   expect(state.sections.byId["BRIDGE_0_4"]).toEqual(section);
 });
 
 it("can remove a section", () => {
-  let section: Section = {
+  const section: Section = {
     type: SectionType.BRIDGE,
     measures: ["0", "1", "2", "3", "4"]
   };
@@ -149,7 +149,7 @@ it("can remove a section", () => {
 });
 
 it("can remove sections after changing rhythm", () => {
-  let bridgeSection: Section = {
+  const bridgeSection: Section = {
     type: SectionType.BRIDGE,
     measures: ArrayUtil.range(0, 98)
   };

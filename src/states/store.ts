@@ -28,6 +28,13 @@ export const restoredPersistedState = createAction<PersistedState>(
   "restoredPersistedState"
 );
 
+export const sliceReducer = combineReducers({
+  analysis: analysisReducer,
+  audio: audioReducer,
+  dialog: dialogReducer,
+  project: projectReducer
+});
+
 export const createRootReducer: Reducer<ApplicationState, AnyAction> = (
   state,
   action
@@ -40,13 +47,6 @@ export const createRootReducer: Reducer<ApplicationState, AnyAction> = (
 
   return state;
 };
-
-export const sliceReducer = combineReducers({
-  analysis: analysisReducer,
-  audio: audioReducer,
-  dialog: dialogReducer,
-  project: projectReducer
-});
 
 const createAppStore = () => {
   const store = configureStore({

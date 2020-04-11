@@ -16,7 +16,7 @@ class StructureNavigationView extends Component<AllProps> {
   }
 }
 
-const mapStateToProps = ({ analysis }: ApplicationState) => {
+const mapStateToProps = ({}: ApplicationState) => {
   return {};
 };
 

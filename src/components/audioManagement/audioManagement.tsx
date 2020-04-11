@@ -152,19 +152,11 @@ class AudioManagement extends React.Component<AllProps> {
 
     this.getPeaks()?.destroy();
 
-    let audio = this;
-
     // Load audioFile into audio buffer
     fetch(this.props.audioUrl)
-      .then(function(response) {
-        return response.arrayBuffer();
-      })
-      .then(function(buffer) {
-        return audioCtx.decodeAudioData(buffer);
-      })
-      .then(function(audioBuffer) {
-        audio.initPeaks(audioBuffer);
-      });
+      .then((response) => response.arrayBuffer())
+      .then((buffer) => audioCtx.decodeAudioData(buffer))
+      .then((audioBuffer) => this.initPeaks(audioBuffer));
   };
 
   private initPeaks(audioBuffer: AudioBuffer) {
@@ -176,7 +168,7 @@ class AudioManagement extends React.Component<AllProps> {
         throw new Error("Peaks instance is not correctly initialized.");
 
       initPlayer(peaks, audioBuffer);
-      replacePlayer(peaks, audioBuffer);
+      replacePlayer(peaks);
 
       peaks.on("player_seek", (time: number) => {
         if (this.props.syncFirstMeasureStart)
@@ -191,26 +183,28 @@ class AudioManagement extends React.Component<AllProps> {
       });
     });
 
-    let initPlayer = (peaks: Peaks.PeaksInstance, audioBuffer: AudioBuffer) => {
+    const initPlayer = (
+      peaks: Peaks.PeaksInstance,
+      audioBuffer: AudioBuffer
+    ) => {
       this.player = new AudioPlayer(peaks, audioBuffer, () =>
         this.props.triggeredPause()
       );
     };
 
-    let replacePlayer = (
-      peaks: Peaks.PeaksInstance,
-      audioBuffer: AudioBuffer
-    ) => {
-      (peaks.player as any).destroy();
+    const replacePlayer = (peaks: Peaks.PeaksInstance) => {
+      ((peaks.player as unknown) as { destroy: () => void }).destroy();
       peaks.player = (this.player as unknown) as PeaksInstance["player"];
     };
   }
 
   private setZoom(start: number, end: number) {
-    const zoomview = this.getPeaks()?.views.getView("zoomview")!;
+    const zoomview: Peaks.WaveformView = this.getPeaks()?.views.getView(
+      "zoomview"
+    )!;
     const duration = end - start;
     zoomview.setZoom({ seconds: duration });
-    (zoomview as any).setStartTime(start);
+    zoomview.setStartTime(start);
   }
 
   render() {

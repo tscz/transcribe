@@ -14,8 +14,7 @@ import HomeIcon from "@material-ui/icons/Home";
 import MusicVideoIcon from "@material-ui/icons/MusicVideo";
 import PrintIcon from "@material-ui/icons/Print";
 import RadioIcon from "@material-ui/icons/Radio";
-import React from "react";
-import { FunctionComponent } from "react";
+import React, { FunctionComponent } from "react";
 import { connect } from "react-redux";
 
 import DefaultPage from "../../pages/default/defaultPage";
@@ -25,8 +24,11 @@ import HarmonyPage from "../../pages/harmony/harmonyPage";
 import PrintPage from "../../pages/print/printPage";
 import StructurePage from "../../pages/structure/structurePage";
 import { DialogType, openedDialog } from "../../states/dialog/dialogsSlice";
-import { LoadingStatus } from "../../states/project/projectSlice";
-import { Page, switchedPage } from "../../states/project/projectSlice";
+import {
+  LoadingStatus,
+  Page,
+  switchedPage
+} from "../../states/project/projectSlice";
 import { ApplicationState } from "../../states/store";
 import { stylesForApp } from "../../styles/styles";
 import Log from "../log/log";
@@ -200,7 +202,7 @@ class App extends React.Component<AllProps> {
   }
 }
 
-const Toggle: FunctionComponent<{ show: boolean }> = props => {
+const Toggle: FunctionComponent<{ show: boolean }> = (props) => {
   if (props.show) {
     return <div style={{ display: "inline" }}>{props.children}</div>;
   } else {

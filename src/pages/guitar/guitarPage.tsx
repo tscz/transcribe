@@ -9,8 +9,8 @@ class GuitarPage extends React.Component {
         title="Guitar"
         body={
           <p>
-            In this section you'll be able to transcribe the guitar part. Please
-            come back later.
+            In this section you&apos;ll be able to transcribe the guitar part.
+            Please come back later.
           </p>
         }
       ></View>

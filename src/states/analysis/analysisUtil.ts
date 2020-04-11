@@ -28,10 +28,8 @@ export const toTimeSignatureType = (type: string) => {
 };
 
 export const undefinedSection = (length: number) => {
-  let undefinedSectionId = "UNDEFINED_0_" + length;
-  let sections: NormalizedObjects<Section>;
-
-  sections = {
+  const undefinedSectionId = "UNDEFINED_0_" + length;
+  const sections: NormalizedObjects<Section> = {
     allIds: [undefinedSectionId],
     byId: {}
   };
@@ -62,8 +60,8 @@ export const enclosingSectionOf = (
   const sectionCount = allSections.allIds.length;
 
   for (let current = 0; current <= sectionCount - 1; current++) {
-    let section = allSections.byId[allSections.allIds[current]];
-    let { end: currentSectionEnd } = ArrayUtil.bordersOf(section.measures);
+    const section = allSections.byId[allSections.allIds[current]];
+    const { end: currentSectionEnd } = ArrayUtil.bordersOf(section.measures);
 
     //Go to next section if not included
     if (newSectionStart >= currentSectionEnd) continue;
@@ -79,7 +77,7 @@ export const mergeSections: (
   enclosingSection: Section,
   embeddedSection: Section
 ) => Section[] = (enclosingSection, embeddedSection) => {
-  let newSections: Section[] = [];
+  const newSections: Section[] = [];
 
   const { start: newSectionStart, end: newSectionEnd } = ArrayUtil.bordersOf(
     embeddedSection.measures
@@ -92,7 +90,7 @@ export const mergeSections: (
 
   //Add a new undefined block before the new section
   if (newSectionStart > currentSectionStart) {
-    let section: Section = {
+    const section: Section = {
       measures: ArrayUtil.range(currentSectionStart, newSectionStart - 1),
       type: SectionType.UNDEFINED
     };
@@ -104,7 +102,7 @@ export const mergeSections: (
 
   //Add a new undefined block after the new section
   if (newSectionEnd < currentSectionEnd) {
-    let section: Section = {
+    const section: Section = {
       measures: ArrayUtil.range(newSectionEnd + 1, currentSectionEnd),
       type: SectionType.UNDEFINED
     };
@@ -124,9 +122,9 @@ export const replaceSections = (
     delete sections.byId[sections.allIds[section]];
   }
 
-  let ids: string[] = [];
+  const ids: string[] = [];
 
-  newSections.forEach(section => {
+  newSections.forEach((section) => {
     const id = generateSectionId(section);
     ids.push(id);
     sections.byId[id] = section;

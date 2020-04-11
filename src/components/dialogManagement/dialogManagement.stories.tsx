@@ -14,7 +14,7 @@ export default {
 };
 
 export const OpenDialog = () => {
-  let store = createStore(createRootReducer, composeWithDevTools());
+  const store = createStore(createRootReducer, composeWithDevTools());
 
   return (
     <Provider store={store}>
@@ -27,7 +27,7 @@ export const OpenDialog = () => {
 };
 
 export const NewDialog = () => {
-  let store = createStore(createRootReducer, composeWithDevTools());
+  const store = createStore(createRootReducer, composeWithDevTools());
 
   return (
     <Provider store={store}>
@@ -40,7 +40,7 @@ export const NewDialog = () => {
 };
 
 export const SaveDialog = () => {
-  let store = createStore(createRootReducer, composeWithDevTools());
+  const store = createStore(createRootReducer, composeWithDevTools());
 
   return (
     <Provider store={store}>

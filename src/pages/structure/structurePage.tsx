@@ -131,13 +131,13 @@ class StructurePage extends React.Component<AllProps, State> {
                 <WaveformControlButton
                   title="Rhythm & Metronome"
                   icon={<TimerIcon />}
-                  onClick={e => this.handlePopoverOpen(e, PopoverType.RHYTHM)}
+                  onClick={(e) => this.handlePopoverOpen(e, PopoverType.RHYTHM)}
                   disabled={false}
                 />
                 <WaveformControlButton
                   title="Playback Rate"
                   icon={<SpeedIcon />}
-                  onClick={e =>
+                  onClick={(e) =>
                     this.handlePopoverOpen(e, PopoverType.PLAYBACKRATE)
                   }
                   disabled={false}
@@ -145,7 +145,7 @@ class StructurePage extends React.Component<AllProps, State> {
                 <WaveformControlButton
                   title="Detune"
                   icon={<MusicNoteIcon />}
-                  onClick={e => this.handlePopoverOpen(e, PopoverType.DETUNE)}
+                  onClick={(e) => this.handlePopoverOpen(e, PopoverType.DETUNE)}
                   disabled={false}
                 />
                 <Popover
@@ -191,7 +191,7 @@ class StructurePage extends React.Component<AllProps, State> {
                 <WaveformControlButton
                   title="Start Measure 0"
                   icon={<BorderLeftIcon />}
-                  onClick={e =>
+                  onClick={(e) =>
                     this.handlePopoverOpen(e, PopoverType.STARTMEASURE)
                   }
                   disabled={false}
@@ -268,7 +268,7 @@ const RhythmPopover = (props: AllProps) => (
       <InputLabel>Time Signature</InputLabel>
       <NativeSelect
         value={props.timeSignature}
-        onChange={e =>
+        onChange={(e) =>
           props.updatedRhythm({
             timeSignatureType: toTimeSignatureType(e.target.value)
           })

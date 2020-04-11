@@ -9,20 +9,22 @@ interface SaveOptions {
 }
 
 class PersistenceApi {
-  private constructor() {}
+  private constructor() {
+    //not instanciable
+  }
 
   private static songFile = "song.blob";
   private static stateFile = "state.json";
 
   static save = async (filename: string, options: SaveOptions) => {
-    let zip = new JSZip();
+    const zip = new JSZip();
     zip.file(PersistenceApi.stateFile, JSON.stringify(options.state));
 
-    let response = await fetch(options.audioFileUrl);
-    let audioBlob: Blob = await response.blob();
+    const response = await fetch(options.audioFileUrl);
+    const audioBlob: Blob = await response.blob();
     zip.file(PersistenceApi.songFile, audioBlob);
 
-    await zip.generateAsync({ type: "blob" }).then(file => {
+    await zip.generateAsync({ type: "blob" }).then((file) => {
       saveAs(file, filename);
     });
   };
@@ -30,11 +32,11 @@ class PersistenceApi {
   static async open(
     zip: File
   ): Promise<{ audioBlob: Blob; state: PersistedState }> {
-    let archive = await JSZip.loadAsync(zip);
-    let audioBlob = await archive.file(PersistenceApi.songFile).async("blob");
+    const archive = await JSZip.loadAsync(zip);
+    const audioBlob = await archive.file(PersistenceApi.songFile).async("blob");
 
-    let json = await archive.file(PersistenceApi.stateFile).async("text");
-    let state: PersistedState = JSON.parse(json);
+    const json = await archive.file(PersistenceApi.stateFile).async("text");
+    const state: PersistedState = JSON.parse(json);
 
     return { audioBlob, state };
   }

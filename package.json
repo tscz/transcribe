@@ -66,7 +66,7 @@
         "eslint-plugin-import": "2.20.2",
         "eslint-plugin-prettier": "3.1.2",
         "eslint-plugin-react": "7.19.0",
-        "eslint-plugin-simple-import-sort": "5.0.1",
+        "eslint-plugin-simple-import-sort": "5.0.2",
         "gh-pages": "2.2.0",
         "jest-mock-extended": "1.0.8",
         "npm-check": "5.9.0",
@@ -83,7 +83,9 @@
         "parser": "@typescript-eslint/parser",
         "extends": [
             "plugin:react/recommended",
-            "plugin:@typescript-eslint/recommended"
+            "plugin:@typescript-eslint/recommended",
+            "prettier/@typescript-eslint",
+            "plugin:prettier/recommended"
         ],
         "parserOptions": {
             "ecmaVersion": 2018,
@@ -96,12 +98,14 @@
             "@typescript-eslint",
             "react",
             "simple-import-sort",
-            "import"
+            "import",
+            "prettier"
         ],
         "rules": {
             "@typescript-eslint/no-empty-interface": "off",
             "@typescript-eslint/explicit-function-return-type": "off",
             "@typescript-eslint/no-use-before-define": "off",
+            "@typescript-eslint/no-empty-function": "off",
             "simple-import-sort/sort": "error",
             "sort-imports": "off",
             "import/order": "off",
@@ -109,7 +113,14 @@
             "import/newline-after-import": "error",
             "import/no-duplicates": "error",
             "no-console": "error",
-            "react/prop-types": "off"
+            "react/prop-types": "off",
+            "prettier/prettier": [
+                "error",
+                {
+                    "trailingComma": "none",
+                    "arrowParens": "always"
+                }
+            ]
         },
         "settings": {
             "react": {

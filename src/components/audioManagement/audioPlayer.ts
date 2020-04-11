@@ -45,7 +45,7 @@ class AudioPlayer implements Player {
 
     Tone.connectSeries(this.player, this.pitchShift, Tone.Master);
 
-    Tone.Transport.scheduleRepeat(time => {
+    Tone.Transport.scheduleRepeat(() => {
       this.peaks.emit("player_time_update", this.getCurrentTime());
       if (this.getCurrentTime() >= this.getDuration()) {
         Tone.Transport.stop();

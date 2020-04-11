@@ -22,11 +22,11 @@ type AllProps = PropsFromState & PropsFromDispatch & Props;
 
 class SectionOverview extends React.Component<AllProps> {
   render() {
-    let { sections, measures } = this.props;
+    const { sections, measures } = this.props;
 
-    let generateMatrix = (arr: string[], size: number) => {
-      var res = [];
-      for (var i = 0; i < arr.length; i = i + size)
+    const generateMatrix = (arr: string[], size: number) => {
+      const res = [];
+      for (let i = 0; i < arr.length; i = i + size)
         res.push(arr.slice(i, i + size));
       return res;
     };
@@ -34,7 +34,7 @@ class SectionOverview extends React.Component<AllProps> {
     return (
       <>
         <Grid container direction="column">
-          {sections.allIds.map(sectionId => (
+          {sections.allIds.map((sectionId) => (
             <Grid item key={sectionId}>
               <Grid container direction="column">
                 <Grid item key={sectionId + "_caption"}>
@@ -49,7 +49,7 @@ class SectionOverview extends React.Component<AllProps> {
                     style={{ marginBottom: "5px" }}
                   >
                     {generateMatrix(sections.byId[sectionId].measures, 8).map(
-                      row => (
+                      (row) => (
                         <ButtonGroup
                           key={sectionId + "_buttonGroup_" + row[0]}
                           orientation="horizontal"
@@ -60,9 +60,9 @@ class SectionOverview extends React.Component<AllProps> {
                             padding: "0px"
                           }}
                         >
-                          {row.map(measureId => {
-                            let measure: Measure = measures.byId[measureId];
-                            let nextMeasure: Measure =
+                          {row.map((measureId) => {
+                            const measure: Measure = measures.byId[measureId];
+                            const nextMeasure: Measure =
                               measures.byId[Number(measureId) + 1];
                             return (
                               <Square

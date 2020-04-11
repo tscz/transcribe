@@ -64,7 +64,7 @@ class DialogManagement extends Component<AllProps> {
             onCancel={() => this.props.closedDialog()}
             onSubmit={(zip: File, zipUrl: string) => {
               PersistenceApi.open(zip).then(({ audioBlob, state }) => {
-                let audioUrl = PersistenceApi.getLocalFileUrl(audioBlob);
+                const audioUrl = PersistenceApi.getLocalFileUrl(audioBlob);
                 PersistenceApi.revokeLocalFile(zipUrl);
 
                 this.props.createdProject({
@@ -124,7 +124,7 @@ class DialogManagement extends Component<AllProps> {
 const NewDialog: FunctionComponent<{
   onSubmit: (title: string, fileUrl: string) => void;
   onCancel: () => void;
-}> = props => {
+}> = (props) => {
   const [fileUrl, setFileUrl] = useState("");
   const [title, setTitle] = useState("");
   const actions: () => DialogAction[] = () => {
@@ -141,7 +141,8 @@ const NewDialog: FunctionComponent<{
     ];
   };
 
-  const handleTitleChange = (event: any) => setTitle(event.target.value);
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setTitle(event.target.value);
 
   return (
     <ModalDialog
@@ -176,7 +177,7 @@ const NewDialog: FunctionComponent<{
 const OpenDialog: FunctionComponent<{
   onSubmit: (file: File, fileUrl: string) => void;
   onCancel: () => void;
-}> = props => {
+}> = (props) => {
   const [fileUrl, setFileUrl] = useState("");
   const [file, setFile] = useState<File>();
   const actions: () => DialogAction[] = () => {
@@ -218,7 +219,7 @@ const AddSectionDialog: FunctionComponent<{
   maxMeasure: number;
   onSubmit: (sectionType: SectionType, start: number, end: number) => void;
   onCancel: () => void;
-}> = props => {
+}> = (props) => {
   const [sectionType, setSectionType] = useState(SectionType.INTRO);
   const [start, setStart] = useState(0);
   const [end, setEnd] = useState(0);
@@ -247,7 +248,7 @@ const AddSectionDialog: FunctionComponent<{
         <FormLabel component="legend">Section Type</FormLabel>
         <SectionSelect
           value={sectionType}
-          onChange={sectionType => setSectionType(sectionType)}
+          onChange={(sectionType) => setSectionType(sectionType)}
         ></SectionSelect>
       </FormControl>
       <FormControl fullWidth style={{ marginBottom: "20px" }}>
@@ -256,7 +257,7 @@ const AddSectionDialog: FunctionComponent<{
           value={start}
           min={0}
           max={props.maxMeasure}
-          onChange={value => setStart(value)}
+          onChange={(value) => setStart(value)}
         />
       </FormControl>
       <FormControl fullWidth style={{ marginBottom: "20px" }}>
@@ -265,7 +266,7 @@ const AddSectionDialog: FunctionComponent<{
           value={end}
           min={0}
           max={props.maxMeasure}
-          onChange={value => setEnd(value)}
+          onChange={(value) => setEnd(value)}
         />
       </FormControl>
     </ModalDialog>

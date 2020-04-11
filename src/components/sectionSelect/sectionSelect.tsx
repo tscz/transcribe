@@ -8,9 +8,9 @@ import PeaksConfig from "../audioManagement/peaksConfig";
 const SectionSelect: FunctionComponent<{
   value: SectionType;
   onChange: (sectionType: SectionType) => void;
-}> = props => {
+}> = (props) => {
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    let newSection = event.target.value as SectionType;
+    const newSection = event.target.value as SectionType;
     props.onChange(newSection);
   };
 
@@ -23,10 +23,8 @@ const SectionSelect: FunctionComponent<{
         minWidth: "140px"
       }}
     >
-      {Object.values(SectionType).map(sectionType => {
-        return sectionType === SectionType.UNDEFINED ? (
-          undefined
-        ) : (
+      {Object.values(SectionType).map((sectionType) => {
+        return sectionType === SectionType.UNDEFINED ? undefined : (
           <MenuItem
             key={sectionType}
             value={sectionType}

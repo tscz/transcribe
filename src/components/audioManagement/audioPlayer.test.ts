@@ -10,7 +10,7 @@ it("play an audio file", () => {
   const audioBufferMock = mock<AudioBuffer>();
 
   const peaksMock = mock<PeaksInstanceEmitAware>();
-  let player = new AudioPlayer(peaksMock, audioBufferMock, () => {});
+  const player = new AudioPlayer(peaksMock, audioBufferMock, () => {});
 
   expect(Tone.Player).toBeCalledTimes(1);
   expect(peaksMock.emit).toHaveBeenCalledWith("player_canplay", player);

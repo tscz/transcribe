@@ -13,7 +13,7 @@ export const OVERVIEW_CONTAINER = "overview-container";
 
 class PeaksConfig {
   static create = (audioBuffer: AudioBuffer) => {
-    let mediaelement = document!.getElementById(
+    const mediaelement = document!.getElementById(
       AUDIO_DOM_ELEMENT
     )! as HTMLAudioElement;
 
@@ -40,8 +40,8 @@ class PeaksConfig {
     measures: NormalizedObjects<Measure>,
     timePerMeasure: number
   ) => {
-    let segments: SegmentAddOptions[] = [];
-    sections.allIds.forEach(id => {
+    const segments: SegmentAddOptions[] = [];
+    sections.allIds.forEach((id) => {
       const section = sections.byId[id];
 
       const start = measures.byId[section.measures[0]].time;
@@ -49,7 +49,7 @@ class PeaksConfig {
         measures.byId[section.measures[section.measures.length - 1]].time +
         timePerMeasure;
 
-      let segment: SegmentAddOptions = {
+      const segment: SegmentAddOptions = {
         id,
         labelText: section.type,
         startTime: start,
@@ -65,11 +65,11 @@ class PeaksConfig {
   };
 
   static measuresToPoints = (measures: NormalizedObjects<Measure>) => {
-    let points: PointAddOptions[] = [];
-    measures.allIds.forEach(id => {
+    const points: PointAddOptions[] = [];
+    measures.allIds.forEach((id) => {
       const measure = measures.byId[id];
 
-      let point: PointAddOptions = measure;
+      const point: PointAddOptions = measure;
 
       points.push(point);
     });

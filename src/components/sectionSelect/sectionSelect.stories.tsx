@@ -15,7 +15,7 @@ export const Basic = () => {
     <>
       <SectionSelect
         value={section}
-        onChange={sectionType => setSection(sectionType)}
+        onChange={(sectionType) => setSection(sectionType)}
       ></SectionSelect>
     </>
   );

@@ -9,8 +9,8 @@ class HarmonyPage extends React.Component {
         title="Harmony"
         body={
           <p>
-            In this section you'll be able to transcribe the harmony. Please
-            come back later.
+            In this section you&apos;ll be able to transcribe the harmony.
+            Please come back later.
           </p>
         }
       ></View>

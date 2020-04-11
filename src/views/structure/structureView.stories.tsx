@@ -22,7 +22,7 @@ export default {
 };
 
 export const Default = () => {
-  let persistedState: PersistedState = {
+  const persistedState: PersistedState = {
     analysis: {
       audioDuration: 100,
       audioSampleRate: 44400,

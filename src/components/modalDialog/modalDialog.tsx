@@ -6,8 +6,7 @@ import {
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { Component } from "react";
-import React from "react";
+import React, { Component } from "react";
 
 export interface DialogAction {
   label: string;
@@ -37,7 +36,7 @@ class ModalDialog extends Component<ModalDialogProps> {
           {this.props.children}
         </DialogContent>
         <DialogActions>
-          {this.props.actions?.map((value, index) => (
+          {this.props.actions?.map((value) => (
             <Button
               key={value.label}
               onClick={value.onClick}

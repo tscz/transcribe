@@ -1,18 +1,16 @@
 import debug from "debug";
 
-enum Level {
-  TRACE = "trace",
-  INFO = "info",
-  WARN = "warn",
-  ERROR = "error"
-}
+export class Level {
+  public static readonly TRACE = new Level("trace", "lightblue");
+  public static readonly INFO = new Level("info", "blue");
+  public static readonly WARN = new Level("warn", "yellow");
+  public static readonly ERROR = new Level("error", "red");
 
-const LEVEL_TO_COLOR = new Map<Level, string>([
-  [Level.TRACE, "lightblue"],
-  [Level.INFO, "blue"],
-  [Level.WARN, "yellow"],
-  [Level.ERROR, "red"]
-]) as ReadonlyMap<Level, string>;
+  private constructor(
+    public readonly name: string,
+    public readonly color: string
+  ) {}
+}
 
 class Log {
   private static generateMessage(
@@ -20,10 +18,10 @@ class Log {
     message: string,
     source: string
   ) {
-    const namespace = `transcribe:${level}`;
+    const namespace = `transcribe:${level.name}`;
     const createDebug = debug(namespace);
 
-    createDebug.color = LEVEL_TO_COLOR.get(level)!;
+    createDebug.color = level.color;
 
     if (source) {
       createDebug(source, message);

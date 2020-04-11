@@ -8,9 +8,9 @@ const MeasureSelect: FunctionComponent<{
   max: number;
   onChange: (value: number) => void;
   disabled?: boolean;
-}> = props => {
+}> = (props) => {
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    let newMeasure = event.target.value as number;
+    const newMeasure = event.target.value as number;
     props.onChange(newMeasure);
   };
 

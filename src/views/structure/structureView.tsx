@@ -81,7 +81,7 @@ class StructureView extends Component<AllProps> {
           </TableHead>
           <TableBody>
             {this.props.sections.allIds.map((id: string) => {
-              let section = this.props.sections.byId[id];
+              const section = this.props.sections.byId[id];
               return (
                 <TableRow key={id}>
                   <TableCell component="th" scope="row">
@@ -100,7 +100,7 @@ class StructureView extends Component<AllProps> {
                     ) : (
                       <SectionSelect
                         value={section.type}
-                        onChange={sectionType =>
+                        onChange={(sectionType) =>
                           this.handleUpdatedSection(id, section, {
                             ...section,
                             type: sectionType
@@ -115,7 +115,7 @@ class StructureView extends Component<AllProps> {
                       value={parseInt(section.measures[0])}
                       min={0}
                       max={this.props.measuresCount - 1}
-                      onChange={measure =>
+                      onChange={(measure) =>
                         this.handleUpdatedSection(id, section, {
                           ...section,
                           measures: ArrayUtil.range(
@@ -136,7 +136,7 @@ class StructureView extends Component<AllProps> {
                       )}
                       min={0}
                       max={this.props.measuresCount - 1}
-                      onChange={measure =>
+                      onChange={(measure) =>
                         this.handleUpdatedSection(id, section, {
                           ...section,
                           measures: ArrayUtil.range(

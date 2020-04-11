@@ -7,16 +7,16 @@ class ArrayUtil {
       .map((_, idx) => (start + idx).toString());
   };
 
-  static bordersOf: (
-    array: Array<any>
-  ) => { start: number; end: number } = array => {
+  static bordersOf: (array: Array<string>) => { start: number; end: number } = (
+    array
+  ) => {
     return {
       start: parseInt(array[0]),
       end: parseInt(ArrayUtil.last(array))
     };
   };
 
-  static last: <T>(array: Array<T>) => T = array => {
+  static last: <T>(array: Array<T>) => T = (array) => {
     return array[array.length - 1];
   };
 }

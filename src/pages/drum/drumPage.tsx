@@ -9,8 +9,8 @@ class DrumPage extends React.Component {
         title="Drums View"
         body={
           <p>
-            In this section you'll be able to transcribe the drum part. Please
-            come back later.
+            In this section you&apos;ll be able to transcribe the drum part.
+            Please come back later.
           </p>
         }
       ></View>

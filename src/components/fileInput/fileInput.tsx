@@ -68,8 +68,8 @@ class FileInput extends React.Component<Props, State> {
   handleChange = (fileList: FileList | null) => {
     if (fileList === null) return;
 
-    var file = fileList[0];
-    var fileURL = PersistenceApi.getLocalFileUrl(file);
+    const file = fileList[0];
+    const fileURL = PersistenceApi.getLocalFileUrl(file);
 
     this.setState({ display: file.name });
     this.props.callback(file, fileURL);
@@ -103,7 +103,7 @@ class FileInput extends React.Component<Props, State> {
           type="file"
           accept={this.props.fileType}
           ref={this.fileInput}
-          onChange={e => this.handleChange(e.target.files)}
+          onChange={(e) => this.handleChange(e.target.files)}
         ></input>
       </>
     );

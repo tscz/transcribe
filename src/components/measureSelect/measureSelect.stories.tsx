@@ -13,7 +13,7 @@ export const Basic = () => {
   return (
     <>
       <MeasureSelect
-        onChange={measure => setMeasure(measure)}
+        onChange={(measure) => setMeasure(measure)}
         value={measure}
         min={0}
         max={14}
