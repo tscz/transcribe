@@ -156,7 +156,10 @@ class AudioManagement extends React.Component<AllProps> {
   private init = () => {
     const audioCtx: Tone.BaseContext = Tone.context;
 
-    this.getPeaks().destroy();
+    try {
+      const peaks = this.getPeaks();
+      peaks.destroy();
+    } catch {}
 
     // Load audioFile into audio buffer
     fetch(this.props.audioUrl)
