@@ -238,13 +238,17 @@ const mapStateToProps = ({ project, analysis, audio }: ApplicationState) => {
     isPlaying: audio.isPlaying,
     detune: audio.detune,
     playbackRate: audio.playbackRate,
-    secondsPerMeasure:
-      analysis.measures.byId["1"].time - analysis.measures.byId["0"].time,
+    secondsPerMeasure: computeSecondsPerMeasure(analysis.measures),
     audioSampleRate: analysis.audioSampleRate,
     isLooping: audio.isLooping,
     loopStart: audio.loopStart,
     loopEnd: audio.loopEnd
   };
+};
+
+const computeSecondsPerMeasure = (measures: NormalizedObjects<Measure>) => {
+  if (!measures || !measures.byId["1"] || !measures.byId["0"]) return 0;
+  return measures.byId["1"].time - measures.byId["0"].time;
 };
 
 const mapDispatchToProps = {
