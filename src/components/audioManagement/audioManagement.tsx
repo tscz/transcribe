@@ -1,7 +1,7 @@
 import Peaks, { PeaksInstance } from "peaks.js";
 import React from "react";
 import { connect } from "react-redux";
-import Tone from "tone";
+import * as Tone from "tone";
 
 import PersistenceApi from "../../api/persistenceApi";
 import {
@@ -41,7 +41,7 @@ interface PropsFromDispatch {
   triggeredPause: typeof triggeredPause;
 }
 
-interface Props {}
+interface Props { }
 
 type AllProps = PropsFromState & PropsFromDispatch & Props;
 
@@ -55,9 +55,9 @@ class AudioManagement extends React.Component<AllProps> {
   componentDidUpdate(prevProps: AllProps) {
     Log.info(
       "componentDidUpdate with status " +
-        prevProps.status +
-        " -> " +
-        this.props.status,
+      prevProps.status +
+      " -> " +
+      this.props.status,
       AudioManagement.name
     );
 
@@ -148,7 +148,7 @@ class AudioManagement extends React.Component<AllProps> {
   }
 
   private init = () => {
-    const audioCtx: AudioContext = (Tone.context as unknown) as AudioContext;
+    const audioCtx: Tone.BaseContext = Tone.context;
 
     this.getPeaks()?.destroy();
 

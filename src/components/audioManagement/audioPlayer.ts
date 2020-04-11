@@ -1,5 +1,6 @@
 import { PeaksInstance } from "peaks.js";
-import Tone from "tone";
+import * as Tone from "tone";
+import { PitchShift, Player as TonejsPlayer } from "tone";
 
 interface Player {
   destroy: () => void;
@@ -18,15 +19,15 @@ interface EmitAware {
   emit: (id: string, value: any) => void;
 }
 
-export interface PeaksInstanceEmitAware extends PeaksInstance, EmitAware {}
+export interface PeaksInstanceEmitAware extends PeaksInstance, EmitAware { }
 
 /**
  * Tone.js Player replacement for the <audio>-element based Peaks.js player
  */
 class AudioPlayer implements Player {
   peaks: PeaksInstanceEmitAware;
-  player: Tone.Player;
-  pitchShift: Tone.PitchShift;
+  player: TonejsPlayer;
+  pitchShift: PitchShift;
   detune: number;
 
   constructor(
@@ -36,14 +37,15 @@ class AudioPlayer implements Player {
   ) {
     this.peaks = peaks as PeaksInstanceEmitAware;
 
-    this.player = new Tone.Player(audioBuffer);
+    this.player = new TonejsPlayer(audioBuffer);
     this.player.sync();
     this.player.start();
 
-    this.pitchShift = new Tone.PitchShift();
+    this.pitchShift = new PitchShift();
     this.detune = 0;
 
-    Tone.connectSeries(this.player, this.pitchShift, Tone.Master);
+    this.player.connect(this.pitchShift);
+    this.pitchShift.toDestination();
 
     Tone.Transport.scheduleRepeat(() => {
       this.peaks.emit("player_time_update", this.getCurrentTime());
@@ -79,9 +81,7 @@ class AudioPlayer implements Player {
 
   destroy = () => {
     Tone.context.dispose();
-    ((Tone as unknown) as Tone & {
-      setContext: (ctx: AudioContext) => void;
-    }).setContext(new AudioContext());
+    Tone.setContext(new AudioContext());
   };
 
   play = () => {
@@ -110,8 +110,7 @@ class AudioPlayer implements Player {
 
   getCurrentTime = () => {
     return (
-      this.player.buffer.toSeconds(Tone.Transport.position) *
-      this.player.playbackRate
+      this.player.toSeconds(Tone.Transport.position) * this.player.playbackRate
     );
   };
 

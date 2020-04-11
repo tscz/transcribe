@@ -20,7 +20,8 @@ jobs:
         node-version: 12.x
     - name: Prepare dependencies
       run: |
-        npm ci
+        npm install -g yarn 
+        yarn install --frozen-lockfile
     - name: Build release
       run: |
         npm run build
