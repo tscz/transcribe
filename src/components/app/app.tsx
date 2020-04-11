@@ -1,4 +1,4 @@
-import { Grid } from "@material-ui/core";
+import { createStyles, Grid, Theme } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Button from "@material-ui/core/Button";
 import Drawer from "@material-ui/core/Drawer";
@@ -6,7 +6,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
+import { WithStyles, withStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import AlbumIcon from "@material-ui/icons/Album";
@@ -30,7 +30,6 @@ import {
   switchedPage
 } from "../../states/project/projectSlice";
 import { ApplicationState } from "../../states/store";
-import { stylesForApp } from "../../styles/styles";
 import Log from "../log/log";
 import VersionInfo from "../versionInfo/versionInfo";
 import { ReactComponent as Logo } from "./logo.svg";
@@ -58,9 +57,9 @@ class App extends React.Component<AllProps> {
     return (
       <>
         <div className={this.props.classes.root}>
-          <AppBar position="fixed" className={this.props.classes.appBar}>
+          <AppBar color="inherit" className={this.props.classes.appBar}>
             <Toolbar>
-              <Logo height="40px" style={{ marginRight: "5px" }}></Logo>
+              <Logo className={this.props.classes.logo}></Logo>
               <Typography color="textPrimary" variant="h4" noWrap>
                 Transcribe
               </Typography>
@@ -101,14 +100,14 @@ class App extends React.Component<AllProps> {
             }}
           >
             <div className={this.props.classes.toolbar} />
-            <List style={{ color: "#abb1b7" }}>
+            <List className={this.props.classes.menuItem}>
               <ListItem
                 button
                 key="Structure"
                 onClick={() => this.props.switchedPage(Page.STRUCTURE)}
                 disabled={this.props.status !== LoadingStatus.INITIALIZED}
               >
-                <ListItemIcon style={{ color: "#abb1b7" }}>
+                <ListItemIcon>
                   <HomeIcon />
                 </ListItemIcon>
                 <ListItemText primary="Structure" />
@@ -119,7 +118,7 @@ class App extends React.Component<AllProps> {
                 onClick={() => this.props.switchedPage(Page.HARMONY)}
                 disabled={this.props.status !== LoadingStatus.INITIALIZED}
               >
-                <ListItemIcon style={{ color: "#abb1b7" }}>
+                <ListItemIcon>
                   <MusicVideoIcon />
                 </ListItemIcon>
                 <ListItemText primary="Harmony" />
@@ -130,7 +129,7 @@ class App extends React.Component<AllProps> {
                 onClick={() => this.props.switchedPage(Page.GUITAR)}
                 disabled={this.props.status !== LoadingStatus.INITIALIZED}
               >
-                <ListItemIcon style={{ color: "#abb1b7" }}>
+                <ListItemIcon>
                   <RadioIcon />
                 </ListItemIcon>
                 <ListItemText primary="Guitar" />
@@ -141,7 +140,7 @@ class App extends React.Component<AllProps> {
                 onClick={() => this.props.switchedPage(Page.DRUM)}
                 disabled={this.props.status !== LoadingStatus.INITIALIZED}
               >
-                <ListItemIcon style={{ color: "#abb1b7" }}>
+                <ListItemIcon>
                   <AlbumIcon />
                 </ListItemIcon>
                 <ListItemText primary="Drum" />
@@ -152,7 +151,7 @@ class App extends React.Component<AllProps> {
                 onClick={() => this.props.switchedPage(Page.PRINT)}
                 disabled={this.props.status !== LoadingStatus.INITIALIZED}
               >
-                <ListItemIcon style={{ color: "#abb1b7" }}>
+                <ListItemIcon>
                   <PrintIcon />
                 </ListItemIcon>
                 <ListItemText primary="Print" />
@@ -184,7 +183,7 @@ class App extends React.Component<AllProps> {
               direction="column"
               justify="flex-end"
               alignItems="flex-end"
-              style={{ marginTop: "20px" }}
+              className={this.props.classes.footer}
             >
               <Grid item>
                 App version:{" "}
@@ -222,6 +221,48 @@ const mapDispatchToProps = {
   switchedPage,
   openedDialog
 };
+
+const drawerWidth = 190;
+
+export const stylesForApp = (theme: Theme) =>
+  createStyles({
+    root: {
+      display: "flex",
+      backgroundColor: theme.palette.background.default
+    },
+    drawer: {
+      width: drawerWidth,
+      flexShrink: 0
+    },
+    drawerPaper: {
+      width: drawerWidth,
+      backgroundColor: "#202a2f"
+    },
+    content: {
+      flexGrow: 1,
+      padding: theme.spacing(3)
+    },
+    title: {
+      flexGrow: 1,
+      marginLeft: "50px"
+    },
+    toolbar: {
+      ...theme.mixins.toolbar
+    },
+    menuItem: {
+      color: "#abb1b7"
+    },
+    logo: {
+      height: theme.logo.height,
+      marginRight: theme.logo.marginRight
+    },
+    footer: {
+      marginTop: "20px"
+    },
+    appBar: {
+      zIndex: theme.zIndex.drawer + 1
+    }
+  });
 
 export default connect(
   mapStateToProps,

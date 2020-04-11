@@ -1,15 +1,14 @@
 import blueGrey from "@material-ui/core/colors/blueGrey";
 import { createMuiTheme } from "@material-ui/core/styles";
-import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
 
 // Extend Material UI theme type declaration
 declare module "@material-ui/core/styles/createMuiTheme" {
   // add custom theme options
   interface ThemeOptions {
-    appDrawer: {
-      width: React.CSSProperties["width"];
-      breakpoint: Breakpoint;
+    logo: {
+      height: React.CSSProperties["height"];
+      marginRight: React.CSSProperties["marginRight"];
     };
   }
 
@@ -26,9 +25,16 @@ const theme = createMuiTheme({
       default: "#d5d8da"
     }
   },
-  appDrawer: {
-    width: 225,
-    breakpoint: "lg"
+  logo: {
+    height: "40px",
+    marginRight: "5px"
+  },
+  overrides: {
+    MuiListItemIcon: {
+      root: {
+        color: "#abb1b7"
+      }
+    }
   }
 });
 
