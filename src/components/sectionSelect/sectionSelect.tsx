@@ -19,7 +19,7 @@ const SectionSelect: FunctionComponent<{
       value={props.value}
       onChange={handleChange}
       style={{
-        backgroundColor: PeaksConfig.SECTIONTYPE_TO_COLOR.get(props.value),
+        backgroundColor: PeaksConfig.getColor(props.value),
         minWidth: "140px"
       }}
     >
@@ -29,7 +29,7 @@ const SectionSelect: FunctionComponent<{
             key={sectionType}
             value={sectionType}
             style={{
-              backgroundColor: PeaksConfig.SECTIONTYPE_TO_COLOR.get(sectionType)
+              backgroundColor: PeaksConfig.getColor(sectionType)
             }}
           >
             {sectionType}

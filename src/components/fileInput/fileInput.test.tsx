@@ -11,13 +11,20 @@ it("renders without crashing", () => {
   );
 });
 
+interface CustomNodeJsGlobal extends NodeJS.Global {
+  URL: {
+    createObjectURL: () => string;
+  };
+}
+declare const global: CustomNodeJsGlobal;
+
 it("can select a file from local disk", () => {
   const mockCallback = jest.fn();
   const mockUrl = "http://fileurl";
   const mockFile = new File([""], "project.zip");
 
   //Mock creating objectURL in the Browser
-  (global as any).URL.createObjectURL = jest.fn(() => mockUrl);
+  global.URL.createObjectURL = jest.fn(() => mockUrl);
 
   //Render test component
   const wrapper = mount(

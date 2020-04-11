@@ -13,14 +13,14 @@ export const OVERVIEW_CONTAINER = "overview-container";
 
 class PeaksConfig {
   static create = (audioBuffer: AudioBuffer) => {
-    const mediaelement = document!.getElementById(
+    const mediaelement: HTMLAudioElement = document.getElementById(
       AUDIO_DOM_ELEMENT
-    )! as HTMLAudioElement;
+    ) as HTMLAudioElement;
 
     return {
       containers: {
-        zoomview: document!.getElementById(ZOOMVIEW_CONTAINER)!,
-        overview: document!.getElementById(OVERVIEW_CONTAINER)!
+        zoomview: document.getElementById(ZOOMVIEW_CONTAINER),
+        overview: document.getElementById(OVERVIEW_CONTAINER)
       },
       mediaElement: mediaelement,
       webAudio: {
@@ -77,7 +77,15 @@ class PeaksConfig {
     return points;
   };
 
-  static SECTIONTYPE_TO_COLOR = new Map<SectionType, string>([
+  public static getColor = (sectionType: SectionType) => {
+    const result = PeaksConfig.SECTIONTYPE_TO_COLOR.get(sectionType);
+
+    if (!result) throw Error("Unknown SectionType " + sectionType);
+
+    return result;
+  };
+
+  private static SECTIONTYPE_TO_COLOR = new Map<SectionType, string>([
     [SectionType.INTRO, "#FFCA28"],
     [SectionType.VERSE, "#FFA726"],
     [SectionType.PRECHORUS, "#FF7043"],

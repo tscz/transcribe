@@ -89,10 +89,11 @@ class StructurePage extends React.Component<AllProps, State> {
   };
 
   handlePopoverOpen = (
-    event: React.MouseEvent<HTMLButtonElement>,
+    event: React.MouseEvent<HTMLButtonElement> | undefined,
     type: PopoverType
   ) => {
-    this.setState({ anchorEl: event.currentTarget, activePopover: type });
+    if (event && event.currentTarget)
+      this.setState({ anchorEl: event.currentTarget, activePopover: type });
   };
 
   handlePopoverClose = () => {
@@ -217,7 +218,7 @@ const WaveformControlButton = (props: {
   title: string;
   icon: ReactElement;
   disabled?: boolean;
-  onClick?: (e?: any) => void;
+  onClick?: (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }) => {
   const button = (
     <IconButton

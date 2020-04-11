@@ -41,7 +41,7 @@ interface PropsFromDispatch {
   triggeredPause: typeof triggeredPause;
 }
 
-interface Props { }
+interface Props {}
 
 type AllProps = PropsFromState & PropsFromDispatch & Props;
 
@@ -49,15 +49,21 @@ class AudioManagement extends React.Component<AllProps> {
   peaks: Peaks.PeaksInstance | undefined;
   player: AudioPlayer | undefined;
 
-  private getPeaks = () => this.peaks;
-  private getPlayer = () => this.player;
+  private getPeaks: () => PeaksInstance = () => {
+    if (!this.peaks) throw new Error("peaks undefined");
+    return this.peaks;
+  };
+  private getPlayer = () => {
+    if (!this.player) throw new Error("player undefined");
+    return this.player;
+  };
 
   componentDidUpdate(prevProps: AllProps) {
     Log.info(
       "componentDidUpdate with status " +
-      prevProps.status +
-      " -> " +
-      this.props.status,
+        prevProps.status +
+        " -> " +
+        this.props.status,
       AudioManagement.name
     );
 
@@ -111,18 +117,18 @@ class AudioManagement extends React.Component<AllProps> {
     }
 
     if (prevProps.playbackRate !== this.props.playbackRate) {
-      this.getPlayer()?.setPlaybackRate(this.props.playbackRate);
+      this.getPlayer().setPlaybackRate(this.props.playbackRate);
     }
 
     if (prevProps.detune !== this.props.detune) {
-      this.getPlayer()?.setDetune(this.props.detune);
+      this.getPlayer().setDetune(this.props.detune);
     }
 
     if (prevProps.isPlaying !== this.props.isPlaying) {
       if (this.props.isPlaying) {
-        this.getPlayer()?.play();
+        this.getPlayer().play();
       } else {
-        this.getPlayer()?.pause();
+        this.getPlayer().pause();
       }
     }
 
@@ -139,18 +145,18 @@ class AudioManagement extends React.Component<AllProps> {
     measures: NormalizedObjects<Measure>,
     timePerMeasure: number
   ) {
-    this.getPeaks()?.segments.removeAll();
-    this.getPeaks()?.segments.add(
+    this.getPeaks().segments.removeAll();
+    this.getPeaks().segments.add(
       PeaksConfig.sectionsToSegment(sections, measures, timePerMeasure)
     );
-    this.getPeaks()?.points.removeAll();
-    this.getPeaks()?.points.add(PeaksConfig.measuresToPoints(measures));
+    this.getPeaks().points.removeAll();
+    this.getPeaks().points.add(PeaksConfig.measuresToPoints(measures));
   }
 
   private init = () => {
     const audioCtx: Tone.BaseContext = Tone.context;
 
-    this.getPeaks()?.destroy();
+    this.getPeaks().destroy();
 
     // Load audioFile into audio buffer
     fetch(this.props.audioUrl)
@@ -199,9 +205,12 @@ class AudioManagement extends React.Component<AllProps> {
   }
 
   private setZoom(start: number, end: number) {
-    const zoomview: Peaks.WaveformView = this.getPeaks()?.views.getView(
+    const zoomview: Peaks.WaveformView | null = this.getPeaks().views.getView(
       "zoomview"
-    )!;
+    );
+
+    if (zoomview === null) throw new Error("zoomview does not exist");
+
     const duration = end - start;
     zoomview.setZoom({ seconds: duration });
     zoomview.setStartTime(start);
@@ -230,7 +239,7 @@ const mapStateToProps = ({ project, analysis, audio }: ApplicationState) => {
     detune: audio.detune,
     playbackRate: audio.playbackRate,
     secondsPerMeasure:
-      analysis.measures.byId["1"]?.time - analysis.measures.byId["0"]?.time,
+      analysis.measures.byId["1"].time - analysis.measures.byId["0"].time,
     audioSampleRate: analysis.audioSampleRate,
     isLooping: audio.isLooping,
     loopStart: audio.loopStart,

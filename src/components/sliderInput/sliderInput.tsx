@@ -7,7 +7,7 @@ const SliderInput = (props: {
   max: number;
   step: number;
   value: number;
-  onChange: (event: any, value: number | number[]) => void;
+  onChange: (event: React.ChangeEvent<{}>, value: number | number[]) => void;
 }) => {
   return (
     <FormControl style={{ width: "100%" }}>

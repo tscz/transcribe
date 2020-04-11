@@ -188,7 +188,11 @@ const OpenDialog: FunctionComponent<{
       },
       {
         label: "Open",
-        onClick: () => props.onSubmit(file!, fileUrl),
+        onClick: () => {
+          if (!file) throw Error("file undefined");
+
+          props.onSubmit(file, fileUrl);
+        },
         disabled: fileUrl === ""
       }
     ];

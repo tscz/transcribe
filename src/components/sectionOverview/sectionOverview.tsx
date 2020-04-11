@@ -67,12 +67,10 @@ class SectionOverview extends React.Component<AllProps> {
                             return (
                               <Square
                                 key={measure.id}
-                                value={measure.id!}
-                                bg={
-                                  PeaksConfig.SECTIONTYPE_TO_COLOR.get(
-                                    sections.byId[sectionId].type
-                                  )!
-                                }
+                                value={measure.id}
+                                bg={PeaksConfig.getColor(
+                                  sections.byId[sectionId].type
+                                )}
                                 onClick={() =>
                                   this.props.updatedLoopSettings({
                                     start: measure.time,

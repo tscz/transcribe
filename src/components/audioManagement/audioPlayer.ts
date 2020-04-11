@@ -16,10 +16,10 @@ interface Player {
 }
 
 interface EmitAware {
-  emit: (id: string, value: any) => void;
+  emit: (id: string, value: unknown) => void;
 }
 
-export interface PeaksInstanceEmitAware extends PeaksInstance, EmitAware { }
+export interface PeaksInstanceEmitAware extends PeaksInstance, EmitAware {}
 
 /**
  * Tone.js Player replacement for the <audio>-element based Peaks.js player

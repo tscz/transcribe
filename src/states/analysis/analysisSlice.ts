@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { PointAddOptions } from "peaks.js";
 
 import ArrayUtil from "../../util/ArrayUtil";
 import { createdProject, initializedProject } from "../project/projectSlice";
@@ -29,7 +28,13 @@ export interface Section {
   measures: string[];
 }
 
-export interface Measure extends PointAddOptions {}
+export interface Measure {
+  time: number;
+  editable?: boolean;
+  color?: string;
+  labelText?: string;
+  id: string;
+}
 
 export interface TimeSignature {
   beatsPerMeasure: number;
