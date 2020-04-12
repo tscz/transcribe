@@ -10,6 +10,7 @@ interface Player {
   getCurrentTime: () => number;
   getDuration: () => number;
   seek: (time: number) => void;
+  setSeconds: (seconds: number) => void;
   setPlaybackRate: (playbackRate: number) => void;
   setDetune: (pitch: number) => void;
 }
@@ -57,6 +58,10 @@ class AudioPlayer implements Player {
   }
 
   shiftToSemitones = (shift: number) => 12 * Math.log2(1 / shift);
+
+  setSeconds(seconds: number) {
+    Tone.Transport.seconds = seconds;
+  }
 
   setPlaybackRate(playbackRate: number) {
     this.player.playbackRate = playbackRate;
