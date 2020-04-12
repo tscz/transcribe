@@ -116,6 +116,22 @@
       "import/no-relative-parent-imports": "off",
       "no-console": "error",
       "react/prop-types": "off",
+      "react/forbid-dom-props": [
+        2,
+        {
+          "forbid": [
+            "style"
+          ]
+        }
+      ],
+      "react/forbid-component-props": [
+        0,
+        {
+          "forbid": [
+            "style"
+          ]
+        }
+      ],
       "prettier/prettier": [
         "error",
         {

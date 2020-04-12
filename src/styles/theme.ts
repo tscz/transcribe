@@ -10,6 +10,12 @@ declare module "@material-ui/core/styles/createMuiTheme" {
       height: React.CSSProperties["height"];
       marginRight: React.CSSProperties["marginRight"];
     };
+    popover: {
+      width: React.CSSProperties["width"];
+      minHeight: React.CSSProperties["minHeight"];
+      margin: React.CSSProperties["margin"];
+      marginTop: React.CSSProperties["marginTop"];
+    };
   }
 
   // make custom theme options available in theme
@@ -28,6 +34,12 @@ const theme = createMuiTheme({
   logo: {
     height: "40px",
     marginRight: "5px"
+  },
+  popover: {
+    width: "200px",
+    minHeight: "50px",
+    margin: "10px",
+    marginTop: "20px"
   },
   overrides: {
     MuiListItemIcon: {

@@ -15,6 +15,7 @@ import MusicVideoIcon from "@material-ui/icons/MusicVideo";
 import PrintIcon from "@material-ui/icons/Print";
 import RadioIcon from "@material-ui/icons/Radio";
 import Log from "components/log/log";
+import Toggle from "components/toggle/toggle";
 import VersionInfo from "components/versionInfo/versionInfo";
 import DefaultPage from "pages/default/defaultPage";
 import DrumPage from "pages/drum/drumPage";
@@ -22,7 +23,7 @@ import GuitarPage from "pages/guitar/guitarPage";
 import HarmonyPage from "pages/harmony/harmonyPage";
 import PrintPage from "pages/print/printPage";
 import StructurePage from "pages/structure/structurePage";
-import React, { FunctionComponent } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { DialogType, openedDialog } from "states/dialog/dialogsSlice";
 import { LoadingStatus, Page, switchedPage } from "states/project/projectSlice";
@@ -196,14 +197,6 @@ class App extends React.Component<AllProps> {
     );
   }
 }
-
-const Toggle: FunctionComponent<{ show: boolean }> = (props) => {
-  if (props.show) {
-    return <div style={{ display: "inline" }}>{props.children}</div>;
-  } else {
-    return <div style={{ display: "none" }}>{props.children}</div>;
-  }
-};
 
 const mapStateToProps = ({ project }: ApplicationState) => {
   return {

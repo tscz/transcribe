@@ -1,4 +1,5 @@
 import {
+  createStyles,
   FormControl,
   IconButton,
   Input,
@@ -6,7 +7,10 @@ import {
   InputLabel,
   NativeSelect,
   Popover,
-  Tooltip
+  Theme,
+  Tooltip,
+  WithStyles,
+  withStyles
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import BorderLeftIcon from "@material-ui/icons/BorderLeft";
@@ -64,7 +68,7 @@ interface PropsFromDispatch {
   openedDialog: typeof openedDialog;
 }
 
-interface Props {}
+interface Props extends WithStyles<typeof popoverStyles> {}
 
 type AllProps = PropsFromState & PropsFromDispatch & Props;
 
@@ -164,14 +168,7 @@ class StructurePage extends React.Component<AllProps, State> {
                   }}
                 >
                   {this.state.activePopover !== PopoverType.NONE && (
-                    <div
-                      style={{
-                        width: "200px",
-                        minHeight: "50px",
-                        margin: "10px",
-                        marginTop: "20px"
-                      }}
-                    >
+                    <div className={this.props.classes.content}>
                       {PopoverContent(this.state.activePopover, this.props)}
                     </div>
                   )}
@@ -212,6 +209,16 @@ class StructurePage extends React.Component<AllProps, State> {
     );
   }
 }
+
+const popoverStyles = (theme: Theme) =>
+  createStyles({
+    content: {
+      width: theme.popover.width,
+      minHeight: theme.popover.minHeight,
+      margin: theme.popover.margin,
+      marginTop: theme.popover.marginTop
+    }
+  });
 
 const WaveformControlButton = (props: {
   title: string;
@@ -365,4 +372,7 @@ const mapDispatchToProps = {
   updatedPlaybackSettings,
   openedDialog
 };
-export default connect(mapStateToProps, mapDispatchToProps)(StructurePage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(popoverStyles, { withTheme: true })(StructurePage));
