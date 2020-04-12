@@ -9,6 +9,7 @@
         "javascriptreact",
         "typescript",
         "typescriptreact",
+        "json"
     ],
     "eslint.format.enable": true,
     "eslint.packageManager": "yarn",
