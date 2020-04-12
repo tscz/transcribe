@@ -129,6 +129,7 @@ class AudioManagement extends React.Component<AllProps> {
       prevProps.loopStart !== this.props.loopStart ||
       prevProps.loopEnd !== this.props.loopEnd
     ) {
+      this.getPlayer().seek(this.props.loopStart);
       this.setZoom(this.props.loopStart, this.props.loopEnd);
     }
   }
