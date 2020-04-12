@@ -1,8 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createdProject,
+  initializedProject
+} from "states/project/projectSlice";
+import { NormalizedObjects } from "states/store";
+import ArrayUtil from "util/ArrayUtil";
 
-import ArrayUtil from "../../util/ArrayUtil";
-import { createdProject, initializedProject } from "../project/projectSlice";
-import { NormalizedObjects } from "../store";
 import {
   distributeMeasures,
   enclosingSectionOf,

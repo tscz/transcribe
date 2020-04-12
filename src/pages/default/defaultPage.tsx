@@ -1,6 +1,5 @@
+import View from "components/view/view";
 import React from "react";
-
-import View from "../../components/view/view";
 
 class DefaultPage extends React.Component {
   render() {

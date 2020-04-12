@@ -1,12 +1,11 @@
 import Button from "@material-ui/core/Button/Button";
+import DialogManagement from "components/dialogManagement/dialogManagement";
 import React from "react";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
-
-import DialogManagement from "../../components/dialogManagement/dialogManagement";
-import { DialogType, openedDialog } from "../../states/dialog/dialogsSlice";
-import { createRootReducer } from "../../states/store";
+import { DialogType, openedDialog } from "states/dialog/dialogsSlice";
+import { createRootReducer } from "states/store";
 
 export default {
   title: "Components|DialogManagement",

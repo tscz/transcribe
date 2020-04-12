@@ -9,21 +9,20 @@ import {
   TableRow
 } from "@material-ui/core";
 import RemoveIcon from "@material-ui/icons/Remove";
+import Log from "components/log/log";
+import MeasureSelect from "components/measureSelect/measureSelect";
+import SectionSelect from "components/sectionSelect/sectionSelect";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-
-import Log from "../../components/log/log";
-import MeasureSelect from "../../components/measureSelect/measureSelect";
-import SectionSelect from "../../components/sectionSelect/sectionSelect";
 import {
   addedSection,
   removedSection,
   Section,
   SectionType,
   updatedSection
-} from "../../states/analysis/analysisSlice";
-import { ApplicationState, NormalizedObjects } from "../../states/store";
-import ArrayUtil from "../../util/ArrayUtil";
+} from "states/analysis/analysisSlice";
+import { ApplicationState, NormalizedObjects } from "states/store";
+import ArrayUtil from "util/ArrayUtil";
 
 interface PropsFromState {
   readonly sections: NormalizedObjects<Section>;

@@ -1,10 +1,10 @@
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Log from "components/log/log";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { hotReloaded, LoadingStatus } from "states/project/projectSlice";
+import { ApplicationState } from "states/store";
 
-import Log from "../../components/log/log";
-import { hotReloaded, LoadingStatus } from "../../states/project/projectSlice";
-import { ApplicationState } from "../../states/store";
 import WaveView from "./waveView";
 
 interface PropsFromState {

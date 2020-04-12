@@ -1,6 +1,11 @@
-import ArrayUtil from "../../util/ArrayUtil";
-import { createdProject, LoadingStatus, Page } from "../project/projectSlice";
-import { PersistedState } from "../store";
+import {
+  createdProject,
+  LoadingStatus,
+  Page
+} from "states/project/projectSlice";
+import { PersistedState } from "states/store";
+import ArrayUtil from "util/ArrayUtil";
+
 import reducer, {
   addedSection,
   AnalysisState,

@@ -1,6 +1,6 @@
 import React from "react";
+import TestEnvironment from "tests/TestEnvironment";
 
-import TestEnvironment from "../../tests/TestEnvironment";
 import MeasureSelect from "./measureSelect";
 
 it("renders without crashing", () => {

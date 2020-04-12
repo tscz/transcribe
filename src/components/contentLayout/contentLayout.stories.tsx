@@ -1,6 +1,6 @@
 import React from "react";
+import { Rectangle } from "tests/TestUtil";
 
-import { Rectangle } from "../../tests/TestUtil";
 import ContentLayout from "./contentLayout";
 
 export default {

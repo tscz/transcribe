@@ -1,19 +1,16 @@
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
 import React from "react";
 import { Provider } from "react-redux";
-
-import {
-  SectionType,
-  TimeSignatureType
-} from "../../states/analysis/analysisSlice";
+import { SectionType, TimeSignatureType } from "states/analysis/analysisSlice";
 import {
   createdProject,
   initializedProject,
   LoadingStatus,
   Page
-} from "../../states/project/projectSlice";
-import store, { PersistedState } from "../../states/store";
-import theme from "../../styles/theme";
+} from "states/project/projectSlice";
+import store, { PersistedState } from "states/store";
+import theme from "styles/theme";
+
 import StructureView from "./structureView";
 
 export default {

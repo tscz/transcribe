@@ -1,6 +1,6 @@
 import React from "react";
+import TestEnvironment from "tests/TestEnvironment";
 
-import TestEnvironment from "../../tests/TestEnvironment";
 import WaveContainer from "./waveContainer";
 
 it("renders without crashing", () => {

@@ -1,9 +1,8 @@
 import { MenuItem } from "@material-ui/core";
 import Select from "@material-ui/core/Select/Select";
+import PeaksConfig from "components/audioManagement/peaksConfig";
 import React, { FunctionComponent } from "react";
-
-import { SectionType } from "../../states/analysis/analysisSlice";
-import PeaksConfig from "../audioManagement/peaksConfig";
+import { SectionType } from "states/analysis/analysisSlice";
 
 const SectionSelect: FunctionComponent<{
   value: SectionType;

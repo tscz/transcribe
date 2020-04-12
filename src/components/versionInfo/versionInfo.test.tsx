@@ -1,6 +1,6 @@
 import React from "react";
+import TestEnvironment from "tests/TestEnvironment";
 
-import TestEnvironment from "../../tests/TestEnvironment";
 import VersionInfo from "./versionInfo";
 
 it("renders without crashing", () => {

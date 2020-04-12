@@ -1,6 +1,6 @@
 import React from "react";
+import TestEnvironment from "tests/TestEnvironment";
 
-import TestEnvironment from "../../tests/TestEnvironment";
 import ModalDialog from "./modalDialog";
 
 it("renders without crashing", () => {

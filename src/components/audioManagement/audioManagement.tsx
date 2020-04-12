@@ -1,21 +1,14 @@
+import PersistenceApi from "api/persistenceApi";
+import Log from "components/log/log";
 import Peaks, { PeaksInstance } from "peaks.js";
 import React from "react";
 import { connect } from "react-redux";
+import { Measure, Section, updatedRhythm } from "states/analysis/analysisSlice";
+import { triggeredPause } from "states/audio/audioSlice";
+import { initializedProject, LoadingStatus } from "states/project/projectSlice";
+import { ApplicationState, NormalizedObjects } from "states/store";
 import * as Tone from "tone";
 
-import PersistenceApi from "../../api/persistenceApi";
-import {
-  Measure,
-  Section,
-  updatedRhythm
-} from "../../states/analysis/analysisSlice";
-import { triggeredPause } from "../../states/audio/audioSlice";
-import {
-  initializedProject,
-  LoadingStatus
-} from "../../states/project/projectSlice";
-import { ApplicationState, NormalizedObjects } from "../../states/store";
-import Log from "../log/log";
 import AudioPlayer from "./audioPlayer";
 import PeaksConfig, { AUDIO_DOM_ELEMENT } from "./peaksConfig";
 

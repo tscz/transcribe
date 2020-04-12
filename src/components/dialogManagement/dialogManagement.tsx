@@ -1,28 +1,27 @@
 import { FormLabel } from "@material-ui/core";
 import FormControl from "@material-ui/core/FormControl";
 import TextField from "@material-ui/core/TextField";
+import PersistenceApi from "api/persistenceApi";
+import FileInput, { FileType } from "components/fileInput/fileInput";
+import MeasureSelect from "components/measureSelect/measureSelect";
+import ModalDialog, { DialogAction } from "components/modalDialog/modalDialog";
+import SectionSelect from "components/sectionSelect/sectionSelect";
 import React, { Component, FunctionComponent, useState } from "react";
 import { connect } from "react-redux";
-
-import PersistenceApi from "../../api/persistenceApi";
 import {
   addedSection,
   initialAnalysisState,
   SectionType
-} from "../../states/analysis/analysisSlice";
-import { closedDialog, DialogType } from "../../states/dialog/dialogsSlice";
+} from "states/analysis/analysisSlice";
+import { closedDialog, DialogType } from "states/dialog/dialogsSlice";
 import {
   createdProject,
   initialProjectState,
   Page,
   switchedPage
-} from "../../states/project/projectSlice";
-import store, { ApplicationState } from "../../states/store";
-import ArrayUtil from "../../util/ArrayUtil";
-import FileInput, { FileType } from "../fileInput/fileInput";
-import MeasureSelect from "../measureSelect/measureSelect";
-import ModalDialog, { DialogAction } from "../modalDialog/modalDialog";
-import SectionSelect from "../sectionSelect/sectionSelect";
+} from "states/project/projectSlice";
+import store, { ApplicationState } from "states/store";
+import ArrayUtil from "util/ArrayUtil";
 
 interface PropsFromState {
   type: DialogType;

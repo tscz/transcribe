@@ -1,11 +1,10 @@
 import { Button, ButtonGroup, Grid, Typography } from "@material-ui/core";
+import PeaksConfig from "components/audioManagement/peaksConfig";
 import React from "react";
 import { connect } from "react-redux";
-
-import { Measure, Section } from "../../states/analysis/analysisSlice";
-import { updatedLoopSettings } from "../../states/audio/audioSlice";
-import { ApplicationState, NormalizedObjects } from "../../states/store";
-import PeaksConfig from "../audioManagement/peaksConfig";
+import { Measure, Section } from "states/analysis/analysisSlice";
+import { updatedLoopSettings } from "states/audio/audioSlice";
+import { ApplicationState, NormalizedObjects } from "states/store";
 
 interface PropsFromState {
   sections: NormalizedObjects<Section>;

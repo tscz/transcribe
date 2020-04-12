@@ -18,32 +18,31 @@ import SpeedIcon from "@material-ui/icons/Speed";
 import SyncAltIcon from "@material-ui/icons/SyncAlt";
 import TimerIcon from "@material-ui/icons/Timer";
 import ToggleButton from "@material-ui/lab/ToggleButton";
+import ContentLayout from "components/contentLayout/contentLayout";
+import Log from "components/log/log";
+import SliderInput from "components/sliderInput/sliderInput";
+import View from "components/view/view";
 import React, { ReactElement } from "react";
 import { connect } from "react-redux";
-
-import ContentLayout from "../../components/contentLayout/contentLayout";
-import Log from "../../components/log/log";
-import SliderInput from "../../components/sliderInput/sliderInput";
-import View from "../../components/view/view";
 import {
   TimeSignatureType,
   updatedRhythm
-} from "../../states/analysis/analysisSlice";
-import { toTimeSignatureType } from "../../states/analysis/analysisUtil";
+} from "states/analysis/analysisSlice";
+import { toTimeSignatureType } from "states/analysis/analysisUtil";
 import {
   triggeredPause,
   triggeredPlay,
   updatedPlaybackSettings
-} from "../../states/audio/audioSlice";
-import { DialogType, openedDialog } from "../../states/dialog/dialogsSlice";
+} from "states/audio/audioSlice";
+import { DialogType, openedDialog } from "states/dialog/dialogsSlice";
 import {
   enabledSyncFirstMeasureStart,
   LoadingStatus
-} from "../../states/project/projectSlice";
-import { ApplicationState } from "../../states/store";
-import StructureView from "../../views/structure/structureView";
-import StructureNavigationView from "../../views/structureNavigation/structureNavigationView";
-import WaveContainer from "../../views/wave/waveContainer";
+} from "states/project/projectSlice";
+import { ApplicationState } from "states/store";
+import StructureView from "views/structure/structureView";
+import StructureNavigationView from "views/structureNavigation/structureNavigationView";
+import WaveContainer from "views/wave/waveContainer";
 
 interface PropsFromState {
   readonly loaded: boolean;

@@ -1,11 +1,6 @@
 import { PointAddOptions, SegmentAddOptions } from "peaks.js";
-
-import {
-  Measure,
-  Section,
-  SectionType
-} from "../../states/analysis/analysisSlice";
-import { NormalizedObjects } from "../../states/store";
+import { Measure, Section, SectionType } from "states/analysis/analysisSlice";
+import { NormalizedObjects } from "states/store";
 
 export const AUDIO_DOM_ELEMENT = "audio_dom_element";
 export const ZOOMVIEW_CONTAINER = "zoomview-container";

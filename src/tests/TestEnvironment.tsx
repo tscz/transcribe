@@ -2,9 +2,8 @@ import { ThemeProvider } from "@material-ui/core";
 import React, { ReactElement } from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-
-import store from "../states/store";
-import theme from "../styles/theme";
+import store from "states/store";
+import theme from "styles/theme";
 
 export default class TestEnvironment {
   static renderWithStore = (element: ReactElement) => {

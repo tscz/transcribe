@@ -1,6 +1,6 @@
 import React, { useState } from "react";
+import { SectionType } from "states/analysis/analysisSlice";
 
-import { SectionType } from "../../states/analysis/analysisSlice";
 import SectionSelect from "./sectionSelect";
 
 export default {

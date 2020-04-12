@@ -1,7 +1,7 @@
 import React from "react";
 import { Provider } from "react-redux";
+import store from "states/store";
 
-import store from "../../states/store";
 import PrintPage from "./printPage";
 
 export default {

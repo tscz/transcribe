@@ -1,8 +1,8 @@
 import { IconButton, InputBase } from "@material-ui/core";
 import { mount } from "enzyme";
 import React from "react";
+import TestEnvironment from "tests/TestEnvironment";
 
-import TestEnvironment from "../../tests/TestEnvironment";
 import FileInput, { FileType } from "./fileInput";
 
 it("renders without crashing", () => {

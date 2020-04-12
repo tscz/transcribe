@@ -1,7 +1,6 @@
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
-
-import { PersistedState } from "../states/store";
+import { PersistedState } from "states/store";
 
 interface SaveOptions {
   audioFileUrl: string;
