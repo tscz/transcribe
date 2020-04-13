@@ -1,6 +1,8 @@
+import { ThemeProvider } from "@material-ui/core";
 import React from "react";
 import { Provider } from "react-redux";
 import store from "states/store";
+import theme from "styles/theme";
 
 import StructurePage from "./structurePage";
 
@@ -11,6 +13,8 @@ export default {
 
 export const Default = () => (
   <Provider store={store}>
-    <StructurePage></StructurePage>
+    <ThemeProvider theme={theme}>
+      <StructurePage></StructurePage>
+    </ThemeProvider>
   </Provider>
 );

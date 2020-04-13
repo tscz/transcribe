@@ -35,11 +35,7 @@ const styles = () =>
     mainGrid: {
       marginBottom: "5px"
     },
-    section: {
-      height: "15px",
-      width: "10px",
-      padding: "0px"
-    }
+    section: {}
   });
 
 class SectionOverview extends React.Component<AllProps> {
@@ -113,7 +109,12 @@ class SectionOverview extends React.Component<AllProps> {
 const squareStyles = () =>
   createStyles({
     root: {
-      backgroundColor: (props: SquareProps) => getColor(props.sectionType)
+      backgroundColor: (props: SquareProps) => getColor(props.sectionType),
+      minWidth: "12%",
+      minHeight: "15px",
+      padding: "0px",
+      marginLeft: "2px",
+      marginBottom: "2px"
     }
   });
 
