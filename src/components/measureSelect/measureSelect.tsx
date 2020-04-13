@@ -1,14 +1,29 @@
-import { MenuItem } from "@material-ui/core";
+import {
+  createStyles,
+  MenuItem,
+  Theme,
+  WithStyles,
+  withStyles
+} from "@material-ui/core";
 import Select from "@material-ui/core/Select/Select";
-import React, { FunctionComponent } from "react";
+import React from "react";
 
-const MeasureSelect: FunctionComponent<{
+const styles = (theme: Theme) =>
+  createStyles({
+    root: {
+      minWidth: theme.measureSelect.minWidth
+    }
+  });
+
+interface Props extends WithStyles<typeof styles> {
   value: number;
   min: number;
   max: number;
   onChange: (value: number) => void;
   disabled?: boolean;
-}> = (props) => {
+}
+
+const MeasureSelect = withStyles(styles)((props: Props) => {
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     const newMeasure = event.target.value as number;
     props.onChange(newMeasure);
@@ -18,9 +33,7 @@ const MeasureSelect: FunctionComponent<{
     <Select
       value={props.value}
       onChange={handleChange}
-      style={{
-        minWidth: "40px"
-      }}
+      className={props.classes.root}
       disabled={props.disabled}
     >
       {new Array<number>(props.max - props.min + 1)
@@ -34,6 +47,6 @@ const MeasureSelect: FunctionComponent<{
         })}
     </Select>
   );
-};
+});
 
 export default MeasureSelect;

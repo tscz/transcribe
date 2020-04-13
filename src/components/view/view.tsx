@@ -1,7 +1,25 @@
-import { CardHeader } from "@material-ui/core";
+import {
+  CardHeader,
+  createStyles,
+  Theme,
+  WithStyles,
+  withStyles
+} from "@material-ui/core";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import React, { Component, ReactElement } from "react";
+import React, { ReactElement } from "react";
+
+const styles = (theme: Theme) =>
+  createStyles({
+    root: {
+      height: "100%",
+      backgroundColor: theme.view.background
+    },
+    header: {
+      backgroundColor: theme.view.headerBackground,
+      padding: theme.view.headerPadding
+    }
+  });
 
 interface Props {
   body: ReactElement;
@@ -9,26 +27,20 @@ interface Props {
   action?: ReactElement;
 }
 
-class View extends Component<Props> {
-  render() {
-    return (
-      <Card
-        style={{
-          height: "100%",
-          backgroundColor: "#ffffff"
-        }}
-        raised={false}
-      >
-        <CardHeader
-          titleTypographyProps={{ variant: "subtitle1" }}
-          title={this.props.title}
-          style={{ backgroundColor: "#f1f4f6", padding: "4px" }}
-          action={this.props.action}
-        />
-        <CardContent>{this.props.body}</CardContent>
-      </Card>
-    );
-  }
-}
+type PropsWithStyle = Props & WithStyles<typeof styles>;
+
+const View = withStyles(styles)((props: PropsWithStyle) => {
+  return (
+    <Card className={props.classes.root} raised={false}>
+      <CardHeader
+        titleTypographyProps={{ variant: "subtitle1" }}
+        title={props.title}
+        className={props.classes.header}
+        action={props.action}
+      />
+      <CardContent>{props.body}</CardContent>
+    </Card>
+  );
+});
 
 export default View;

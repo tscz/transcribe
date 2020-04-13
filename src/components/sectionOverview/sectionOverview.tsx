@@ -1,10 +1,18 @@
-import { Button, ButtonGroup, Grid, Typography } from "@material-ui/core";
-import PeaksConfig from "components/audioManagement/peaksConfig";
+import {
+  Button,
+  ButtonGroup,
+  createStyles,
+  Grid,
+  Typography,
+  WithStyles,
+  withStyles
+} from "@material-ui/core";
 import React from "react";
 import { connect } from "react-redux";
-import { Measure, Section } from "states/analysis/analysisSlice";
+import { Measure, Section, SectionType } from "states/analysis/analysisSlice";
 import { updatedLoopSettings } from "states/audio/audioSlice";
 import { ApplicationState, NormalizedObjects } from "states/store";
+import { getColor } from "styles/theme";
 
 interface PropsFromState {
   sections: NormalizedObjects<Section>;
@@ -17,7 +25,22 @@ interface PropsFromDispatch {
 
 interface Props {}
 
-type AllProps = PropsFromState & PropsFromDispatch & Props;
+type AllProps = PropsFromState &
+  PropsFromDispatch &
+  Props &
+  WithStyles<typeof styles>;
+
+const styles = () =>
+  createStyles({
+    mainGrid: {
+      marginBottom: "5px"
+    },
+    section: {
+      height: "15px",
+      width: "10px",
+      padding: "0px"
+    }
+  });
 
 class SectionOverview extends React.Component<AllProps> {
   render() {
@@ -45,7 +68,7 @@ class SectionOverview extends React.Component<AllProps> {
                   <Grid
                     container
                     direction="column"
-                    style={{ marginBottom: "5px" }}
+                    className={this.props.classes.mainGrid}
                   >
                     {generateMatrix(sections.byId[sectionId].measures, 8).map(
                       (row) => (
@@ -53,11 +76,7 @@ class SectionOverview extends React.Component<AllProps> {
                           key={sectionId + "_buttonGroup_" + row[0]}
                           orientation="horizontal"
                           size="small"
-                          style={{
-                            height: "15px",
-                            width: "10px",
-                            padding: "0px"
-                          }}
+                          className={this.props.classes.section}
                         >
                           {row.map((measureId) => {
                             const measure: Measure = measures.byId[measureId];
@@ -67,9 +86,7 @@ class SectionOverview extends React.Component<AllProps> {
                               <Square
                                 key={measure.id}
                                 value={measure.id}
-                                bg={PeaksConfig.getColor(
-                                  sections.byId[sectionId].type
-                                )}
+                                sectionType={sections.byId[sectionId].type}
                                 onClick={() =>
                                   this.props.updatedLoopSettings({
                                     start: measure.time,
@@ -93,25 +110,32 @@ class SectionOverview extends React.Component<AllProps> {
   }
 }
 
-class Square extends React.Component<{
+const squareStyles = () =>
+  createStyles({
+    root: {
+      backgroundColor: (props: SquareProps) => getColor(props.sectionType)
+    }
+  });
+
+interface SquareProps {
   value: string;
-  bg: string;
+  sectionType: SectionType;
   onClick: () => void;
-}> {
-  render() {
-    return (
-      <Button
-        {...this.props}
-        style={{
-          backgroundColor: this.props.bg
-        }}
-        onClick={() => this.props.onClick()}
-      >
-        {this.props.value}
-      </Button>
-    );
-  }
 }
+
+type SquarePropsWithStyle = SquareProps & WithStyles<typeof squareStyles>;
+
+const Square = withStyles(squareStyles)((props: SquarePropsWithStyle) => {
+  return (
+    <Button
+      {...props}
+      onClick={() => props.onClick()}
+      className={props.classes.root}
+    >
+      {props.value}
+    </Button>
+  );
+});
 
 const mapStateToProps = ({ analysis }: ApplicationState) => {
   return {
@@ -121,4 +145,7 @@ const mapStateToProps = ({ analysis }: ApplicationState) => {
 };
 
 const mapDispatchToProps = { updatedLoopSettings };
-export default connect(mapStateToProps, mapDispatchToProps)(SectionOverview);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles, { withTheme: true })(SectionOverview));

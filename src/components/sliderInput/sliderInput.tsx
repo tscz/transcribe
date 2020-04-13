@@ -1,16 +1,35 @@
-import { Box, FormControl, InputLabel, Slider } from "@material-ui/core";
+import {
+  Box,
+  createStyles,
+  FormControl,
+  InputLabel,
+  Slider,
+  WithStyles,
+  withStyles
+} from "@material-ui/core";
 import React from "react";
 
-const SliderInput = (props: {
+const styles = () =>
+  createStyles({
+    root: {
+      width: "100%"
+    }
+  });
+
+interface Props {
   title: string;
   min: number;
   max: number;
   step: number;
   value: number;
   onChange: (event: React.ChangeEvent<{}>, value: number | number[]) => void;
-}) => {
+}
+
+type PropsWithStyle = Props & WithStyles<typeof styles>;
+
+const SliderInput = withStyles(styles)((props: PropsWithStyle) => {
   return (
-    <FormControl style={{ width: "100%" }}>
+    <FormControl className={props.classes.root}>
       <InputLabel shrink>{props.title}</InputLabel>
       <Box mt={2}>
         <Slider
@@ -24,6 +43,6 @@ const SliderInput = (props: {
       </Box>
     </FormControl>
   );
-};
+});
 
 export default SliderInput;

@@ -1,6 +1,7 @@
 import { PointAddOptions, SegmentAddOptions } from "peaks.js";
-import { Measure, Section, SectionType } from "states/analysis/analysisSlice";
+import { Measure, Section } from "states/analysis/analysisSlice";
 import { NormalizedObjects } from "states/store";
+import theme, { getColor } from "styles/theme";
 
 export const AUDIO_DOM_ELEMENT = "audio_dom_element";
 export const ZOOMVIEW_CONTAINER = "zoomview-container";
@@ -24,7 +25,7 @@ class PeaksConfig {
         multiChannel: false
       },
       keyboard: true,
-      pointMarkerColor: "#006eb0",
+      pointMarkerColor: theme.waveform.pointMarkerColor,
       showPlayheadTime: true,
       zoomLevels: [42] //TODO: Define good initial default
     };
@@ -49,7 +50,7 @@ class PeaksConfig {
         labelText: section.type,
         startTime: start,
         endTime: end,
-        color: PeaksConfig.SECTIONTYPE_TO_COLOR.get(section.type),
+        color: getColor(section.type),
         editable: false
       };
 
@@ -71,26 +72,6 @@ class PeaksConfig {
 
     return points;
   };
-
-  public static getColor = (sectionType: SectionType) => {
-    const result = PeaksConfig.SECTIONTYPE_TO_COLOR.get(sectionType);
-
-    if (!result) throw Error("Unknown SectionType " + sectionType);
-
-    return result;
-  };
-
-  private static SECTIONTYPE_TO_COLOR = new Map<SectionType, string>([
-    [SectionType.INTRO, "#FFCA28"],
-    [SectionType.VERSE, "#FFA726"],
-    [SectionType.PRECHORUS, "#FF7043"],
-    [SectionType.CHORUS, "#9CCC65"],
-    [SectionType.SOLO, "#26C6DA"],
-    [SectionType.OUTRO, "#5C6BC0"],
-    [SectionType.BRIDGE, "#EC407A"],
-    [SectionType.VERSE, "#78909C"],
-    [SectionType.UNDEFINED, "#f2f2f2"]
-  ]) as ReadonlyMap<SectionType, string>;
 }
 
 export default PeaksConfig;

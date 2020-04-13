@@ -1,4 +1,10 @@
-import { FormLabel } from "@material-ui/core";
+import {
+  createStyles,
+  FormLabel,
+  Theme,
+  WithStyles,
+  withStyles
+} from "@material-ui/core";
 import FormControl from "@material-ui/core/FormControl";
 import TextField from "@material-ui/core/TextField";
 import PersistenceApi from "api/persistenceApi";
@@ -218,63 +224,75 @@ const OpenDialog: FunctionComponent<{
   );
 };
 
-const AddSectionDialog: FunctionComponent<{
+const addSectionDialogStyles = (theme: Theme) =>
+  createStyles({
+    formControl: {
+      marginBottom: theme.formControl.marginBottom
+    }
+  });
+
+interface AddSectionDialogProps
+  extends WithStyles<typeof addSectionDialogStyles> {
   maxMeasure: number;
   onSubmit: (sectionType: SectionType, start: number, end: number) => void;
   onCancel: () => void;
-}> = (props) => {
-  const [sectionType, setSectionType] = useState(SectionType.INTRO);
-  const [start, setStart] = useState(0);
-  const [end, setEnd] = useState(0);
-  const actions: () => DialogAction[] = () => {
-    return [
-      {
-        label: "Cancel",
-        onClick: () => props.onCancel()
-      },
-      {
-        label: "Add",
-        onClick: () => props.onSubmit(sectionType, start, end),
-        disabled: sectionType === SectionType.UNDEFINED || start > end
-      }
-    ];
-  };
+}
 
-  return (
-    <ModalDialog
-      title="Add new Section"
-      subTitle="Please define section and add it to the song structure."
-      actions={actions()}
-      onCancel={props.onCancel}
-    >
-      <FormControl fullWidth style={{ marginBottom: "20px" }}>
-        <FormLabel component="legend">Section Type</FormLabel>
-        <SectionSelect
-          value={sectionType}
-          onChange={(sectionType) => setSectionType(sectionType)}
-        ></SectionSelect>
-      </FormControl>
-      <FormControl fullWidth style={{ marginBottom: "20px" }}>
-        <FormLabel component="legend">First Measure</FormLabel>
-        <MeasureSelect
-          value={start}
-          min={0}
-          max={props.maxMeasure}
-          onChange={(value) => setStart(value)}
-        />
-      </FormControl>
-      <FormControl fullWidth style={{ marginBottom: "20px" }}>
-        <FormLabel component="legend">Last Measure</FormLabel>
-        <MeasureSelect
-          value={end}
-          min={0}
-          max={props.maxMeasure}
-          onChange={(value) => setEnd(value)}
-        />
-      </FormControl>
-    </ModalDialog>
-  );
-};
+const AddSectionDialog = withStyles(addSectionDialogStyles)(
+  (props: AddSectionDialogProps) => {
+    const [sectionType, setSectionType] = useState(SectionType.INTRO);
+    const [start, setStart] = useState(0);
+    const [end, setEnd] = useState(0);
+    const actions: () => DialogAction[] = () => {
+      return [
+        {
+          label: "Cancel",
+          onClick: () => props.onCancel()
+        },
+        {
+          label: "Add",
+          onClick: () => props.onSubmit(sectionType, start, end),
+          disabled: sectionType === SectionType.UNDEFINED || start > end
+        }
+      ];
+    };
+
+    return (
+      <ModalDialog
+        title="Add new Section"
+        subTitle="Please define section and add it to the song structure."
+        actions={actions()}
+        onCancel={props.onCancel}
+      >
+        <FormControl fullWidth className={props.classes.formControl}>
+          <FormLabel component="legend">Section Type</FormLabel>
+          <SectionSelect
+            value={sectionType}
+            onChange={(sectionType) => setSectionType(sectionType)}
+          ></SectionSelect>
+        </FormControl>
+        <FormControl fullWidth className={props.classes.formControl}>
+          <FormLabel component="legend">First Measure</FormLabel>
+          <MeasureSelect
+            value={start}
+            min={0}
+            max={props.maxMeasure}
+            onChange={(value) => setStart(value)}
+          />
+        </FormControl>
+        <FormControl fullWidth className={props.classes.formControl}>
+          <FormLabel component="legend">Last Measure</FormLabel>
+          <MeasureSelect
+            value={end}
+            min={0}
+            max={props.maxMeasure}
+            onChange={(value) => setEnd(value)}
+          />
+        </FormControl>
+      </ModalDialog>
+    );
+  }
+);
 
 const mapStateToProps = ({ dialog, project, analysis }: ApplicationState) => {
   return {

@@ -153,7 +153,7 @@ class StructurePage extends React.Component<AllProps, State> {
                   disabled={false}
                 />
                 <Popover
-                  style={{ height: "400px" }}
+                  className={this.props.classes.popover}
                   open={this.state.activePopover !== PopoverType.NONE}
                   anchorEl={this.state.anchorEl}
                   onClose={() => this.handlePopoverClose()}
@@ -217,30 +217,48 @@ const popoverStyles = (theme: Theme) =>
       minHeight: theme.popover.minHeight,
       margin: theme.popover.margin,
       marginTop: theme.popover.marginTop
+    },
+    popover: {
+      height: "400px"
     }
   });
 
-const WaveformControlButton = (props: {
+const waveformControlButtonStyles = () =>
+  createStyles({
+    root: {
+      marginTop: "8px",
+      marginRight: "5px"
+    }
+  });
+
+interface WaveformControlButtonProps {
   title: string;
   icon: ReactElement;
   disabled?: boolean;
   onClick?: (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-}) => {
-  const button = (
-    <IconButton
-      onClick={props.onClick}
-      size="small"
-      style={{ marginTop: "8px", marginRight: "5px" }}
-      disabled={props.disabled}
-    >
-      {props.icon}
-    </IconButton>
-  );
+}
 
-  if (props.disabled) return button;
+const WaveformControlButton = withStyles(waveformControlButtonStyles)(
+  (
+    props: WaveformControlButtonProps &
+      WithStyles<typeof waveformControlButtonStyles>
+  ) => {
+    const button = (
+      <IconButton
+        className={props.classes.root}
+        onClick={props.onClick}
+        size="small"
+        disabled={props.disabled}
+      >
+        {props.icon}
+      </IconButton>
+    );
 
-  return <Tooltip title={props.title}>{button}</Tooltip>;
-};
+    if (props.disabled) return button;
+
+    return <Tooltip title={props.title}>{button}</Tooltip>;
+  }
+);
 
 const PopoverContent = (type: PopoverType, props: AllProps) => {
   switch (type) {
@@ -301,41 +319,58 @@ const DetunePopover = (props: AllProps) => (
     }}
   ></SliderInput>
 );
-const StartMeasurePopover = (props: {
+
+const startMeasurePopoverStyles = () =>
+  createStyles({
+    toggleButton: {
+      width: "15px",
+      height: "25px"
+    }
+  });
+
+interface StartMeasurePopoverProps {
   firstMeasureStart: number;
   syncFirstMeasureStart: boolean;
   enabledSyncFirstMeasureStart: typeof enabledSyncFirstMeasureStart;
-}) => (
-  <FormControl fullWidth={true}>
-    <InputLabel>Start Measure 1</InputLabel>
-    <Input
-      type="text"
-      id="startMeasure1"
-      value={props.firstMeasureStart}
-      startAdornment={
-        <InputAdornment position="start">
-          <Tooltip
-            title="Toggle sync with mouse click.
+}
+
+const StartMeasurePopover = withStyles(startMeasurePopoverStyles)(
+  (
+    props: StartMeasurePopoverProps &
+      WithStyles<typeof startMeasurePopoverStyles>
+  ) => (
+    <FormControl fullWidth={true}>
+      <InputLabel>Start Measure 1</InputLabel>
+      <Input
+        type="text"
+        id="startMeasure1"
+        value={props.firstMeasureStart}
+        startAdornment={
+          <InputAdornment position="start">
+            <Tooltip
+              title="Toggle sync with mouse click.
           If enabled, clicking into the waveform will update the start of measure 0 to the selected position."
-          >
-            <ToggleButton
-              style={{ width: "15px", height: "25px" }}
-              value="check"
-              selected={props.syncFirstMeasureStart}
-              onChange={() => {
-                props.enabledSyncFirstMeasureStart(
-                  !props.syncFirstMeasureStart
-                );
-              }}
             >
-              <SyncAltIcon />
-            </ToggleButton>
-          </Tooltip>
-        </InputAdornment>
-      }
-    />
-  </FormControl>
+              <ToggleButton
+                className={props.classes.toggleButton}
+                value="check"
+                selected={props.syncFirstMeasureStart}
+                onChange={() => {
+                  props.enabledSyncFirstMeasureStart(
+                    !props.syncFirstMeasureStart
+                  );
+                }}
+              >
+                <SyncAltIcon />
+              </ToggleButton>
+            </Tooltip>
+          </InputAdornment>
+        }
+      />
+    </FormControl>
+  )
 );
+
 const PlaybackRatePopover = (props: AllProps) => (
   <SliderInput
     title="Playback rate"

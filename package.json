@@ -125,7 +125,7 @@
         }
       ],
       "react/forbid-component-props": [
-        0,
+        2,
         {
           "forbid": [
             "style"

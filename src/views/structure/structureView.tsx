@@ -1,4 +1,5 @@
 import {
+  createStyles,
   IconButton,
   Paper,
   Table,
@@ -6,7 +7,9 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  WithStyles,
+  withStyles
 } from "@material-ui/core";
 import RemoveIcon from "@material-ui/icons/Remove";
 import Log from "components/log/log";
@@ -35,7 +38,7 @@ interface PropsFromDispatch {
   removedSection: typeof removedSection;
 }
 
-type AllProps = PropsFromState & PropsFromDispatch;
+type AllProps = PropsFromState & PropsFromDispatch & WithStyles<typeof styles>;
 
 class StructureView extends Component<AllProps> {
   handleAddSection = (section: Section) => {
@@ -72,10 +75,16 @@ class StructureView extends Component<AllProps> {
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell style={{ width: "10%" }}></TableCell>
-              <TableCell style={{ width: "30%" }}>Section</TableCell>
-              <TableCell style={{ width: "30%" }}>First Measure</TableCell>
-              <TableCell style={{ width: "30%" }}>Last Measure</TableCell>
+              <TableCell className={this.props.classes.column1}></TableCell>
+              <TableCell className={this.props.classes.column2}>
+                Section
+              </TableCell>
+              <TableCell className={this.props.classes.column3}>
+                First Measure
+              </TableCell>
+              <TableCell className={this.props.classes.column4}>
+                Last Measure
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -168,4 +177,23 @@ const mapDispatchToProps = {
   updatedSection,
   removedSection
 };
-export default connect(mapStateToProps, mapDispatchToProps)(StructureView);
+
+const styles = () =>
+  createStyles({
+    column1: {
+      width: "10%"
+    },
+    column2: {
+      width: "30%"
+    },
+    column3: {
+      width: "30%"
+    },
+    column4: {
+      width: "30%"
+    }
+  });
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles, { withTheme: true })(StructureView));
