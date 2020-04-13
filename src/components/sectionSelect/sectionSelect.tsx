@@ -45,7 +45,8 @@ const SectionSelect = withStyles(styles)((props: PropsWithStyle) => {
           <MenuItem
             key={sectionType}
             value={sectionType}
-            className={props.classes.colored}
+            // eslint-disable-next-line react/forbid-component-props
+            style={{ backgroundColor: getColor(sectionType) }}
           >
             {sectionType}
           </MenuItem>
