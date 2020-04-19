@@ -24,8 +24,7 @@ export const Default = () => {
 
   const persistedState: PersistedState = {
     analysis: {
-      audioDuration: 100,
-      audioSampleRate: 44400,
+      duration: 100,
       bpm: 120,
       firstMeasureStart: 0,
       measures: { allIds: [], byId: {} },
@@ -82,9 +81,7 @@ export const Default = () => {
   };
 
   store.dispatch(createdProject(persistedState));
-  store.dispatch(
-    initializedProject({ audioDuration: 240, audioSampleRate: 44400 })
-  );
+  store.dispatch(initializedProject());
 
   return (
     <Provider store={store}>

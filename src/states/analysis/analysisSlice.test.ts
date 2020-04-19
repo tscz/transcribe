@@ -20,8 +20,7 @@ const initialState: AnalysisState = {
   sections: { allIds: [], byId: {} },
   bpm: 42,
   firstMeasureStart: 3,
-  audioDuration: 180,
-  audioSampleRate: 44400,
+  duration: 180,
   measures: { allIds: [], byId: {} },
   timeSignature: TimeSignatureType.FOUR_FOUR
 };
@@ -30,8 +29,7 @@ const persistedAnalysisState: AnalysisState = {
   sections: { allIds: [], byId: {} },
   bpm: 120,
   firstMeasureStart: 1,
-  audioDuration: 190,
-  audioSampleRate: 48000,
+  duration: 190,
   measures: { allIds: [], byId: {} },
   timeSignature: TimeSignatureType.THREE_FOUR
 };
@@ -56,8 +54,7 @@ it("can reset an analysis from a persisted state", () => {
     sections: { allIds: [], byId: {} },
     bpm: 120,
     firstMeasureStart: 1,
-    audioDuration: 190,
-    audioSampleRate: 48000,
+    duration: 190,
     measures: { allIds: [], byId: {} },
     timeSignature: TimeSignatureType.THREE_FOUR
   });
@@ -119,8 +116,7 @@ const initialState2: AnalysisState = {
   },
   bpm: 42,
   firstMeasureStart: 3,
-  audioDuration: 180,
-  audioSampleRate: 44400,
+  duration: 180,
   measures: { allIds: [], byId: {} },
   timeSignature: TimeSignatureType.FOUR_FOUR
 };

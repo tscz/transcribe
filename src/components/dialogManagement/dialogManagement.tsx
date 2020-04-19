@@ -20,6 +20,7 @@ import {
   SectionType
 } from "states/analysis/analysisSlice";
 import { closedDialog, DialogType } from "states/dialog/dialogsSlice";
+import { switchAudioFile } from "states/middleware/audioMiddleware";
 import {
   createdProject,
   initialProjectState,
@@ -40,6 +41,7 @@ interface PropsFromDispatch {
   closedDialog: typeof closedDialog;
   createdProject: typeof createdProject;
   addedSection: typeof addedSection;
+  switchAudioFile: typeof switchAudioFile;
 }
 
 type AllProps = PropsFromState & PropsFromDispatch;
@@ -306,7 +308,8 @@ const mapDispatchToProps = {
   closedDialog,
   switchedPage,
   createdProject,
-  addedSection
+  addedSection,
+  switchAudioFile: switchAudioFile
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DialogManagement);

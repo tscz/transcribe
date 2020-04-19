@@ -1,27 +1,21 @@
+import Log from "components/log/log";
+import React, { Component } from "react";
 import {
   OVERVIEW_CONTAINER,
   ZOOMVIEW_CONTAINER
-} from "components/audioManagement/peaksConfig";
-import Log from "components/log/log";
-import React, { Component } from "react";
+} from "states/middleware/peaksConfig";
 
-interface Props {
-  url: string;
-}
-
-export default class WaveView extends Component<Props> {
-  shouldComponentUpdate(nextProps: Props) {
-    return nextProps.url !== this.props.url;
+export default class WaveView extends Component {
+  shouldComponentUpdate() {
+    return false;
   }
 
   render() {
-    Log.info("render with url=" + this.props.url, WaveView.name);
+    Log.info("render", WaveView.name);
     return (
-      <div>
-        <div id="waveform-container">
-          <div id={ZOOMVIEW_CONTAINER}></div>
-          <div id={OVERVIEW_CONTAINER}></div>
-        </div>
+      <div id="waveform-container">
+        <div id={ZOOMVIEW_CONTAINER}></div>
+        <div id={OVERVIEW_CONTAINER}></div>
       </div>
     );
   }

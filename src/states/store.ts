@@ -4,6 +4,7 @@ import { AnyAction, combineReducers, Reducer } from "redux";
 import analysisReducer, { AnalysisState } from "./analysis/analysisSlice";
 import audioReducer, { AudioState } from "./audio/audioSlice";
 import dialogReducer, { DialogState } from "./dialog/dialogsSlice";
+import AudioMiddleware from "./middleware/audioMiddleware";
 import projectReducer, { ProjectState } from "./project/projectSlice";
 
 /** The top-level application state object. */
@@ -51,7 +52,8 @@ export const createRootReducer: Reducer<ApplicationState, AnyAction> = (
 const createAppStore = () => {
   const store = configureStore({
     reducer: createRootReducer,
-    preloadedState: undefined
+    preloadedState: undefined,
+    middleware: [new AudioMiddleware().createMiddleware]
   });
 
   if (process.env.NODE_ENV !== "production" && module.hot) {

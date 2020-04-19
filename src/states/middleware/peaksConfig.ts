@@ -1,14 +1,19 @@
-import { PointAddOptions, SegmentAddOptions } from "peaks.js";
+import { PeaksOptions, PointAddOptions, SegmentAddOptions } from "peaks.js";
 import { Measure, Section } from "states/analysis/analysisSlice";
 import { NormalizedObjects } from "states/store";
 import theme, { getColor } from "styles/theme";
+
+import AudioPlayer from "./audioPlayer";
 
 export const AUDIO_DOM_ELEMENT = "audio_dom_element";
 export const ZOOMVIEW_CONTAINER = "zoomview-container";
 export const OVERVIEW_CONTAINER = "overview-container";
 
 class PeaksConfig {
-  static create = (audioBuffer: AudioBuffer) => {
+  static create: (
+    audioBuffer: AudioBuffer,
+    audioPlayer: AudioPlayer
+  ) => PeaksOptions = (audioBuffer, audioPlayer) => {
     const mediaelement: HTMLAudioElement = document.getElementById(
       AUDIO_DOM_ELEMENT
     ) as HTMLAudioElement;
@@ -27,7 +32,8 @@ class PeaksConfig {
       keyboard: true,
       pointMarkerColor: theme.waveform.pointMarkerColor,
       showPlayheadTime: true,
-      zoomLevels: [42] //TODO: Define good initial default
+      zoomLevels: [42], //TODO: Define good initial default
+      player: audioPlayer
     };
   };
 
