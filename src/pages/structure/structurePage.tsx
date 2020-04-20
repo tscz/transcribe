@@ -5,7 +5,6 @@ import {
   Input,
   InputAdornment,
   InputLabel,
-  NativeSelect,
   Popover,
   Theme,
   Tooltip,
@@ -20,7 +19,6 @@ import PauseIcon from "@material-ui/icons/Pause";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import SpeedIcon from "@material-ui/icons/Speed";
 import SyncAltIcon from "@material-ui/icons/SyncAlt";
-import TimerIcon from "@material-ui/icons/Timer";
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ContentLayout from "components/contentLayout/contentLayout";
 import Log from "components/log/log";
@@ -28,11 +26,7 @@ import SliderInput from "components/sliderInput/sliderInput";
 import View from "components/view/view";
 import React, { ReactElement } from "react";
 import { connect } from "react-redux";
-import {
-  TimeSignatureType,
-  updatedRhythm
-} from "states/analysis/analysisSlice";
-import { toTimeSignatureType } from "states/analysis/analysisUtil";
+import { updatedRhythm } from "states/analysis/analysisSlice";
 import {
   triggeredPause,
   triggeredPlay,
@@ -44,6 +38,7 @@ import {
   LoadingStatus
 } from "states/project/projectSlice";
 import { ApplicationState } from "states/store";
+import PropertiesView from "views/properties/propertiesView";
 import StructureView from "views/structure/structureView";
 import StructureNavigationView from "views/structureNavigation/structureNavigationView";
 import WaveContainer from "views/wave/waveContainer";
@@ -53,8 +48,6 @@ interface PropsFromState {
   readonly isPlaying: boolean;
   readonly syncFirstMeasureStart: boolean;
   readonly firstMeasureStart: number;
-  readonly timeSignature: TimeSignatureType;
-  readonly bpm: number;
   readonly detune: number;
   readonly playbackRate: number;
 }
@@ -133,12 +126,6 @@ class StructurePage extends React.Component<AllProps, State> {
                   disabled={true}
                 />
                 <WaveformControlButton
-                  title="Rhythm & Metronome"
-                  icon={<TimerIcon />}
-                  onClick={(e) => this.handlePopoverOpen(e, PopoverType.RHYTHM)}
-                  disabled={false}
-                />
-                <WaveformControlButton
                   title="Playback Rate"
                   icon={<SpeedIcon />}
                   onClick={(e) =>
@@ -180,9 +167,9 @@ class StructurePage extends React.Component<AllProps, State> {
         topRight={
           <View title="Song Measures" body={<StructureNavigationView />}></View>
         }
-        bottom={
+        bottomLeft={
           <View
-            title="Song Structure"
+            title="Song Sections"
             action={
               <>
                 <WaveformControlButton
@@ -204,6 +191,9 @@ class StructurePage extends React.Component<AllProps, State> {
             }
             body={<StructureView />}
           ></View>
+        }
+        bottomRight={
+          <View title="Song Properties" body={<PropertiesView />}></View>
         }
       ></ContentLayout>
     );
@@ -266,8 +256,6 @@ const PopoverContent = (type: PopoverType, props: AllProps) => {
       return <DetunePopover {...props} />;
     case PopoverType.PLAYBACKRATE:
       return <PlaybackRatePopover {...props} />;
-    case PopoverType.RHYTHM:
-      return <RhythmPopover {...props} />;
     case PopoverType.STARTMEASURE:
       return <StartMeasurePopover {...props} />;
     default:
@@ -275,36 +263,6 @@ const PopoverContent = (type: PopoverType, props: AllProps) => {
   }
 };
 
-const RhythmPopover = (props: AllProps) => (
-  <>
-    <SliderInput
-      title="Bpm"
-      value={props.bpm}
-      min={40}
-      max={220}
-      step={1}
-      onChange={(e, bpm) => {
-        if (!Array.isArray(bpm)) {
-          props.updatedRhythm({ bpm: bpm });
-        }
-      }}
-    ></SliderInput>
-    <FormControl fullWidth={true}>
-      <InputLabel>Time Signature</InputLabel>
-      <NativeSelect
-        value={props.timeSignature}
-        onChange={(e) =>
-          props.updatedRhythm({
-            timeSignatureType: toTimeSignatureType(e.target.value)
-          })
-        }
-      >
-        <option value={TimeSignatureType.FOUR_FOUR}>4/4</option>
-        <option value={TimeSignatureType.THREE_FOUR}>3/4</option>
-      </NativeSelect>
-    </FormControl>
-  </>
-);
 const DetunePopover = (props: AllProps) => (
   <SliderInput
     title="Detune"
@@ -392,8 +350,6 @@ const mapStateToProps = ({ project, audio, analysis }: ApplicationState) => {
     isPlaying: audio.isPlaying,
     firstMeasureStart: analysis.firstMeasureStart,
     syncFirstMeasureStart: project.syncFirstMeasureStart,
-    bpm: analysis.bpm,
-    timeSignature: analysis.timeSignature,
     detune: audio.detune,
     playbackRate: audio.playbackRate
   };

@@ -141,6 +141,17 @@ export const generateSectionId = (section: Section) =>
   "_" +
   section.measures[section.measures.length - 1];
 
+export const getMeasureEnd: (
+  position: number,
+  measures: NormalizedObjects<Measure>
+) => number = (position, measures) => {
+  if (measures.allIds.length - 1 > position)
+    return measures.byId[position + 1].time;
+  else {
+    return 2 * measures.byId[position].time - measures.byId[position - 1].time;
+  }
+};
+
 export const distributeMeasures = (
   timeSignatureType: TimeSignatureType,
   bpm: number,
