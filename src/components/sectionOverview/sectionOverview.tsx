@@ -7,12 +7,22 @@ import {
   WithStyles,
   withStyles
 } from "@material-ui/core";
+import clsx from "clsx";
 import React from "react";
 import { connect } from "react-redux";
 import { Measure, Section, SectionType } from "states/analysis/analysisSlice";
+import { getMeasureEnd } from "states/analysis/analysisUtil";
 import { updatedLoopSettings } from "states/audio/audioSlice";
 import { ApplicationState, NormalizedObjects } from "states/store";
 import { getColor } from "styles/theme";
+
+enum Area {
+  OUTSIDE,
+  LEFT,
+  RIGHT,
+  INSIDE,
+  LEFT_AND_RIGHT
+}
 
 interface PropsFromState {
   sections: NormalizedObjects<Section>;
@@ -30,6 +40,11 @@ type AllProps = PropsFromState &
   Props &
   WithStyles<typeof styles>;
 
+interface State {
+  start: number;
+  end: number;
+}
+
 const styles = () =>
   createStyles({
     mainGrid: {
@@ -38,7 +53,26 @@ const styles = () =>
     section: {}
   });
 
-class SectionOverview extends React.Component<AllProps> {
+class SectionOverview extends React.Component<AllProps, State> {
+  state: State = {
+    start: 0,
+    end: 0
+  };
+
+  getArea(measure: number) {
+    if (this.state.start > measure || this.state.end < measure)
+      return Area.OUTSIDE;
+
+    if (measure === this.state.start && measure === this.state.end)
+      return Area.LEFT_AND_RIGHT;
+
+    if (measure === this.state.start) return Area.LEFT;
+
+    if (measure === this.state.end) return Area.RIGHT;
+
+    return Area.INSIDE;
+  }
+
   render() {
     const { sections, measures } = this.props;
 
@@ -76,19 +110,32 @@ class SectionOverview extends React.Component<AllProps> {
                         >
                           {row.map((measureId) => {
                             const measure: Measure = measures.byId[measureId];
-                            const nextMeasure: Measure =
-                              measures.byId[Number(measureId) + 1];
+                            const position = Number(measureId);
                             return (
                               <Square
                                 key={measure.id}
                                 value={measure.id}
                                 sectiontype={sections.byId[sectionId].type}
-                                onClick={() =>
-                                  this.props.updatedLoopSettings({
-                                    start: measure.time,
-                                    end: nextMeasure.time
-                                  })
-                                }
+                                onClick={() => {
+                                  if (position <= this.state.end) {
+                                    this.setState(() => ({
+                                      start: position,
+                                      end: position
+                                    }));
+                                    this.props.updatedLoopSettings({
+                                      start: measures.byId[position].time,
+                                      end: getMeasureEnd(position, measures)
+                                    });
+                                  } else {
+                                    this.setState(() => ({
+                                      end: position
+                                    }));
+                                    this.props.updatedLoopSettings({
+                                      end: getMeasureEnd(position, measures)
+                                    });
+                                  }
+                                }}
+                                position={this.getArea(position)}
                               ></Square>
                             );
                           })}
@@ -114,7 +161,21 @@ const squareStyles = () =>
       minHeight: "15px",
       padding: "0px",
       marginLeft: "2px",
-      marginBottom: "2px"
+      marginBottom: "2px",
+      opacity: "0.7"
+    },
+    selected: {
+      opacity: "1",
+      borderTopColor: "#000000",
+      borderBottomColor: "#000000"
+    },
+    selectedLeft: {
+      borderLeftWidth: "4px",
+      borderLeftColor: "#000000"
+    },
+    selectedRight: {
+      borderRightWidth: "4px",
+      borderRightColor: "#000000"
     }
   });
 
@@ -122,16 +183,45 @@ interface SquareProps {
   value: string;
   sectiontype: SectionType;
   onClick: () => void;
+  position: Area;
 }
 
 type SquarePropsWithStyle = SquareProps & WithStyles<typeof squareStyles>;
+
+const getCssClass = (props: SquarePropsWithStyle) => {
+  switch (props.position) {
+    case Area.OUTSIDE:
+      return clsx(props.classes.root);
+    case Area.INSIDE:
+      return clsx(props.classes.root, props.classes.selected);
+    case Area.LEFT:
+      return clsx(
+        props.classes.root,
+        props.classes.selected,
+        props.classes.selectedLeft
+      );
+    case Area.RIGHT:
+      return clsx(
+        props.classes.root,
+        props.classes.selected,
+        props.classes.selectedRight
+      );
+    case Area.LEFT_AND_RIGHT:
+      return clsx(
+        props.classes.root,
+        props.classes.selected,
+        props.classes.selectedLeft,
+        props.classes.selectedRight
+      );
+  }
+};
 
 const Square = withStyles(squareStyles)((props: SquarePropsWithStyle) => {
   return (
     <Button
       {...props}
       onClick={() => props.onClick()}
-      className={props.classes.root}
+      className={getCssClass(props)}
     >
       {props.value}
     </Button>

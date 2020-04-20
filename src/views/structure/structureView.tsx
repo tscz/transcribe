@@ -1,7 +1,6 @@
 import {
   createStyles,
   IconButton,
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -71,7 +70,7 @@ class StructureView extends Component<AllProps> {
 
   render() {
     return (
-      <TableContainer component={Paper}>
+      <TableContainer>
         <Table size="small">
           <TableHead>
             <TableRow>

@@ -1,3 +1,4 @@
+import { createStyles, WithStyles, withStyles } from "@material-ui/core";
 import Log from "components/log/log";
 import React, { Component } from "react";
 import {
@@ -5,7 +6,18 @@ import {
   ZOOMVIEW_CONTAINER
 } from "states/middleware/peaksConfig";
 
-export default class WaveView extends Component {
+const styles = () =>
+  createStyles({
+    zoomview: {
+      maxHeight: "400px"
+    },
+    overview: {
+      marginTop: "30px",
+      height: "50px"
+    }
+  });
+
+class WaveView extends Component<WithStyles<typeof styles>> {
   shouldComponentUpdate() {
     return false;
   }
@@ -13,10 +25,20 @@ export default class WaveView extends Component {
   render() {
     Log.info("render", WaveView.name);
     return (
-      <div id="waveform-container">
-        <div id={ZOOMVIEW_CONTAINER}></div>
-        <div id={OVERVIEW_CONTAINER}></div>
+      <div>
+        <div id="waveform-container">
+          <div
+            id={ZOOMVIEW_CONTAINER}
+            className={this.props.classes.zoomview}
+          ></div>
+          <div
+            id={OVERVIEW_CONTAINER}
+            className={this.props.classes.overview}
+          ></div>
+        </div>
       </div>
     );
   }
 }
+
+export default withStyles(styles, { withTheme: true })(WaveView);

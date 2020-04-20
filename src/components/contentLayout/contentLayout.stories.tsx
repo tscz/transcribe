@@ -13,6 +13,7 @@ export const Basic = () =>
     <ContentLayout
       topLeft={Rectangle("topLeft")}
       topRight={Rectangle("topRight")}
-      bottom={Rectangle("bottom")}
+      bottomLeft={Rectangle("bottomLeft")}
+      bottomRight={Rectangle("bottomRight")}
     ></ContentLayout>
   );

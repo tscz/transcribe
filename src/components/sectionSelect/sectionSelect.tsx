@@ -38,16 +38,11 @@ const SectionSelect = withStyles(styles)((props: PropsWithStyle) => {
     <Select
       value={props.value}
       onChange={handleChange}
-      className={clsx(props.classes.root, props.classes.colored)}
+      className={clsx(props.classes.root)}
     >
       {Object.values(SectionType).map((sectionType) => {
         return sectionType === SectionType.UNDEFINED ? undefined : (
-          <MenuItem
-            key={sectionType}
-            value={sectionType}
-            // eslint-disable-next-line react/forbid-component-props
-            style={{ backgroundColor: getColor(sectionType) }}
-          >
+          <MenuItem key={sectionType} value={sectionType}>
             {sectionType}
           </MenuItem>
         );
