@@ -1,5 +1,8 @@
+import "typeface-roboto";
+
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
 import React from "react";
+import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { SectionType, TimeSignatureType } from "states/analysis/analysisSlice";
 import {
@@ -65,7 +68,7 @@ export const Default = () => {
       <ThemeProvider theme={theme}>
         <CssBaseline />
 
-        <StructureView></StructureView>
+        <StructureView setClick={(a) => {}}></StructureView>
       </ThemeProvider>
     </Provider>
   );

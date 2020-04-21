@@ -19,10 +19,10 @@ class ContentLayout extends React.Component<Props> {
             </Grid>
             <Grid item xs={12}>
               <Grid container spacing={2} alignItems="stretch">
-                <Grid item xs={10}>
+                <Grid item xs={8}>
                   {this.props.bottomLeft}
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={4}>
                   {this.props.bottomRight}
                 </Grid>
               </Grid>

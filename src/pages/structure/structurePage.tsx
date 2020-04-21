@@ -1,10 +1,6 @@
 import {
   createStyles,
-  FormControl,
   IconButton,
-  Input,
-  InputAdornment,
-  InputLabel,
   Popover,
   Theme,
   Tooltip,
@@ -12,14 +8,11 @@ import {
   withStyles
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import BorderLeftIcon from "@material-ui/icons/BorderLeft";
 import LoopIcon from "@material-ui/icons/Loop";
 import MusicNoteIcon from "@material-ui/icons/MusicNote";
 import PauseIcon from "@material-ui/icons/Pause";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import SpeedIcon from "@material-ui/icons/Speed";
-import SyncAltIcon from "@material-ui/icons/SyncAlt";
-import ToggleButton from "@material-ui/lab/ToggleButton";
 import ContentLayout from "components/contentLayout/contentLayout";
 import Log from "components/log/log";
 import SliderInput from "components/sliderInput/sliderInput";
@@ -32,7 +25,7 @@ import {
   triggeredPlay,
   updatedPlaybackSettings
 } from "states/audio/audioSlice";
-import { DialogType, openedDialog } from "states/dialog/dialogsSlice";
+import { openedDialog } from "states/dialog/dialogsSlice";
 import {
   enabledSyncFirstMeasureStart,
   LoadingStatus
@@ -95,6 +88,7 @@ class StructurePage extends React.Component<AllProps, State> {
   handlePopoverClose = () => {
     this.setState({ anchorEl: null, activePopover: PopoverType.NONE });
   };
+  clickChild: (() => void) | undefined;
 
   render() {
     Log.info("render", StructurePage.name);
@@ -173,23 +167,17 @@ class StructurePage extends React.Component<AllProps, State> {
             action={
               <>
                 <WaveformControlButton
-                  title="Start Measure 0"
-                  icon={<BorderLeftIcon />}
-                  onClick={(e) =>
-                    this.handlePopoverOpen(e, PopoverType.STARTMEASURE)
-                  }
-                  disabled={false}
-                />
-                <WaveformControlButton
                   title="Add section"
                   icon={<AddIcon />}
-                  onClick={() =>
-                    this.props.openedDialog(DialogType.ADD_SECTION)
-                  }
+                  onClick={() => {
+                    if (this.clickChild) this.clickChild();
+                  }}
                 />
               </>
             }
-            body={<StructureView />}
+            body={
+              <StructureView setClick={(click) => (this.clickChild = click)} />
+            }
           ></View>
         }
         bottomRight={
@@ -256,8 +244,6 @@ const PopoverContent = (type: PopoverType, props: AllProps) => {
       return <DetunePopover {...props} />;
     case PopoverType.PLAYBACKRATE:
       return <PlaybackRatePopover {...props} />;
-    case PopoverType.STARTMEASURE:
-      return <StartMeasurePopover {...props} />;
     default:
       throw Error("Popup type undefined: " + type);
   }
@@ -276,57 +262,6 @@ const DetunePopover = (props: AllProps) => (
       }
     }}
   ></SliderInput>
-);
-
-const startMeasurePopoverStyles = () =>
-  createStyles({
-    toggleButton: {
-      width: "15px",
-      height: "25px"
-    }
-  });
-
-interface StartMeasurePopoverProps {
-  firstMeasureStart: number;
-  syncFirstMeasureStart: boolean;
-  enabledSyncFirstMeasureStart: typeof enabledSyncFirstMeasureStart;
-}
-
-const StartMeasurePopover = withStyles(startMeasurePopoverStyles)(
-  (
-    props: StartMeasurePopoverProps &
-      WithStyles<typeof startMeasurePopoverStyles>
-  ) => (
-    <FormControl fullWidth={true}>
-      <InputLabel>Start Measure 1</InputLabel>
-      <Input
-        type="text"
-        id="startMeasure1"
-        value={props.firstMeasureStart}
-        startAdornment={
-          <InputAdornment position="start">
-            <Tooltip
-              title="Toggle sync with mouse click.
-          If enabled, clicking into the waveform will update the start of measure 0 to the selected position."
-            >
-              <ToggleButton
-                className={props.classes.toggleButton}
-                value="check"
-                selected={props.syncFirstMeasureStart}
-                onChange={() => {
-                  props.enabledSyncFirstMeasureStart(
-                    !props.syncFirstMeasureStart
-                  );
-                }}
-              >
-                <SyncAltIcon />
-              </ToggleButton>
-            </Tooltip>
-          </InputAdornment>
-        }
-      />
-    </FormControl>
-  )
 );
 
 const PlaybackRatePopover = (props: AllProps) => (
