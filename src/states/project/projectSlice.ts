@@ -45,12 +45,7 @@ const projectSlice = createSlice({
     hotReloaded(state) {
       state.status = LoadingStatus.INITIALIZING;
     },
-    initializedProject(
-      state,
-      // Add action payload to be used in another slice reducer
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      action: PayloadAction<{ audioDuration: number; audioSampleRate: number }>
-    ) {
+    initializedProject(state) {
       state.status = LoadingStatus.INITIALIZED;
     },
     enabledSyncFirstMeasureStart(state, action: PayloadAction<boolean>) {

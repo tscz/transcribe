@@ -1,62 +1,47 @@
-import { PeaksInstance } from "peaks.js";
+import Log from "components/log/log";
+import { EventEmitterForPlayerEvents, PlayerAdapter, Segment } from "peaks.js";
 import * as Tone from "tone";
 import { PitchShift, Player as TonejsPlayer } from "tone";
 
-interface Player {
-  destroy: () => void;
-  play: () => void;
-  pause: () => void;
-  isPlaying: () => boolean;
-  isSeeking: () => boolean;
-  getCurrentTime: () => number;
-  getDuration: () => number;
-  seek: (time: number) => void;
-  setPlaybackRate: (playbackRate: number) => void;
-  setDetune: (pitch: number) => void;
-}
-
-interface EmitAware {
-  emit: (id: string, value: unknown) => void;
-}
-
-export interface PeaksInstanceEmitAware extends PeaksInstance, EmitAware {}
-
 /**
- * Tone.js Player replacement for the <audio>-element based Peaks.js player
+ * External Tone.js based Player for Peaks.js
  */
-class AudioPlayer implements Player {
-  peaks: PeaksInstanceEmitAware;
+class AudioPlayer implements PlayerAdapter {
   player: TonejsPlayer;
   pitchShift: PitchShift;
   detune: number;
+  eventEmitter: EventEmitterForPlayerEvents | undefined;
 
   constructor(
-    peaks: PeaksInstance,
-    audioBuffer: AudioBuffer,
-    onSongComplete: () => void
+    private audioBuffer: AudioBuffer,
+    private onSongComplete: () => void
   ) {
-    this.peaks = peaks as PeaksInstanceEmitAware;
-
-    this.player = new TonejsPlayer(audioBuffer);
-    this.player.sync();
-    this.player.start();
-
+    this.player = new TonejsPlayer(this.audioBuffer);
     this.pitchShift = new PitchShift();
     this.detune = 0;
 
+    this.player.sync();
+    this.player.start();
+
     this.player.connect(this.pitchShift);
     this.pitchShift.toDestination();
+  }
+
+  init = (eventEmitter: EventEmitterForPlayerEvents) => {
+    Log.info("init", AudioPlayer.name);
+
+    this.eventEmitter = eventEmitter;
 
     Tone.Transport.scheduleRepeat(() => {
-      this.peaks.emit("player_time_update", this.getCurrentTime());
+      eventEmitter.emit("player.timeupdate", this.getCurrentTime());
       if (this.getCurrentTime() >= this.getDuration()) {
         Tone.Transport.stop();
-        onSongComplete();
+        this.onSongComplete();
       }
-    }, 0.03);
+    }, 0.25);
 
-    this.peaks.emit("player_canplay", this);
-  }
+    eventEmitter.emit("player.canplay");
+  };
 
   shiftToSemitones = (shift: number) => 12 * Math.log2(1 / shift);
 
@@ -80,8 +65,12 @@ class AudioPlayer implements Player {
   }
 
   destroy = () => {
-    Tone.context.dispose();
-    Tone.setContext(new AudioContext());
+    Log.info("destroy", AudioPlayer.name);
+
+    this.player.dispose();
+    this.pitchShift.dispose();
+    Tone.Transport.cancel();
+    Tone.Transport.position = 0;
   };
 
   play = () => {
@@ -89,15 +78,26 @@ class AudioPlayer implements Player {
       Tone.now(),
       this.getCurrentTime() / this.player.playbackRate
     );
-    this.peaks.emit(
-      "player_play",
+    this.eventEmitter?.emit(
+      "player.play",
+      this.getCurrentTime() / this.player.playbackRate
+    );
+  };
+
+  playSegment = (segment: Segment) => {
+    Tone.Transport.start(
+      Tone.now(),
+      segment.startTime / this.player.playbackRate
+    );
+    this.eventEmitter?.emit(
+      "player.play",
       this.getCurrentTime() / this.player.playbackRate
     );
   };
 
   pause = () => {
     Tone.Transport.pause();
-    this.peaks.emit("player_pause", this.getCurrentTime());
+    this.eventEmitter?.emit("player.pause", this.getCurrentTime());
   };
 
   isPlaying = () => {
@@ -122,9 +122,8 @@ class AudioPlayer implements Player {
     const normalizedTime = time / this.player.playbackRate;
 
     Tone.Transport.seconds = normalizedTime;
-
-    this.peaks.emit("player_time_update", time);
-    this.peaks.emit("player_seek", time);
+    this.eventEmitter?.emit("player.seeked", this.getCurrentTime());
+    this.eventEmitter?.emit("player.timeupdate", this.getCurrentTime());
   };
 }
 

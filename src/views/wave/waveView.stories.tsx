@@ -11,6 +11,6 @@ export default {
 
 export const Default = () => (
   <Provider store={store}>
-    <WaveView url=""></WaveView>
+    <WaveView></WaveView>
   </Provider>
 );

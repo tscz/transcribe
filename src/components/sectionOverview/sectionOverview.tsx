@@ -82,7 +82,7 @@ class SectionOverview extends React.Component<AllProps> {
                               <Square
                                 key={measure.id}
                                 value={measure.id}
-                                sectionType={sections.byId[sectionId].type}
+                                sectiontype={sections.byId[sectionId].type}
                                 onClick={() =>
                                   this.props.updatedLoopSettings({
                                     start: measure.time,
@@ -109,7 +109,7 @@ class SectionOverview extends React.Component<AllProps> {
 const squareStyles = () =>
   createStyles({
     root: {
-      backgroundColor: (props: SquareProps) => getColor(props.sectionType),
+      backgroundColor: (props: SquareProps) => getColor(props.sectiontype),
       minWidth: "12%",
       minHeight: "15px",
       padding: "0px",
@@ -120,7 +120,7 @@ const squareStyles = () =>
 
 interface SquareProps {
   value: string;
-  sectionType: SectionType;
+  sectiontype: SectionType;
   onClick: () => void;
 }
 

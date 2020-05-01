@@ -1,8 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-  createdProject,
-  initializedProject
-} from "states/project/projectSlice";
+import { createdProject } from "states/project/projectSlice";
 import { NormalizedObjects } from "states/store";
 import ArrayUtil from "util/ArrayUtil";
 
@@ -18,8 +15,7 @@ import {
 
 export interface AnalysisState {
   readonly sections: NormalizedObjects<Section>;
-  readonly audioDuration: number;
-  readonly audioSampleRate: number;
+  readonly duration: number;
   readonly firstMeasureStart: number;
   readonly timeSignature: TimeSignatureType;
   readonly bpm: number;
@@ -64,8 +60,7 @@ export const initialAnalysisState: AnalysisState = {
   sections: { allIds: [], byId: {} },
   bpm: 120,
   firstMeasureStart: 0,
-  audioDuration: 180,
-  audioSampleRate: 44400,
+  duration: 180,
   measures: { allIds: [], byId: {} },
   timeSignature: TimeSignatureType.FOUR_FOUR
 };
@@ -74,24 +69,9 @@ const analysisSlice = createSlice({
   name: "analysis",
   initialState: initialAnalysisState,
   extraReducers: (builder) =>
-    builder
-      .addCase(createdProject, (state, action) => {
-        return action.payload.analysis;
-      })
-      .addCase(initializedProject, (state, action) => {
-        state.audioDuration = action.payload.audioDuration;
-        state.audioSampleRate = action.payload.audioSampleRate;
-
-        state.measures = distributeMeasures(
-          state.timeSignature,
-          state.bpm,
-          state.firstMeasureStart,
-          state.audioDuration
-        );
-
-        if (state.sections.allIds.length === 0)
-          state.sections = undefinedSection(state.measures.allIds.length - 1);
-      }),
+    builder.addCase(createdProject, (state, action) => {
+      return action.payload.analysis;
+    }),
   reducers: {
     addedSection(state, action: PayloadAction<Section>) {
       return addSection(state, action.payload);
@@ -114,8 +94,10 @@ const analysisSlice = createSlice({
         firstMeasureStart?: number;
         bpm?: number;
         timeSignatureType?: TimeSignatureType;
+        duration?: number;
       }>
     ) {
+      state.duration = action.payload.duration ?? state.duration;
       state.bpm = action.payload.bpm ?? state.bpm;
       state.firstMeasureStart =
         action.payload.firstMeasureStart ?? state.firstMeasureStart;
@@ -126,8 +108,13 @@ const analysisSlice = createSlice({
         state.timeSignature,
         state.bpm,
         state.firstMeasureStart,
-        state.audioDuration
+        state.duration
       );
+
+      if (state.sections.allIds.length === 0) {
+        state.sections = undefinedSection(state.measures.allIds.length - 1);
+        return state;
+      }
 
       const lastSection =
         state.sections.byId[
