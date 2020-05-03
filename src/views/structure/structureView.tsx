@@ -11,7 +11,11 @@ import Check from "@material-ui/icons/Check";
 import Clear from "@material-ui/icons/Clear";
 import DeleteOutline from "@material-ui/icons/DeleteOutline";
 import Edit from "@material-ui/icons/Edit";
-import MaterialTable, { Icons, MaterialTableProps } from "material-table";
+import MaterialTable, {
+  Column,
+  Icons,
+  MaterialTableProps
+} from "material-table";
 import React, { Component, forwardRef } from "react";
 import { connect } from "react-redux";
 import {
@@ -22,6 +26,7 @@ import {
   updatedSection
 } from "states/analysis/analysisSlice";
 import { ApplicationState, NormalizedObjects } from "states/store";
+import ArrayUtil from "util/ArrayUtil";
 
 const tableIcons: Icons = {
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
@@ -37,7 +42,7 @@ interface Props {
 
 interface PropsFromState {
   readonly sections: NormalizedObjects<Section>;
-  readonly measuresCount: number;
+  readonly measuresCount: string[];
 }
 
 interface PropsFromDispatch {
@@ -57,10 +62,29 @@ interface SectionConfig {
   end: number;
 }
 
+const toSectionConfig: (
+  sections: NormalizedObjects<Section>
+) => SectionConfig[] = (sections) => {
+  const result: SectionConfig[] = [];
+
+  console.log("Sections=" + JSON.stringify(sections));
+
+  sections.allIds.forEach((id) => {
+    const section = sections.byId[id];
+
+    result.push({
+      type: section.type,
+      start: parseInt(section.measures[0]),
+      end: parseInt(section.measures[section.measures.length - 1])
+    });
+  });
+
+  return result;
+};
+
 class StructureView extends Component<AllProps> {
-  state: MaterialTableProps<SectionConfig> & { open: boolean } = {
-    open: false,
-    columns: [
+  generateColumns: () => Column<SectionConfig>[] = () => {
+    return [
       {
         title: "Section",
         field: "type",
@@ -71,31 +95,37 @@ class StructureView extends Component<AllProps> {
       {
         title: "Start",
         field: "start",
-        lookup: { 1: "1", 2: "2", 3: "3", 4: "4", 5: "5", 6: "6" },
+        lookup: this.props.measuresCount,
         initialEditValue: 1,
         defaultSort: "asc"
       },
       {
         title: "End",
         field: "end",
-        lookup: { 1: "1", 2: "2", 3: "3", 4: "4", 5: "5", 6: "6" },
+        lookup: this.props.measuresCount,
         initialEditValue: 1,
         sorting: false
       }
-    ],
-    data: [
-      {
-        type: SectionType.BRIDGE,
-        start: 1,
-        end: 3
-      },
-      {
-        type: SectionType.CHORUS,
-        start: 4,
-        end: 5
-      }
-    ]
+    ];
   };
+
+  state: MaterialTableProps<SectionConfig> & { open: boolean } = {
+    open: false,
+    columns: this.generateColumns(),
+    data: toSectionConfig(this.props.sections)
+  };
+
+  componentDidUpdate(prevProps: AllProps) {
+    if (this.props.sections !== prevProps.sections) {
+      this.setState({ data: toSectionConfig(this.props.sections) });
+    }
+    if (this.props.measuresCount !== prevProps.measuresCount) {
+      this.setState({
+        data: toSectionConfig(this.props.sections),
+        columns: this.generateColumns()
+      });
+    }
+  }
 
   componentDidMount() {
     this.props.setClick(this.addFunction);
@@ -139,12 +169,12 @@ class StructureView extends Component<AllProps> {
           autoHideDuration={2000}
           onClose={this.handleClose}
         >
-          <SnackbarContent message="I love snacks." />
+          <SnackbarContent message="An error occured while updating song sections." />
         </Snackbar>
         <MaterialTable
           icons={tableIcons}
           options={{
-            actionsColumnIndex: 3,
+            actionsColumnIndex: 0,
             search: false,
             toolbar: true,
             paging: false,
@@ -153,6 +183,11 @@ class StructureView extends Component<AllProps> {
           localization={{
             header: {
               actions: "Edit/Delete"
+            },
+            body: {
+              editRow: {
+                deleteText: "Are you sure you want to delete this section?"
+              }
             }
           }}
           columns={this.state.columns}
@@ -162,20 +197,21 @@ class StructureView extends Component<AllProps> {
               // Do not render a toolbar but extract the onClick handler of the add button for re-use
               this.addFunction = props.actions[0].onClick;
               return <></>;
-            }
+            },
+            Container: (props) => props.children
           }}
           editable={{
-            onRowAdd: (newData) =>
-              new Promise((resolve) => {
-                setTimeout(() => {
-                  {
-                    const data = [...(this.state.data as SectionConfig[])];
-                    data.push(newData);
-                    this.setState({ data }, () => resolve());
-                  }
-                  resolve();
-                }, 1000);
-              }),
+            onRowAdd: (newData) => {
+              console.log("newData:" + JSON.stringify(newData));
+
+              return new Promise((resolve) => {
+                this.props.addedSection({
+                  type: newData.type,
+                  measures: ArrayUtil.range(newData.start, newData.end)
+                });
+                resolve();
+              });
+            },
             onRowUpdate: (newData, oldData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
@@ -216,7 +252,7 @@ class StructureView extends Component<AllProps> {
 const mapStateToProps = ({ analysis }: ApplicationState) => {
   return {
     sections: analysis.sections,
-    measuresCount: analysis.measures.allIds.length
+    measuresCount: ArrayUtil.rangeObject(0, analysis.measures.allIds.length - 1)
   };
 };
 

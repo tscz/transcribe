@@ -7,6 +7,19 @@ class ArrayUtil {
       .map((_, idx) => (start + idx).toString());
   };
 
+  static rangeObject: (start: number, end: number) => any = (start, end) => {
+    const array = ArrayUtil.range(start, end);
+
+    const initialValue = {};
+
+    return array.reduce((obj, item) => {
+      return {
+        ...obj,
+        [parseInt(item)]: item
+      };
+    }, initialValue);
+  };
+
   static bordersOf: (array: Array<string>) => { start: number; end: number } = (
     array
   ) => {
