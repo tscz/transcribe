@@ -217,9 +217,13 @@ const getCssClass = (props: SquarePropsWithStyle) => {
 };
 
 const Square = withStyles(squareStyles)((props: SquarePropsWithStyle) => {
+  // Do not override the css classes from parent element
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { classes, ...other } = props;
+
   return (
     <Button
-      {...props}
+      {...other}
       onClick={() => props.onClick()}
       className={getCssClass(props)}
     >
