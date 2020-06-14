@@ -27,8 +27,7 @@ Run the [Transcribe Demo App](https://tscz.github.com/transcribe) in your Browse
 
 [![](https://github.com/tscz/transcribe/workflows/Build%20application/badge.svg)](https://github.com/tscz/transcribe/actions?query=workflow%3A%22Build+application%22)
 [![Coverage Status](https://coveralls.io/repos/github/tscz/transcribe/badge.svg?branch=master)](https://coveralls.io/github/tscz/transcribe?branch=master)
-[![Coverage Status](https://david-dm.org/tscz/transcribe.svg)](https://david-dm.org/tscz/transcribe)
-[![](https://github.com/tscz/transcribe/workflows/Deploy%20release/badge.svg)](https://github.com/tscz/transcribe/releases/latest)
+[![](https://api.dependabot.com/badges/status?host=github&repo=tscz/transcribe)](https://github.com/tscz/transcribe/releases/latest)
 [![](https://github.com/tscz/transcribe/workflows/Deploy%20storybook/badge.svg)](https://transcribe-storybook.herokuapp.com)
 
 ## Usage
