@@ -8,10 +8,15 @@ import {
   withStyles
 } from "@material-ui/core";
 import clsx from "clsx";
-import { Measure, Measures, Sections, SectionType } from "model/model";
+import {
+  getMeasureEnd,
+  Measure,
+  Measures,
+  Sections,
+  SectionType
+} from "model/model";
 import React from "react";
 import { connect } from "react-redux";
-import { getMeasureEnd } from "states/analysis/analysisUtil";
 import { updatedLoopSettings } from "states/audio/audioSlice";
 import { ApplicationState } from "states/store";
 import { getColor } from "styles/theme";

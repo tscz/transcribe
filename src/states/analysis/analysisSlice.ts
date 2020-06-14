@@ -1,23 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
-  Measures,
-  Section,
-  Sections,
-  SectionType,
-  TimeSignatureType
-} from "model/model";
-import { createdProject } from "states/project/projectSlice";
-import ArrayUtil from "util/ArrayUtil";
-
-import {
   distributeMeasures,
   enclosingSectionOf,
   generateSectionId,
+  Measures,
   mergeSections,
   replaceSections,
+  Section,
   sectionInvalid,
+  Sections,
+  SectionType,
+  TimeSignatureType,
   undefinedSection
-} from "./analysisUtil";
+} from "model/model";
+import { createdProject } from "states/project/projectSlice";
+import ArrayUtil from "util/ArrayUtil";
 
 export interface AnalysisState {
   readonly sections: Sections;
