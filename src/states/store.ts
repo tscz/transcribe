@@ -20,11 +20,6 @@ export interface PersistedState {
   project: ProjectState;
 }
 
-export interface NormalizedObjects<T> {
-  byId: { [id: string]: T };
-  allIds: string[];
-}
-
 export const restoredPersistedState = createAction<PersistedState>(
   "restoredPersistedState"
 );

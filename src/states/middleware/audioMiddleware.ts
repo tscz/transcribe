@@ -1,9 +1,10 @@
 import { createAction } from "@reduxjs/toolkit";
 import PersistenceApi from "api/persistenceApi";
 import Log from "components/log/log";
+import { Measures, Sections } from "model/model";
 import Peaks, { PeaksInstance } from "peaks.js";
 import { Action, AnyAction, Dispatch, Middleware, MiddlewareAPI } from "redux";
-import { Measure, Section, updatedRhythm } from "states/analysis/analysisSlice";
+import { updatedRhythm } from "states/analysis/analysisSlice";
 import {
   toggledLoop,
   triggeredPause,
@@ -18,13 +19,13 @@ import {
   hotReloaded,
   initializedProject
 } from "states/project/projectSlice";
-import { ApplicationState, NormalizedObjects } from "states/store";
+import { ApplicationState } from "states/store";
 import * as Tone from "tone";
 
 export const switchAudioFile = createAction<{ url: string }>("switchAudioFile");
 export const updateWaveform = createAction<{
-  sections: NormalizedObjects<Section>;
-  measures: NormalizedObjects<Measure>;
+  sections: Sections;
+  measures: Measures;
 }>("updateWaveform");
 
 /**
@@ -181,10 +182,7 @@ class AudioMiddleware {
     };
   }
 
-  private repaintWaveform(
-    sections: NormalizedObjects<Section>,
-    measures: NormalizedObjects<Measure>
-  ) {
+  private repaintWaveform(sections: Sections, measures: Measures) {
     const timePerMeasure = this.computeSecondsPerMeasure(measures);
 
     this.peaks?.segments.removeAll();
@@ -195,7 +193,7 @@ class AudioMiddleware {
     this.peaks?.points.add(PeaksConfig.measuresToPoints(measures));
   }
 
-  private computeSecondsPerMeasure = (measures: NormalizedObjects<Measure>) => {
+  private computeSecondsPerMeasure = (measures: Measures) => {
     if (!measures || !measures.byId["1"] || !measures.byId["0"]) return 0;
     return measures.byId["1"].time - measures.byId["0"].time;
   };

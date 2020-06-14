@@ -1,8 +1,8 @@
+import { SectionType, TimeSignatureType } from "model/model";
 import React from "react";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
-import { SectionType, TimeSignatureType } from "states/analysis/analysisSlice";
 import {
   createdProject,
   initializedProject,

@@ -1,6 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  Measures,
+  Section,
+  Sections,
+  SectionType,
+  TimeSignatureType
+} from "model/model";
 import { createdProject } from "states/project/projectSlice";
-import { NormalizedObjects } from "states/store";
 import ArrayUtil from "util/ArrayUtil";
 
 import {
@@ -14,46 +20,12 @@ import {
 } from "./analysisUtil";
 
 export interface AnalysisState {
-  readonly sections: NormalizedObjects<Section>;
+  readonly sections: Sections;
   readonly duration: number;
   readonly firstMeasureStart: number;
   readonly timeSignature: TimeSignatureType;
   readonly bpm: number;
-  readonly measures: NormalizedObjects<Measure>;
-}
-
-export interface Section {
-  type: SectionType;
-  measures: string[];
-}
-
-export interface Measure {
-  time: number;
-  editable?: boolean;
-  color?: string;
-  labelText?: string;
-  id: string;
-}
-
-export interface TimeSignature {
-  beatsPerMeasure: number;
-  beatUnit: number;
-}
-
-export enum TimeSignatureType {
-  FOUR_FOUR = "FOUR_FOUR",
-  THREE_FOUR = "THREE_FOUR"
-}
-
-export enum SectionType {
-  INTRO = "INTRO",
-  VERSE = "VERSE",
-  PRECHORUS = "PRECHORUS",
-  CHORUS = "CHORUS",
-  BRIDGE = "BRIDGE",
-  SOLO = "SOLO",
-  OUTRO = "OUTRO",
-  UNDEFINED = "UNDEFINED"
+  readonly measures: Measures;
 }
 
 export const initialAnalysisState: AnalysisState = {

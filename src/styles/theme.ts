@@ -1,7 +1,6 @@
 import blueGrey from "@material-ui/core/colors/blueGrey";
 import { createMuiTheme } from "@material-ui/core/styles";
-import { Theme } from "@material-ui/core/styles/createMuiTheme";
-import { SectionType } from "states/analysis/analysisSlice";
+import { SectionType } from "model/model";
 
 // Extend Material UI theme type declaration
 declare module "@material-ui/core/styles/createMuiTheme" {

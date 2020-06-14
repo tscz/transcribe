@@ -1,18 +1,18 @@
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Log from "components/log/log";
+import { Measures, Sections } from "model/model";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Measure, Section } from "states/analysis/analysisSlice";
 import { updateWaveform } from "states/middleware/audioMiddleware";
 import { hotReloaded, LoadingStatus } from "states/project/projectSlice";
-import { ApplicationState, NormalizedObjects } from "states/store";
+import { ApplicationState } from "states/store";
 
 import WaveView from "./waveView";
 
 interface PropsFromState {
   status: LoadingStatus;
-  sections: NormalizedObjects<Section>;
-  measures: NormalizedObjects<Measure>;
+  sections: Sections;
+  measures: Measures;
   audioUrl: string;
 }
 

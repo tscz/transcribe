@@ -1,6 +1,5 @@
+import { Measures, Sections } from "model/model";
 import { PeaksOptions, PointAddOptions, SegmentAddOptions } from "peaks.js";
-import { Measure, Section } from "states/analysis/analysisSlice";
-import { NormalizedObjects } from "states/store";
 import theme, { getColor } from "styles/theme";
 
 import AudioPlayer from "./audioPlayer";
@@ -38,8 +37,8 @@ class PeaksConfig {
   };
 
   static sectionsToSegment = (
-    sections: NormalizedObjects<Section>,
-    measures: NormalizedObjects<Measure>,
+    sections: Sections,
+    measures: Measures,
     timePerMeasure: number
   ) => {
     const segments: SegmentAddOptions[] = [];
@@ -66,7 +65,7 @@ class PeaksConfig {
     return segments;
   };
 
-  static measuresToPoints = (measures: NormalizedObjects<Measure>) => {
+  static measuresToPoints = (measures: Measures) => {
     const points: PointAddOptions[] = [];
     measures.allIds.forEach((id) => {
       const measure = measures.byId[id];

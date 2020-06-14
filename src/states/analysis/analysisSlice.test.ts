@@ -1,3 +1,4 @@
+import { Section, SectionType, TimeSignatureType } from "model/model";
 import {
   createdProject,
   LoadingStatus,
@@ -10,9 +11,6 @@ import reducer, {
   addedSection,
   AnalysisState,
   removedSection,
-  Section,
-  SectionType,
-  TimeSignatureType,
   updatedRhythm
 } from "./analysisSlice";
 

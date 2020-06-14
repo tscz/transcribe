@@ -1,12 +1,11 @@
-import { NormalizedObjects } from "states/store";
-import ArrayUtil from "util/ArrayUtil";
-
 import {
-  Measure,
+  Measures,
   Section,
+  Sections,
   SectionType,
   TimeSignatureType
-} from "./analysisSlice";
+} from "model/model";
+import ArrayUtil from "util/ArrayUtil";
 
 export const toTimeSignature = (type: TimeSignatureType) => {
   switch (type) {
@@ -30,7 +29,7 @@ export const toTimeSignatureType = (type: string) => {
 
 export const undefinedSection = (length: number) => {
   const undefinedSectionId = "UNDEFINED_0_" + length;
-  const sections: NormalizedObjects<Section> = {
+  const sections: Sections = {
     allIds: [undefinedSectionId],
     byId: {}
   };
@@ -50,10 +49,7 @@ export const sectionInvalid = (section: Section) => {
   );
 };
 
-export const enclosingSectionOf = (
-  section: Section,
-  allSections: NormalizedObjects<Section>
-) => {
+export const enclosingSectionOf = (section: Section, allSections: Sections) => {
   const { start: newSectionStart, end: newSectionEnd } = ArrayUtil.bordersOf(
     section.measures
   );
@@ -114,7 +110,7 @@ export const mergeSections: (
 };
 
 export const replaceSections = (
-  sections: NormalizedObjects<Section>,
+  sections: Sections,
   start: number,
   deleteCount: number,
   newSections: Section[]
@@ -141,10 +137,10 @@ export const generateSectionId = (section: Section) =>
   "_" +
   section.measures[section.measures.length - 1];
 
-export const getMeasureEnd: (
-  position: number,
-  measures: NormalizedObjects<Measure>
-) => number = (position, measures) => {
+export const getMeasureEnd: (position: number, measures: Measures) => number = (
+  position,
+  measures
+) => {
   if (measures.allIds.length - 1 > position)
     return measures.byId[position + 1].time;
   else {
@@ -160,7 +156,7 @@ export const distributeMeasures = (
 ) => {
   const timeSignature = toTimeSignature(timeSignatureType);
   const lengthOfOneMeasure = (60 * timeSignature.beatsPerMeasure) / bpm;
-  const measures: NormalizedObjects<Measure> = { allIds: [], byId: {} };
+  const measures: Measures = { allIds: [], byId: {} };
 
   let index = 0;
   for (

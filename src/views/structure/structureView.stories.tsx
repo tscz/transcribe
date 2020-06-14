@@ -1,7 +1,7 @@
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
+import { SectionType, TimeSignatureType } from "model/model";
 import React from "react";
 import { Provider } from "react-redux";
-import { SectionType, TimeSignatureType } from "states/analysis/analysisSlice";
 import {
   createdProject,
   initializedProject,

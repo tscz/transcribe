@@ -12,12 +12,12 @@ import FileInput, { FileType } from "components/fileInput/fileInput";
 import MeasureSelect from "components/measureSelect/measureSelect";
 import ModalDialog, { DialogAction } from "components/modalDialog/modalDialog";
 import SectionSelect from "components/sectionSelect/sectionSelect";
+import { SectionType } from "model/model";
 import React, { Component, FunctionComponent, useState } from "react";
 import { connect } from "react-redux";
 import {
   addedSection,
-  initialAnalysisState,
-  SectionType
+  initialAnalysisState
 } from "states/analysis/analysisSlice";
 import { closedDialog, DialogType } from "states/dialog/dialogsSlice";
 import { switchAudioFile } from "states/middleware/audioMiddleware";

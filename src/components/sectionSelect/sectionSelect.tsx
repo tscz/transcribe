@@ -7,8 +7,8 @@ import {
 } from "@material-ui/core";
 import Select from "@material-ui/core/Select/Select";
 import clsx from "clsx";
+import { SectionType } from "model/model";
 import React from "react";
-import { SectionType } from "states/analysis/analysisSlice";
 import { getColor } from "styles/theme";
 
 const styles = (theme: Theme) =>

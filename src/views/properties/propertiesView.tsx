@@ -1,11 +1,9 @@
 import { FormControl, InputLabel, NativeSelect } from "@material-ui/core";
 import SliderInput from "components/sliderInput/sliderInput";
+import { TimeSignatureType } from "model/model";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {
-  TimeSignatureType,
-  updatedRhythm
-} from "states/analysis/analysisSlice";
+import { updatedRhythm } from "states/analysis/analysisSlice";
 import { toTimeSignatureType } from "states/analysis/analysisUtil";
 import { ApplicationState } from "states/store";
 

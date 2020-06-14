@@ -14,20 +14,19 @@ import RemoveIcon from "@material-ui/icons/Remove";
 import Log from "components/log/log";
 import MeasureSelect from "components/measureSelect/measureSelect";
 import SectionSelect from "components/sectionSelect/sectionSelect";
+import { Section, Sections, SectionType } from "model/model";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import {
   addedSection,
   removedSection,
-  Section,
-  SectionType,
   updatedSection
 } from "states/analysis/analysisSlice";
-import { ApplicationState, NormalizedObjects } from "states/store";
+import { ApplicationState } from "states/store";
 import ArrayUtil from "util/ArrayUtil";
 
 interface PropsFromState {
-  readonly sections: NormalizedObjects<Section>;
+  readonly sections: Sections;
   readonly measuresCount: number;
 }
 
