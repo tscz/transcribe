@@ -29,7 +29,7 @@
     "@material-ui/lab": "4.0.0-alpha.51",
     "@reduxjs/toolkit": "1.3.6",
     "@storybook/addon-actions": "5.3.18",
-    "@storybook/addon-knobs": "5.3.18",
+    "@storybook/addon-knobs": "5.3.19",
     "@storybook/react": "5.3.18",
     "@types/debug": "4.1.5",
     "@types/enzyme": "3.10.5",
