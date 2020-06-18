@@ -39,7 +39,7 @@
     "enzyme": "3.11.0",
     "enzyme-adapter-react-16": "1.15.2",
     "file-saver": "2.0.2",
-    "jszip": "3.4.0",
+    "jszip": "3.5.0",
     "peaks.js": "0.21.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
