@@ -4,9 +4,8 @@ title     Application State Overview
 
 frame "Application" {
 
-    package State {
-        package "UI State" {
-            [Wave]
+    package "Redux State" {
+        package "Runtime State" {
             [Dialogs]
             [Audio]
         }
@@ -16,7 +15,7 @@ frame "Application" {
         }
     }
 
-    package AudioManagment {
+    package AudioMiddleware {
         [AudioPlayer (Tone.js)]
         [Waveform (Peaks.js)]
     }
@@ -40,7 +39,6 @@ frame "File System" {
 [Persistence Api] --> [Project File] : save
 [Persistence Api] <-- [Project File] : open
 [Dialogs] --> [Dialog]
-[Wave] --> [Waveform (Peaks.js)]
 [Analysis] --> [Waveform (Peaks.js)]
 [Audio] --> [AudioPlayer (Tone.js)]
 
