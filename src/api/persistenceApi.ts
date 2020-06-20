@@ -32,9 +32,23 @@ class PersistenceApi {
     zip: File
   ): Promise<{ audioBlob: Blob; state: PersistedState }> {
     const archive = await JSZip.loadAsync(zip);
-    const audioBlob = await archive.file(PersistenceApi.songFile).async("blob");
 
-    const json = await archive.file(PersistenceApi.stateFile).async("text");
+    const songFile = archive.file(PersistenceApi.songFile);
+    if (songFile === null)
+      throw new Error(
+        "Project must contain an audio file " + PersistenceApi.songFile
+      );
+
+    const stateFile = archive.file(PersistenceApi.stateFile);
+    if (stateFile === null)
+      throw new Error(
+        "Project must contain a project config/state file " +
+          PersistenceApi.stateFile
+      );
+
+    const audioBlob = await songFile.async("blob");
+
+    const json = await stateFile.async("text");
     const state: PersistedState = JSON.parse(json);
 
     return { audioBlob, state };
