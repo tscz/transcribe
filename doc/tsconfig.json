@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "typeRoots": ["../node_modules/@types/", "./diagrams/typings"],
+    "target": "es2019",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "baseUrl": ".",
+    "paths": {
+      "custom-module-type": ["types/node-plantuml"]
+    },
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react",
+    "allowJs": true,
+    "skipLibCheck": true
+  },
+  "include": ["./**/*", "./diagrams/typings"],
+  "compileOnSave": true
+}

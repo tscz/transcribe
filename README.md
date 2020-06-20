@@ -60,7 +60,7 @@ transcribe/
 ### Application State
 The state management is based on Redux. It integrates Tone.js (for audio playback and sequencer) and Peaks.js (for waveform rendering and audio navigation).
 
-<img src="./doc/diagrams/out/state/Application State Overview.svg" alt="app state overview">
+<img src="./doc/diagrams/out/state.wsd.svg" alt="app state overview">
 
 
 ### Component documentation
@@ -70,7 +70,7 @@ See [Storybook](https://transcribe-storybook.herokuapp.com) for Component Docume
 See [Build](https://github.com/tscz/transcribe/wiki/Build) description in project wiki.
 
 ## Deployment
-<img src="./doc/diagrams/out/deployment/Deployment Overview.svg" alt="app deployment">
+<img src="./doc/diagrams/out/deployment.wsd.svg" alt="app deployment">
 
 ## Versioning
 | Version | Info
