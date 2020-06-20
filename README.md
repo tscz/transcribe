@@ -8,6 +8,8 @@
  A Web App for Transcribing Songs<br>Load mp3, transcribe song, get the score.
 </p>
 
+<img src="./doc/screenshots/index.png" alt="application start page">
+
 ## Table of contents
 
 - [Quick start](#quick-start)
@@ -31,9 +33,11 @@ Run the [Transcribe Demo App](https://tscz.github.com/transcribe) in your Browse
 [![](https://github.com/tscz/transcribe/workflows/Deploy%20storybook/badge.svg)](https://transcribe-storybook.herokuapp.com)
 
 ## Usage
-Simply create a new transcription project and select an audio file of the song you want to transcribe.
+Firstly, create a new transcription project and select an audio file of the song you want to transcribe.
 
-Todo
+Then you can set basic song properties (like the BPM and time signature).
+
+Next step is then splitting the song in song sections.
 
 ## Developer Documentation
 The app is a standalone React app using Webaudio APIs locally without any backend system. 
@@ -44,13 +48,18 @@ transcribe/
 └── .github/        (Github Action config)
 └── .storybook/     (Storybook config)
 └── .vscode/        (Visual Studio Code config)
+└── doc/
+    ├── diagrams/   (PlantUml diagrams and generation scripts)
 └── public/         (Static app content)
 └── src/
     ├── api/        (External interfaces)
     ├── components/ (React components)
+    ├── model/      (Application business model)
     ├── pages/      (Application pages)
-    ├── states/     (Application state definition based on Redux)
+    ├── states/     (Application state definition and middleware based on Redux)
     ├── styles/     (CSS and theme definitions)
+    ├── tests/      (Testing utilities)
+    ├── util/       (Application utilities)
     ├── views/      (Application views)
     ├── index.tsx   (Main Application Entry Point)
 └── package.json    (Build and script config)
@@ -61,6 +70,8 @@ transcribe/
 The state management is based on Redux. It integrates Tone.js (for audio playback and sequencer) and Peaks.js (for waveform rendering and audio navigation).
 
 <img src="./doc/diagrams/out/state.wsd.svg" alt="app state overview">
+
+A redux middleware is controlling the audio player and waveform as side-effects of state transitions.
 
 
 ### Component documentation

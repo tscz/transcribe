@@ -8,11 +8,11 @@ configure({ adapter: new Adapter() });
 global.TONE_SILENCE_LOGGING = true;
 
 // Fail tests on warn messages
-global.console.warn = message => {
+global.console.warn = (message) => {
   throw message;
 };
 
 // Fail tests on error messages
-global.console.error = message => {
+global.console.error = (message) => {
   throw message;
 };
