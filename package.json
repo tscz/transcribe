@@ -21,7 +21,8 @@
     "lint": "eslint --ignore-path .gitignore . --ext ts --ext tsx --ext json",
     "lint:fix": "npm run lint -- --fix",
     "lint:check": "eslint --print-config src/components/app/app.tsx | eslint-config-prettier-check",
-    "coverage": "npm run testWithoutEnv -- --coverage"
+    "coverage": "npm run testWithoutEnv -- --coverage",
+    "doc": "ts-node --project doc/tsconfig.json doc/diagrams/generate.ts"
   },
   "dependencies": {
     "@material-ui/core": "4.10.2",
@@ -40,6 +41,7 @@
     "enzyme-adapter-react-16": "1.15.2",
     "file-saver": "2.0.2",
     "jszip": "3.5.0",
+    "node-plantuml": "^0.9.0",
     "peaks.js": "0.21.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
@@ -49,6 +51,7 @@
     "redux": "4.0.5",
     "redux-devtools-extension": "2.13.8",
     "tone": "14.7.11",
+    "ts-node": "^8.10.2",
     "typeface-roboto": "0.0.75"
   },
   "devDependencies": {
