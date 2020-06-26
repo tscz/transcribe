@@ -28,7 +28,7 @@ jobs:
     - name: Install dependencies
       run: |
         npm install -g yarn 
-        yarn install --frozen-lockfile
+        yarn install --frozen-lockfile --network-timeout 500000
     - name: Build the app
       run: |
         npm run build
