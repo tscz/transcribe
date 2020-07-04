@@ -36,14 +36,10 @@ export const updateWaveform = createAction<{
  *
  */
 class AudioMiddleware {
-  peaks: Peaks.PeaksInstance | undefined;
+  peaks: PeaksInstance | undefined;
   player: AudioPlayer | undefined;
   url: string | undefined;
 
-  private getPeaks: () => PeaksInstance = () => {
-    if (!this.peaks) throw new Error("peaks undefined");
-    return this.peaks;
-  };
   private getPlayer = () => {
     if (!this.player) throw new Error("player undefined");
     return this.player;
@@ -125,14 +121,9 @@ class AudioMiddleware {
   };
 
   private cleanupPreviousInit() {
-    try {
-      const peaks = this.getPeaks();
-      peaks.destroy();
-    } catch {}
-    try {
-      const player = this.getPlayer();
-      player.destroy();
-    } catch {}
+    this.peaks?.destroy();
+    this.player?.destroy();
+
     if (this.url) PersistenceApi.revokeLocalFile(this.url);
   }
 
@@ -163,7 +154,10 @@ class AudioMiddleware {
       this.player = new AudioPlayer(audioBuffer, () => {});
 
       Peaks.init(PeaksConfig.create(audioBuffer, this.player), (err, peaks) => {
-        if (err) throw err;
+        // eslint-disable-next-line no-console
+        console.log("body=" + document.body.innerHTML);
+        if (err) throw new Error("Peaks could not be initialized: " + err);
+
         if (!peaks)
           throw new Error("Peaks instance is not correctly initialized.");
 
@@ -204,12 +198,11 @@ class AudioMiddleware {
       | null
       | undefined = this.peaks?.views.getView("zoomview");
 
-    if (!zoomview)
-      throw new Error("could not set zoom. zoomview does not exist");
-
-    const duration = end - start;
-    zoomview.setZoom({ seconds: duration });
-    zoomview.setStartTime(start);
+    if (zoomview) {
+      const duration = end - start;
+      zoomview.setZoom({ seconds: duration });
+      zoomview.setStartTime(start);
+    }
   }
 }
 
