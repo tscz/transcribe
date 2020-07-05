@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { Measures, Sections } from "model/model";
 import { AnyAction, Dispatch, MiddlewareAPI } from "redux";
 import { initialAnalysisState } from "states/analysis/analysisSlice";
@@ -22,6 +21,7 @@ import AudioMiddleware, { updateWaveform } from "./audioMiddleware";
 import AudioPlayer from "./audioPlayer";
 
 jest.mock("./audioPlayer");
+
 let dispatch: (action: AnyAction) => Dispatch<AnyAction>;
 let audioMiddleware: AudioMiddleware;
 let mockedAudioPlayer: AudioPlayer;
