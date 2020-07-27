@@ -13047,10 +13047,10 @@ toidentifier@1.0.0:
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.0.tgz#7e1be3470f1e77948bc43d94a3c8f4d7752ba553"
   integrity sha512-yaOH/Pk/VEhBWWTlhI+qXxDFXlejDGcQipMlyxda9nthulaxLZUNcUqFxokp0vcYnvteJln5FNQDRrxj3YcbVw==
 
-tone@14.7.30:
-  version "14.7.30"
-  resolved "https://registry.yarnpkg.com/tone/-/tone-14.7.30.tgz#e07def24d56ced22a012d670b0181c38c6bba104"
-  integrity sha512-vH6U74C9ZfXXCGg3uFhyTGltcfltXzbq1tfbUTCBCjB0DFMoowMTp0Rz3mz2uozTshXnSMBkiFqSynNkD1emRg==
+tone@14.7.35:
+  version "14.7.35"
+  resolved "https://registry.yarnpkg.com/tone/-/tone-14.7.35.tgz#8d0186cd347a805380c841a67112590be8de8147"
+  integrity sha512-5qlaBTb/0pZAbPrqjGxvhiAgCLK3bAzyXRqOS3jSIVi/QHbSp8ibWo20Xq3JdR9eIxyA4yJjK0blbf1f09/uTg==
   dependencies:
     standardized-audio-context "^24.1.5"
     tslib "^1.10.0"
