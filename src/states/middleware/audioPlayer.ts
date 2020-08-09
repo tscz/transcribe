@@ -40,7 +40,11 @@ class AudioPlayer implements PlayerAdapter {
     Transport.scheduleRepeat(() => {
       eventEmitter.emit("player.timeupdate", this.getCurrentTime());
 
-      if (this.shouldLoop && this.getCurrentTime() >= this.loopEnd) {
+      if (
+        this.shouldLoop &&
+        (this.getCurrentTime() >= this.loopEnd ||
+          this.getCurrentTime() <= this.loopStart)
+      ) {
         this.seek(this.loopStart);
       }
 
