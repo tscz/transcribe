@@ -22,7 +22,10 @@ interface Props {
   max: number;
   step: number;
   value: number;
-  onChange: (event: React.ChangeEvent<{}>, value: number | number[]) => void;
+  onChange: (
+    event: React.ChangeEvent<Record<string, unknown>>,
+    value: number | number[]
+  ) => void;
 }
 
 type PropsWithStyle = Props & WithStyles<typeof styles>;

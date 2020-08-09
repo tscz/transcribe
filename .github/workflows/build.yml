@@ -32,7 +32,7 @@ jobs:
     - name: Build the app
       run: |
         npm run build
-    - name: Verify code formatting rules
+    - name: Verify code linting and formatting rules
       run: |
         npm run lint
     - name: Build the storybook

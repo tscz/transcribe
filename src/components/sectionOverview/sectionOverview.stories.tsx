@@ -10,16 +10,14 @@ import {
   Page
 } from "states/project/projectSlice";
 import { createRootReducer, PersistedState } from "states/store";
+import { Story, storyForComponent } from "tests/Storybook";
 import ArrayUtil from "util/ArrayUtil";
 
 import SectionOverview from "./sectionOverview";
 
-export default {
-  title: "Components|SectionOverview",
-  component: SectionOverview
-};
+export default storyForComponent("SectionOverview", SectionOverview);
 
-export const Default = () => {
+export const Default: Story = () => {
   const store = createStore(createRootReducer, composeWithDevTools());
 
   const persistedState: PersistedState = {

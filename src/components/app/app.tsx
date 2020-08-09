@@ -213,7 +213,7 @@ const mapDispatchToProps = {
 
 const drawerWidth = 190;
 
-export const stylesForApp = (theme: Theme) =>
+const stylesForApp = (theme: Theme) =>
   createStyles({
     root: {
       display: "flex",

@@ -26,7 +26,7 @@ class AudioPlayer implements PlayerAdapter {
     this.pitchShift.toDestination();
   }
 
-  init = (eventEmitter: EventEmitterForPlayerEvents) => {
+  init = (eventEmitter: EventEmitterForPlayerEvents): void => {
     Log.info("init", AudioPlayer.name);
 
     this.eventEmitter = eventEmitter;
@@ -42,9 +42,9 @@ class AudioPlayer implements PlayerAdapter {
     eventEmitter.emit("player.canplay");
   };
 
-  shiftToSemitones = (shift: number) => 12 * Math.log2(1 / shift);
+  shiftToSemitones = (shift: number): number => 12 * Math.log2(1 / shift);
 
-  setPlaybackRate(playbackRate: number) {
+  setPlaybackRate(playbackRate: number): void {
     this.player.playbackRate = playbackRate;
 
     // Detune to keep consistent pitch, even if the playback speed changed
@@ -56,14 +56,14 @@ class AudioPlayer implements PlayerAdapter {
     }
   }
 
-  setDetune(detune: number) {
+  setDetune(detune: number): void {
     this.detune = detune;
 
     this.pitchShift.pitch =
       this.shiftToSemitones(this.player.playbackRate) + detune;
   }
 
-  destroy = () => {
+  destroy = (): void => {
     Log.info("destroy", AudioPlayer.name);
 
     this.player.dispose();
@@ -72,7 +72,7 @@ class AudioPlayer implements PlayerAdapter {
     Transport.position = 0;
   };
 
-  play = () => {
+  play = (): void => {
     Transport.start(now(), this.getCurrentTime() / this.player.playbackRate);
     this.eventEmitter?.emit(
       "player.play",
@@ -80,7 +80,7 @@ class AudioPlayer implements PlayerAdapter {
     );
   };
 
-  playSegment = (segment: Segment) => {
+  playSegment = (segment: Segment): void => {
     Transport.start(now(), segment.startTime / this.player.playbackRate);
     this.eventEmitter?.emit(
       "player.play",
@@ -88,28 +88,28 @@ class AudioPlayer implements PlayerAdapter {
     );
   };
 
-  pause = () => {
+  pause = (): void => {
     Transport.pause();
     this.eventEmitter?.emit("player.pause", this.getCurrentTime());
   };
 
-  isPlaying = () => {
+  isPlaying = (): boolean => {
     return Transport.state === "started";
   };
 
-  isSeeking = () => {
+  isSeeking = (): boolean => {
     return false;
   };
 
-  getCurrentTime = () => {
+  getCurrentTime = (): number => {
     return this.player.toSeconds(Transport.position) * this.player.playbackRate;
   };
 
-  getDuration = () => {
+  getDuration = (): number => {
     return this.player.buffer.duration;
   };
 
-  seek = (time: number) => {
+  seek = (time: number): void => {
     const normalizedTime = time / this.player.playbackRate;
 
     Transport.seconds = normalizedTime;

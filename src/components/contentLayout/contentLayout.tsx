@@ -1,5 +1,5 @@
 import Grid from "@material-ui/core/Grid";
-import React, { ReactElement } from "react";
+import React, { Component, ReactElement } from "react";
 
 interface Props {
   topLeft: ReactElement;
@@ -8,8 +8,8 @@ interface Props {
   bottomRight: ReactElement;
 }
 
-class ContentLayout extends React.Component<Props> {
-  render() {
+class ContentLayout extends Component<Props> {
+  render(): JSX.Element {
     return (
       <Grid container spacing={2} alignItems="stretch">
         <Grid item xs={10}>

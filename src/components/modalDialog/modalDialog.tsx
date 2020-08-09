@@ -22,7 +22,7 @@ interface ModalDialogProps {
 }
 
 class ModalDialog extends Component<ModalDialogProps> {
-  render() {
+  render(): JSX.Element {
     return (
       <Dialog
         onClose={this.props.onCancel}

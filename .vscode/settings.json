@@ -15,5 +15,6 @@
     "eslint.packageManager": "yarn",
     "jest.pathToJest": "npm run testWithoutEnv --",
     "plantuml.diagramsRoot": "doc/diagrams/src",
-    "plantuml.exportOutDir": "doc/diagrams/out"
+    "plantuml.exportOutDir": "doc/diagrams/out",
+    "eslint.alwaysShowStatus": true
 }

@@ -49,8 +49,8 @@ class AudioMiddleware {
    * Redux Middleware function. Intercepts all audio related actions.
    */
   createMiddleware: Middleware<Dispatch, ApplicationState> = (dispatch) => (
-    next
-  ) => (action: Action<string>) => {
+    next: Dispatch<AnyAction>
+  ) => (action: Action<string>): AnyAction => {
     Log.info("action " + action.type, AudioMiddleware.name);
 
     //Case: Audio file changed and Peaks.js and Tone.js should be initialized

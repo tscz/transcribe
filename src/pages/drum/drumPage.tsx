@@ -2,7 +2,7 @@ import View from "components/view/view";
 import React from "react";
 
 class DrumPage extends React.Component {
-  render() {
+  render(): JSX.Element {
     return (
       <View
         title="Drums View"

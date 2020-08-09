@@ -9,10 +9,10 @@ export const ZOOMVIEW_CONTAINER = "zoomview-container";
 export const OVERVIEW_CONTAINER = "overview-container";
 
 class PeaksConfig {
-  static create: (
+  static create(
     audioBuffer: AudioBuffer,
     audioPlayer: AudioPlayer
-  ) => PeaksOptions = (audioBuffer, audioPlayer) => {
+  ): PeaksOptions {
     const mediaelement: HTMLAudioElement = document.getElementById(
       AUDIO_DOM_ELEMENT
     ) as HTMLAudioElement;
@@ -34,13 +34,13 @@ class PeaksConfig {
       zoomLevels: [42], //TODO: Define good initial default
       player: audioPlayer
     };
-  };
+  }
 
-  static sectionsToSegment = (
+  static sectionsToSegment(
     sections: Sections,
     measures: Measures,
     timePerMeasure: number
-  ) => {
+  ): SegmentAddOptions[] {
     const segments: SegmentAddOptions[] = [];
     sections.allIds.forEach((id) => {
       const section = sections.byId[id];
@@ -63,9 +63,9 @@ class PeaksConfig {
     });
 
     return segments;
-  };
+  }
 
-  static measuresToPoints = (measures: Measures) => {
+  static measuresToPoints(measures: Measures): PointAddOptions[] {
     const points: PointAddOptions[] = [];
     measures.allIds.forEach((id) => {
       const measure = measures.byId[id];
@@ -76,7 +76,7 @@ class PeaksConfig {
     });
 
     return points;
-  };
+  }
 }
 
 export default PeaksConfig;

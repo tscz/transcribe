@@ -52,10 +52,10 @@ interface NormalizedObjects<T> {
   allIds: string[];
 }
 
-export const mergeSections: (
+export function mergeSections(
   enclosingSection: Section,
   embeddedSection: Section
-) => Section[] = (enclosingSection, embeddedSection) => {
+): Section[] {
   const newSections: Section[] = [];
   const { start: newSectionStart, end: newSectionEnd } = ArrayUtil.bordersOf(
     embeddedSection.measures
@@ -83,18 +83,18 @@ export const mergeSections: (
     newSections.push(section);
   }
   return newSections;
-};
+}
 
-export const toTimeSignature = (type: TimeSignatureType) => {
+export function toTimeSignature(type: TimeSignatureType): TimeSignature {
   switch (type) {
     case TimeSignatureType.FOUR_FOUR:
       return { beatUnit: 4, beatsPerMeasure: 4 };
     case TimeSignatureType.THREE_FOUR:
       return { beatUnit: 4, beatsPerMeasure: 3 };
   }
-};
+}
 
-export const toTimeSignatureType = (type: string) => {
+export function toTimeSignatureType(type: string): TimeSignatureType {
   switch (type) {
     case TimeSignatureType.FOUR_FOUR.toString():
       return TimeSignatureType.FOUR_FOUR;
@@ -103,9 +103,9 @@ export const toTimeSignatureType = (type: string) => {
     default:
       throw Error("Unknown time signature type: " + type);
   }
-};
+}
 
-export const undefinedSection = (length: number) => {
+export function undefinedSection(length: number): Sections {
   const undefinedSectionId = "UNDEFINED_0_" + length;
   const sections: Sections = {
     allIds: [undefinedSectionId],
@@ -118,16 +118,19 @@ export const undefinedSection = (length: number) => {
   };
 
   return sections;
-};
+}
 
-export const sectionInvalid = (section: Section) => {
+export function sectionInvalid(section: Section): boolean {
   return (
     parseInt(section.measures[0]) >
     parseInt(section.measures[section.measures.length - 1])
   );
-};
+}
 
-export const enclosingSectionOf = (section: Section, allSections: Sections) => {
+export function enclosingSectionOf(
+  section: Section,
+  allSections: Sections
+): { position: number; section: Section } | undefined {
   const { start: newSectionStart, end: newSectionEnd } = ArrayUtil.bordersOf(
     section.measures
   );
@@ -146,14 +149,14 @@ export const enclosingSectionOf = (section: Section, allSections: Sections) => {
 
     return { position: current, section: section };
   }
-};
+}
 
-export const replaceSections = (
+export function replaceSections(
   sections: Sections,
   start: number,
   deleteCount: number,
   newSections: Section[]
-) => {
+): void {
   for (let section = start; section < deleteCount; section++) {
     delete sections.byId[sections.allIds[section]];
   }
@@ -167,32 +170,32 @@ export const replaceSections = (
   });
 
   sections.allIds.splice(start, deleteCount, ...ids);
-};
+}
 
-export const generateSectionId = (section: Section) =>
-  section.type +
-  "_" +
-  section.measures[0] +
-  "_" +
-  section.measures[section.measures.length - 1];
+export function generateSectionId(section: Section): string {
+  return (
+    section.type +
+    "_" +
+    section.measures[0] +
+    "_" +
+    section.measures[section.measures.length - 1]
+  );
+}
 
-export const getMeasureEnd: (position: number, measures: Measures) => number = (
-  position,
-  measures
-) => {
+export function getMeasureEnd(position: number, measures: Measures): number {
   if (measures.allIds.length - 1 > position)
     return measures.byId[position + 1].time;
   else {
     return 2 * measures.byId[position].time - measures.byId[position - 1].time;
   }
-};
+}
 
-export const distributeMeasures = (
+export function distributeMeasures(
   timeSignatureType: TimeSignatureType,
   bpm: number,
   firstMeasureStart: number,
   length: number
-) => {
+): Measures {
   const timeSignature = toTimeSignature(timeSignatureType);
   const lengthOfOneMeasure = (60 * timeSignature.beatsPerMeasure) / bpm;
   const measures: Measures = { allIds: [], byId: {} };
@@ -215,4 +218,4 @@ export const distributeMeasures = (
   }
 
   return measures;
-};
+}

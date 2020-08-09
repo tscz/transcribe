@@ -6,13 +6,11 @@ import { createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { DialogType, openedDialog } from "states/dialog/dialogsSlice";
 import { createRootReducer } from "states/store";
+import { Story, storyForComponent } from "tests/Storybook";
 
-export default {
-  title: "Components|DialogManagement",
-  component: DialogManagement
-};
+export default storyForComponent("DialogManagement", DialogManagement);
 
-export const OpenDialog = () => {
+export const OpenDialog: Story = () => {
   const store = createStore(createRootReducer, composeWithDevTools());
 
   return (
@@ -25,7 +23,7 @@ export const OpenDialog = () => {
   );
 };
 
-export const NewDialog = () => {
+export const NewDialog: Story = () => {
   const store = createStore(createRootReducer, composeWithDevTools());
 
   return (
@@ -38,7 +36,7 @@ export const NewDialog = () => {
   );
 };
 
-export const SaveDialog = () => {
+export const SaveDialog: Story = () => {
   const store = createStore(createRootReducer, composeWithDevTools());
 
   return (

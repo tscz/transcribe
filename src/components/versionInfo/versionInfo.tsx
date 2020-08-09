@@ -5,7 +5,7 @@ class VersionInfo extends React.Component<{
   hash: string;
   description: string;
 }> {
-  render() {
+  render(): JSX.Element {
     return (
       <>
         {this.props.version} (

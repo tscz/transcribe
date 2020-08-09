@@ -10,15 +10,13 @@ import {
 } from "states/project/projectSlice";
 import store, { PersistedState } from "states/store";
 import theme from "styles/theme";
+import { Story, storyForView } from "tests/Storybook";
 
 import StructureView from "./structureView";
 
-export default {
-  title: "Views|StructureView",
-  component: StructureView
-};
+export default storyForView("StructureView", StructureView);
 
-export const Default = () => {
+export const Default: Story = () => {
   const persistedState: PersistedState = {
     analysis: {
       duration: 100,

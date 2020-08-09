@@ -1,15 +1,12 @@
 import { withKnobs } from "@storybook/addon-knobs";
 import React from "react";
+import { Story, storyForComponent } from "tests/Storybook";
 
 import SliderInput from "./sliderInput";
 
-export default {
-  title: "Components|SliderInput",
-  component: SliderInput,
-  decorators: [withKnobs]
-};
+export default storyForComponent("SliderInput", SliderInput, [withKnobs]);
 
-export const Basic = () => (
+export const Basic: Story = () => (
   <SliderInput
     max={100}
     min={0}

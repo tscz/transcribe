@@ -1,14 +1,12 @@
 import React from "react";
+import { Story, storyForComponent } from "tests/Storybook";
 import { Rectangle } from "tests/TestUtil";
 
 import ContentLayout from "./contentLayout";
 
-export default {
-  title: "Components|ContentLayout",
-  component: ContentLayout
-};
+export default storyForComponent("ContentLayout", ContentLayout);
 
-export const Basic = () =>
+export const Basic: Story = () =>
   Rectangle(
     <ContentLayout
       topLeft={Rectangle("topLeft")}

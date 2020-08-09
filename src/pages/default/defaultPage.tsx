@@ -1,8 +1,8 @@
 import View from "components/view/view";
-import React from "react";
+import React, { Component } from "react";
 
-class DefaultPage extends React.Component {
-  render() {
+class DefaultPage extends Component {
+  render(): JSX.Element {
     return (
       <View
         title="Info"

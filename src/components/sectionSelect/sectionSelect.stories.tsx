@@ -1,14 +1,12 @@
 import { SectionType } from "model/model";
 import React, { useState } from "react";
+import { Story, storyForComponent } from "tests/Storybook";
 
 import SectionSelect from "./sectionSelect";
 
-export default {
-  title: "Components|SectionSelect",
-  component: SectionSelect
-};
+export default storyForComponent("SectionSelect", SectionSelect);
 
-export const Basic = () => {
+export const Basic: Story = () => {
   const [section, setSection] = useState(SectionType.BRIDGE);
 
   return (

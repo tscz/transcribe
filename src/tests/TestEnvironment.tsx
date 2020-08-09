@@ -6,7 +6,7 @@ import store from "states/store";
 import theme from "styles/theme";
 
 export default class TestEnvironment {
-  static renderWithStore = (element: ReactElement) => {
+  static renderWithStore(element: ReactElement): HTMLDivElement {
     const div = document.createElement("div");
     ReactDOM.render(
       <Provider store={store}>
@@ -16,11 +16,11 @@ export default class TestEnvironment {
     );
 
     return div;
-  };
+  }
 
-  static smokeTest = (element: ReactElement) => {
+  static smokeTest(element: ReactElement): void {
     const div = TestEnvironment.renderWithStore(element);
 
     ReactDOM.unmountComponentAtNode(div);
-  };
+  }
 }

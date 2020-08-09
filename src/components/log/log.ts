@@ -30,20 +30,20 @@ class Log {
     }
   }
 
-  static trace(message: string, source: string) {
-    return this.generateMessage(Level.TRACE, message, source);
+  static trace(message: string, source: string): void {
+    this.generateMessage(Level.TRACE, message, source);
   }
 
-  static info(message: string, source: string) {
-    return this.generateMessage(Level.INFO, message, source);
+  static info(message: string, source: string): void {
+    this.generateMessage(Level.INFO, message, source);
   }
 
-  static warn(message: string, source: string) {
-    return this.generateMessage(Level.WARN, message, source);
+  static warn(message: string, source: string): void {
+    this.generateMessage(Level.WARN, message, source);
   }
 
-  static error(message: string, source: string) {
-    return this.generateMessage(Level.ERROR, message, source);
+  static error(message: string, source: string): void {
+    this.generateMessage(Level.ERROR, message, source);
   }
 }
 

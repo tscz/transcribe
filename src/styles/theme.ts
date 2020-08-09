@@ -104,13 +104,13 @@ const theme = createMuiTheme({
   }
 });
 
-export const getColor = (sectionType: SectionType) => {
+export function getColor(sectionType: SectionType): string {
   const result = SECTIONTYPE_TO_COLOR.get(sectionType);
 
   if (!result) throw Error("Unknown SectionType " + sectionType);
 
   return result;
-};
+}
 
 const SECTIONTYPE_TO_COLOR = new Map<SectionType, React.CSSProperties["color"]>(
   [

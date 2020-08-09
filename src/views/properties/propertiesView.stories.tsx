@@ -10,15 +10,13 @@ import {
 } from "states/project/projectSlice";
 import store, { PersistedState } from "states/store";
 import theme from "styles/theme";
+import { Story, storyForView } from "tests/Storybook";
 
 import PropertiesView from "./propertiesView";
 
-export default {
-  title: "Views|PropertiesView",
-  component: PropertiesView
-};
+export default storyForView("PropertiesView", PropertiesView);
 
-export const Default = () => {
+export const Default: Story = () => {
   const persistedState: PersistedState = {
     analysis: {
       duration: 100,

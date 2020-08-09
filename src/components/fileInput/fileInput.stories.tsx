@@ -1,14 +1,12 @@
 import { action } from "@storybook/addon-actions";
 import React from "react";
+import { Story, storyForComponent } from "tests/Storybook";
 
 import FileInput, { FileType } from "./fileInput";
 
-export default {
-  title: "Components|FileInput",
-  component: FileInput
-};
+export default storyForComponent("FileInput", FileInput);
 
-export const Zip = () => (
+export const Zip: Story = () => (
   <FileInput
     id="zipFileInput"
     fileType={FileType.ZIP}
@@ -16,7 +14,7 @@ export const Zip = () => (
   ></FileInput>
 );
 
-export const Audio = () => (
+export const Audio: Story = () => (
   <FileInput
     id="audioFileInput"
     fileType={FileType.AUDIO}

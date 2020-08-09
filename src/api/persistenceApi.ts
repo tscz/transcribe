@@ -15,7 +15,7 @@ class PersistenceApi {
   private static songFile = "song.blob";
   private static stateFile = "state.json";
 
-  static save = async (filename: string, options: SaveOptions) => {
+  static async save(filename: string, options: SaveOptions): Promise<void> {
     const zip = new JSZip();
     zip.file(PersistenceApi.stateFile, JSON.stringify(options.state));
 
@@ -26,7 +26,7 @@ class PersistenceApi {
     await zip.generateAsync({ type: "blob" }).then((file) => {
       saveAs(file, filename);
     });
-  };
+  }
 
   static async open(
     zip: File
@@ -54,11 +54,11 @@ class PersistenceApi {
     return { audioBlob, state };
   }
 
-  static revokeLocalFile(url: string) {
+  static revokeLocalFile(url: string): void {
     window.URL.revokeObjectURL(url);
   }
 
-  static getLocalFileUrl(blob: Blob) {
+  static getLocalFileUrl(blob: Blob): string {
     return window.URL.createObjectURL(blob);
   }
 }

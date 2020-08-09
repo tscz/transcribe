@@ -1,13 +1,11 @@
 import React, { useState } from "react";
+import { Story, storyForComponent } from "tests/Storybook";
 
 import MeasureSelect from "./measureSelect";
 
-export default {
-  title: "Components|MeasureSelect",
-  component: MeasureSelect
-};
+export default storyForComponent("MeasureSelect", MeasureSelect);
 
-export const Basic = () => {
+export const Basic: Story = () => {
   const [measure, setMeasure] = useState(4);
 
   return (

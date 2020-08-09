@@ -1,14 +1,12 @@
 import { action } from "@storybook/addon-actions";
 import React from "react";
+import { Story, storyForComponent } from "tests/Storybook";
 
 import ModalDialog from "./modalDialog";
 
-export default {
-  title: "Components|ModalDialog",
-  component: ModalDialog
-};
+export default storyForComponent("ModalDialog", ModalDialog);
 
-export const Basic = () => (
+export const Basic: Story = () => (
   <ModalDialog
     title="Title"
     onCancel={action("onCancel")}
