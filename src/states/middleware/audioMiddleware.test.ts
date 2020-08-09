@@ -40,6 +40,8 @@ beforeEach(() => {
   mockedAudioPlayer.setPlaybackRate = jest.fn();
   mockedAudioPlayer.setDetune = jest.fn();
   mockedAudioPlayer.seek = jest.fn();
+  mockedAudioPlayer.toggleLoop = jest.fn();
+  mockedAudioPlayer.setLoop = jest.fn();
 
   audioMiddleware = new AudioMiddleware();
   audioMiddleware.player = mockedAudioPlayer;
@@ -114,12 +116,14 @@ it("does not update playback settings if values are missing", () => {
 it("toggles loop mode of audio player", () => {
   dispatch(toggledLoop());
 
-  //TODO #11: test
+  expect(mockedAudioPlayer.toggleLoop).toBeCalled();
 });
 
 it("changes loop settings (start+end) of audio player", () => {
   dispatch(updatedLoopSettings({ start: 1, end: 4 }));
+
   expect(mockedAudioPlayer.seek).toBeCalledWith(1);
+  expect(mockedAudioPlayer.setLoop).toBeCalledWith(1, 4);
 });
 
 it("changes loop settings (start only) of audio player", () => {
