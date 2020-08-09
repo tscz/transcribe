@@ -100,7 +100,7 @@ class AudioMiddleware {
 
     // Case: Looping needs to be toggled
     if (toggledLoop.match(action)) {
-      // TODO toggle looping mode (https://github.com/tscz/transcribe/issues/11)
+      this.getPlayer().toggleLoop();
 
       return next(action);
     }
@@ -111,6 +111,7 @@ class AudioMiddleware {
       const end = action.payload.end ?? dispatch.getState().audio.loopEnd;
 
       this.getPlayer().seek(start);
+      this.getPlayer().setLoop(start, end);
       this.setZoom(start, end);
 
       return next(action);

@@ -6,10 +6,13 @@ import { now, PitchShift, Player as TonejsPlayer, Transport } from "tone";
  * External Tone.js based Player for Peaks.js
  */
 class AudioPlayer implements PlayerAdapter {
+  shouldLoop: boolean;
   player: TonejsPlayer;
   pitchShift: PitchShift;
   detune: number;
   eventEmitter: EventEmitterForPlayerEvents | undefined;
+  loopStart: number;
+  loopEnd: number;
 
   constructor(
     private audioBuffer: AudioBuffer,
@@ -18,6 +21,9 @@ class AudioPlayer implements PlayerAdapter {
     this.player = new TonejsPlayer(this.audioBuffer);
     this.pitchShift = new PitchShift();
     this.detune = 0;
+    this.shouldLoop = false;
+    this.loopStart = 0;
+    this.loopEnd = 0;
 
     this.player.sync();
     this.player.start();
@@ -33,6 +39,11 @@ class AudioPlayer implements PlayerAdapter {
 
     Transport.scheduleRepeat(() => {
       eventEmitter.emit("player.timeupdate", this.getCurrentTime());
+
+      if (this.shouldLoop && this.getCurrentTime() >= this.loopEnd) {
+        this.seek(this.loopStart);
+      }
+
       if (this.getCurrentTime() >= this.getDuration()) {
         Transport.stop();
         this.onSongComplete();
@@ -61,6 +72,28 @@ class AudioPlayer implements PlayerAdapter {
 
     this.pitchShift.pitch =
       this.shiftToSemitones(this.player.playbackRate) + detune;
+  }
+
+  toggleLoop(): void {
+    this.shouldLoop = !this.shouldLoop;
+  }
+
+  setLoop(start: number, end: number): void {
+    if (this.loopStart < 0 || this.loopStart > this.getDuration())
+      throw new Error(
+        "Loop start invalid. Must be a millisecond between 0 and " +
+          this.getDuration()
+      );
+    if (this.loopEnd < this.loopStart || this.loopEnd > this.getDuration())
+      throw new Error(
+        "Loop start invalid. Must be a millisecond between " +
+          this.loopStart +
+          " and " +
+          this.getDuration()
+      );
+
+    this.loopStart = start;
+    this.loopEnd = end;
   }
 
   destroy = (): void => {
