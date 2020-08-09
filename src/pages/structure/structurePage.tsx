@@ -28,6 +28,7 @@ import React, { ReactElement } from "react";
 import { connect } from "react-redux";
 import { updatedRhythm } from "states/analysis/analysisSlice";
 import {
+  toggledLoop,
   triggeredPause,
   triggeredPlay,
   updatedPlaybackSettings
@@ -50,6 +51,7 @@ interface PropsFromState {
   readonly firstMeasureStart: number;
   readonly detune: number;
   readonly playbackRate: number;
+  readonly shouldLoop: boolean;
 }
 
 interface PropsFromDispatch {
@@ -59,6 +61,7 @@ interface PropsFromDispatch {
   updatedRhythm: typeof updatedRhythm;
   updatedPlaybackSettings: typeof updatedPlaybackSettings;
   openedDialog: typeof openedDialog;
+  toggledLoop: typeof toggledLoop;
 }
 
 interface Props extends WithStyles<typeof popoverStyles> {}
@@ -98,6 +101,11 @@ class StructurePage extends React.Component<AllProps, State> {
 
   render() {
     Log.info("render", StructurePage.name);
+
+    const loopHintText = this.props.shouldLoop
+      ? "Turn Loop off"
+      : "Turn Loop on";
+    const loopButtonColor = this.props.shouldLoop ? "secondary" : "primary";
     return (
       <ContentLayout
         topLeft={
@@ -121,9 +129,11 @@ class StructurePage extends React.Component<AllProps, State> {
                 )}
 
                 <WaveformControlButton
-                  title="Loop"
+                  title={loopHintText}
                   icon={<LoopIcon />}
-                  disabled={true}
+                  onClick={(e) => this.props.toggledLoop()}
+                  disabled={false}
+                  color={loopButtonColor}
                 />
                 <WaveformControlButton
                   title="Playback Rate"
@@ -226,6 +236,7 @@ interface WaveformControlButtonProps {
   icon: ReactElement;
   disabled?: boolean;
   onClick?: (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  color?: "primary" | "secondary";
 }
 
 const WaveformControlButton = withStyles(waveformControlButtonStyles)(
@@ -239,6 +250,7 @@ const WaveformControlButton = withStyles(waveformControlButtonStyles)(
         onClick={props.onClick}
         size="small"
         disabled={props.disabled}
+        color={props.color}
       >
         {props.icon}
       </IconButton>
@@ -351,7 +363,8 @@ const mapStateToProps = ({ project, audio, analysis }: ApplicationState) => {
     firstMeasureStart: analysis.firstMeasureStart,
     syncFirstMeasureStart: project.syncFirstMeasureStart,
     detune: audio.detune,
-    playbackRate: audio.playbackRate
+    playbackRate: audio.playbackRate,
+    shouldLoop: audio.isLooping
   };
 };
 
@@ -361,7 +374,8 @@ const mapDispatchToProps = {
   enabledSyncFirstMeasureStart,
   updatedRhythm,
   updatedPlaybackSettings,
-  openedDialog
+  openedDialog,
+  toggledLoop
 };
 export default connect(
   mapStateToProps,
