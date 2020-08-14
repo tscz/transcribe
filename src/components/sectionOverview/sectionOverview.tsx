@@ -116,6 +116,9 @@ class SectionOverview extends React.Component<AllProps, State> {
                           {row.map((measureId) => {
                             const measure: Measure = measures.byId[measureId];
                             const position = Number(measureId);
+
+                            if (!measure) return <div>?</div>;
+
                             return (
                               <Square
                                 key={measure.id}

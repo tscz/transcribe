@@ -3,6 +3,7 @@ import React from "react";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
+import { updatedRhythm } from "states/analysis/analysisSlice";
 import {
   createdProject,
   initializedProject,
@@ -22,7 +23,7 @@ export const Default: Story = () => {
 
   const persistedState: PersistedState = {
     analysis: {
-      duration: 100,
+      duration: 140,
       bpm: 120,
       firstMeasureStart: 0,
       measures: { allIds: [], byId: {} },
@@ -79,6 +80,7 @@ export const Default: Story = () => {
   };
 
   store.dispatch(createdProject(persistedState));
+  store.dispatch(updatedRhythm({ bpm: 120 }));
   store.dispatch(initializedProject());
 
   return (

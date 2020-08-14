@@ -9,9 +9,11 @@ export function storyFor(
   decorators?: unknown
 ): { title: string; component: unknown; decorators?: unknown } {
   const result = {
-    title: category + "|" + name,
+    title: category + "/" + name,
     component: component
   };
+
+  enableLogging();
 
   if (decorators) _.assign(result, { decorators: decorators });
 
@@ -38,4 +40,11 @@ export function storyForPage(
   component: unknown
 ): ReturnType<typeof storyFor> {
   return storyFor("Pages", name, component);
+}
+
+function enableLogging() {
+  // Enable logging in storybook development mode
+  if (process.env.NODE_ENV !== "production") {
+    localStorage.setItem("debug", "transcribe:*");
+  }
 }
