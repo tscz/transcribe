@@ -131,7 +131,7 @@ class StructurePage extends React.Component<AllProps, State> {
                 <WaveformControlButton
                   title={loopHintText}
                   icon={<LoopIcon />}
-                  onClick={(e) => this.props.toggledLoop()}
+                  onClick={() => this.props.toggledLoop()}
                   disabled={false}
                   color={loopButtonColor}
                 />
