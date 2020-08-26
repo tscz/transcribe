@@ -1,6 +1,8 @@
 import Log from "components/log/log";
 import { EventEmitterForPlayerEvents, PlayerAdapter, Segment } from "peaks.js";
-import { now, PitchShift, Player as TonejsPlayer, Transport } from "tone";
+import { now, PitchShift, Player as TonejsPlayer, Transport, Synth, Loop } from "tone";
+import { setLogger } from "tone/build/esm/core/util/Debug";
+import { TickParam } from "tone/build/esm/core/clock/TickParam";
 
 /**
  * External Tone.js based Player for Peaks.js
@@ -8,6 +10,7 @@ import { now, PitchShift, Player as TonejsPlayer, Transport } from "tone";
 class AudioPlayer implements PlayerAdapter {
   shouldLoop: boolean;
   player: TonejsPlayer;
+  metronome: Synth;
   pitchShift: PitchShift;
   detune: number;
   eventEmitter: EventEmitterForPlayerEvents | undefined;
@@ -18,9 +21,19 @@ class AudioPlayer implements PlayerAdapter {
     private audioBuffer: AudioBuffer,
     private onSongComplete: () => void
   ) {
+
+    this.metronome = new Synth();
+    const loop = new Loop((time) => {
+      this.metronome.triggerAttackRelease("C4","16n",time);
+    }, "1n").start(0);
+    this.metronome.toDestination();
+
+    Log.info("BPM=" + Transport.bpm.value,AudioPlayer.name);
+    Transport.bpm.value = 120;
+
     this.player = new TonejsPlayer(this.audioBuffer);
     this.pitchShift = new PitchShift();
-    this.detune = 0;
+    this.detune = 0; 
     this.shouldLoop = false;
     this.loopStart = 0;
     this.loopEnd = 0;
@@ -105,6 +118,7 @@ class AudioPlayer implements PlayerAdapter {
 
     this.player.dispose();
     this.pitchShift.dispose();
+    this.metronome.dispose();
     Transport.cancel();
     Transport.position = 0;
   };
