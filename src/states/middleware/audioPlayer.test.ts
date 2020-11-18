@@ -1,23 +1,11 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { PitchShift, Player as TonejsPlayer, Transport } from "tone";
+import { PitchShift, Player, Transport } from "tone";
 
 import AudioPlayer from "./audioPlayer";
 
 jest.mock("tone", () => {
   return {
-    Player: jest.fn().mockImplementation(() => {
-      return {
-        sync: jest.fn(),
-        start: jest.fn(),
-        connect: jest.fn(),
-        toSeconds: jest.fn(),
-        dispose: jest.fn(),
-        buffer: { duration: 42 }
-      };
-    }),
-    PitchShift: jest.fn().mockImplementation(() => {
-      return { toDestination: jest.fn(), dispose: jest.fn() };
-    }),
+    Player: jest.fn(),
+    PitchShift: jest.fn(),
     Transport: {
       pause: jest.fn(),
       start: jest.fn(),
@@ -31,6 +19,21 @@ jest.mock("tone", () => {
 let audioPlayer: AudioPlayer;
 
 beforeEach(() => {
+  (Player as unknown as jest.Mock).mockImplementation(() => {
+    return {
+      sync: jest.fn(),
+      start: jest.fn(),
+      connect: jest.fn(),
+      toSeconds: jest.fn(),
+      dispose: jest.fn(),
+      buffer: { duration: 42 }
+    };
+  });
+
+  (PitchShift as unknown as jest.Mock).mockImplementation(() => {
+    return { toDestination: jest.fn(), dispose: jest.fn() };
+  });
+
   (Transport.pause as jest.Mock).mockClear();
   (Transport.start as jest.Mock).mockClear();
 

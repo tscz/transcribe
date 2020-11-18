@@ -27,6 +27,9 @@ let audioMiddleware: AudioMiddleware;
 let mockedAudioPlayer: AudioPlayer;
 let api: MiddlewareAPI<Dispatch<AnyAction>, ApplicationState>;
 beforeEach(() => {
+
+  global.fetch = jest.fn(() => Promise.resolve(mockResponse));
+
   api = {
     dispatch: jest.fn(),
     getState: jest.fn()
@@ -57,7 +60,6 @@ const mockResponse = new MockedResponse();
 
 mockResponse.arrayBuffer = () => Promise.resolve(new ArrayBuffer(0));
 
-global.fetch = jest.fn(() => Promise.resolve(mockResponse));
 
 it("throws an error if peaks is undefined", () => {
   dispatch(

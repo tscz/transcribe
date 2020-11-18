@@ -155,8 +155,6 @@ class AudioMiddleware {
       this.player = new AudioPlayer(audioBuffer, () => {});
 
       Peaks.init(PeaksConfig.create(audioBuffer, this.player), (err, peaks) => {
-        // eslint-disable-next-line no-console
-        console.log("body=" + document.body.innerHTML);
         if (err) throw new Error("Peaks could not be initialized: " + err);
 
         if (!peaks)
