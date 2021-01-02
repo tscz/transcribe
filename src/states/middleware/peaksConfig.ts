@@ -70,7 +70,7 @@ class PeaksConfig {
     measures.allIds.forEach((id) => {
       const measure = measures.byId[id];
 
-      const point: PointAddOptions = measure;
+      const point = measure as PointAddOptions;
 
       points.push(point);
     });
