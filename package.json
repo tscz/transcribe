@@ -52,7 +52,7 @@
     "react-test-renderer": "17.0.1",
     "redux": "4.0.5",
     "redux-devtools-extension": "2.13.8",
-    "tone": "14.7.58",
+    "tone": "14.7.77",
     "ts-node": "9.1.1",
     "typeface-roboto": "1.1.13"
   },
