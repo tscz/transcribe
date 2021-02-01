@@ -31,7 +31,7 @@
     "@reduxjs/toolkit": "1.5.0",
     "@storybook/addon-actions": "6.1.11",
     "@storybook/addon-docs": "6.1.11",
-    "@storybook/addon-knobs": "6.1.11",
+    "@storybook/addon-knobs": "6.1.15",
     "@storybook/preset-create-react-app": "3.1.5",
     "@storybook/react": "6.1.11",
     "@types/debug": "4.1.5",
