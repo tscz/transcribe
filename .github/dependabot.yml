@@ -1,0 +1,53 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: monthly
+    time: "04:00"
+  open-pull-requests-limit: 10
+  assignees:
+  - tscz
+  ignore:
+  - dependency-name: eslint-config-prettier
+    versions:
+    - 7.2.0
+    - 8.1.0
+  - dependency-name: typescript
+    versions:
+    - 4.2.2
+  - dependency-name: "@storybook/addon-actions"
+    versions:
+    - 6.1.15
+    - 6.1.20
+  - dependency-name: "@storybook/addon-knobs"
+    versions:
+    - 6.1.15
+    - 6.1.20
+  - dependency-name: "@typescript-eslint/eslint-plugin"
+    versions:
+    - 4.14.1
+    - 4.15.2
+  - dependency-name: "@typescript-eslint/parser"
+    versions:
+    - 4.15.2
+  - dependency-name: "@storybook/preset-create-react-app"
+    versions:
+    - 3.1.6
+  - dependency-name: "@storybook/react"
+    versions:
+    - 6.1.15
+    - 6.1.20
+  - dependency-name: "@storybook/addon-docs"
+    versions:
+    - 6.1.15
+    - 6.1.20
+  - dependency-name: react-scripts
+    versions:
+    - 4.0.3
+  - dependency-name: "@types/node"
+    versions:
+    - 14.14.22
+  - dependency-name: "@types/lodash"
+    versions:
+    - 4.14.168
