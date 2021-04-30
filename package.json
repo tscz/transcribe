@@ -32,7 +32,7 @@
     "@storybook/addon-actions": "6.1.21",
     "@storybook/addon-docs": "6.1.21",
     "@storybook/addon-knobs": "6.1.21",
-    "@storybook/preset-create-react-app": "3.1.6",
+    "@storybook/preset-create-react-app": "3.1.7",
     "@storybook/react": "6.1.21",
     "@types/debug": "4.1.5",
     "@types/enzyme": "3.10.8",
