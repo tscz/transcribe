@@ -109,12 +109,14 @@ class AudioPlayer implements PlayerAdapter {
     Transport.position = 0;
   };
 
-  play = (): void => {
+  play = (): Promise<void> => {
     Transport.start(now(), this.getCurrentTime() / this.player.playbackRate);
     this.eventEmitter?.emit(
       "player.play",
       this.getCurrentTime() / this.player.playbackRate
     );
+
+    return Promise.resolve();
   };
 
   playSegment = (segment: Segment): void => {
