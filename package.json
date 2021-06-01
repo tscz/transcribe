@@ -39,7 +39,7 @@
     "@storybook/react": "6.2.9",
     "@types/debug": "4.1.5",
     "@types/enzyme": "3.10.8",
-    "@types/lodash": "4.14.168",
+    "@types/lodash": "4.14.170",
     "clsx": "1.1.1",
     "cross-env": "7.0.3",
     "debug": "4.3.1",
