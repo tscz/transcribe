@@ -151,25 +151,28 @@ const removeSectionsAfterLastMeasure: (state: AnalysisState) => void = (
   );
 };
 
-const addSection: (
-  state: AnalysisState,
-  newSection: Section
-) => AnalysisState = (state, newSection) => {
-  if (sectionInvalid(newSection)) return state;
+const addSection: (state: AnalysisState, newSection: Section) => AnalysisState =
+  (state, newSection) => {
+    if (sectionInvalid(newSection)) return state;
 
-  const enclosingSection = enclosingSectionOf(newSection, state.sections);
-  if (
-    enclosingSection === undefined ||
-    enclosingSection.section.type !== SectionType.UNDEFINED
-  )
+    const enclosingSection = enclosingSectionOf(newSection, state.sections);
+    if (
+      enclosingSection === undefined ||
+      enclosingSection.section.type !== SectionType.UNDEFINED
+    )
+      return state;
+
+    const mergedSections = mergeSections(enclosingSection.section, newSection);
+
+    replaceSections(
+      state.sections,
+      enclosingSection.position,
+      1,
+      mergedSections
+    );
+
     return state;
-
-  const mergedSections = mergeSections(enclosingSection.section, newSection);
-
-  replaceSections(state.sections, enclosingSection.position, 1, mergedSections);
-
-  return state;
-};
+  };
 
 const removeSection: (state: AnalysisState, sectionId: string) => void = (
   state,
@@ -212,11 +215,7 @@ const removeSection: (state: AnalysisState, sectionId: string) => void = (
   ]);
 };
 
-export const {
-  addedSection,
-  removedSection,
-  updatedRhythm,
-  updatedSection
-} = analysisSlice.actions;
+export const { addedSection, removedSection, updatedRhythm, updatedSection } =
+  analysisSlice.actions;
 
 export default analysisSlice.reducer;

@@ -53,9 +53,8 @@ it("triggers the os file input dialog on icon button and text input click", () =
     <FileInput id="zipFileInput" fileType={FileType.ZIP} callback={() => {}} />
   );
   const inputClickMock = jest.fn();
-  wrapper
-    .find("input#zipFileInput")
-    .getDOMNode<HTMLInputElement>().onclick = inputClickMock;
+  wrapper.find("input#zipFileInput").getDOMNode<HTMLInputElement>().onclick =
+    inputClickMock;
 
   // Click on the icon button
   wrapper.find(IconButton).simulate("click", {

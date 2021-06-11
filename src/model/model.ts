@@ -60,10 +60,8 @@ export function mergeSections(
   const { start: newSectionStart, end: newSectionEnd } = ArrayUtil.bordersOf(
     embeddedSection.measures
   );
-  const {
-    start: currentSectionStart,
-    end: currentSectionEnd
-  } = ArrayUtil.bordersOf(enclosingSection.measures);
+  const { start: currentSectionStart, end: currentSectionEnd } =
+    ArrayUtil.bordersOf(enclosingSection.measures);
   //Add a new undefined block before the new section
   if (newSectionStart > currentSectionStart) {
     const section: Section = {

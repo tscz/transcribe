@@ -48,78 +48,80 @@ class AudioMiddleware {
   /**
    * Redux Middleware function. Intercepts all audio related actions.
    */
-  createMiddleware: Middleware<Dispatch, ApplicationState> = (dispatch) => (
-    next: Dispatch<AnyAction>
-  ) => (action: Action<string>): AnyAction => {
-    Log.info("action " + action.type, AudioMiddleware.name);
+  createMiddleware: Middleware<Dispatch, ApplicationState> =
+    (dispatch) =>
+    (next: Dispatch<AnyAction>) =>
+    (action: Action<string>): AnyAction => {
+      Log.info("action " + action.type, AudioMiddleware.name);
 
-    //Case: Audio file changed and Peaks.js and Tone.js should be initialized
-    if (createdProject.match(action)) {
-      this.initAudioContext(action.payload.project.audioUrl, dispatch);
+      //Case: Audio file changed and Peaks.js and Tone.js should be initialized
+      if (createdProject.match(action)) {
+        this.initAudioContext(action.payload.project.audioUrl, dispatch);
 
+        return next(action);
+      }
+
+      //Case: Application hot reloaded during development
+      if (hotReloaded.match(action)) {
+        //TODO: support Hot reload for audio files https://github.com/tscz/transcribe/issues/39
+        //this.initAudioContext(dispatch.getState().project.audioUrl, dispatch);
+
+        return next(action);
+      }
+
+      // Case: Play was triggered
+      if (triggeredPlay.match(action)) {
+        this.getPlayer().play();
+        return next(action);
+      }
+
+      // Case: Pause was triggered
+      if (triggeredPause.match(action)) {
+        this.getPlayer().pause();
+        return next(action);
+      }
+
+      // Case: Waveform needs to be updated
+      if (updateWaveform.match(action)) {
+        this.repaintWaveform(action.payload.sections, action.payload.measures);
+
+        return next(action);
+      }
+
+      // Case: playback settings need to be updated
+      if (updatedPlaybackSettings.match(action)) {
+        if (action.payload.playbackRate)
+          this.getPlayer().setPlaybackRate(action.payload.playbackRate);
+
+        if (action.payload.detune)
+          this.getPlayer().setDetune(action.payload.detune);
+
+        return next(action);
+      }
+
+      // Case: Looping needs to be toggled
+      if (toggledLoop.match(action)) {
+        this.getPlayer().toggleLoop();
+
+        return next(action);
+      }
+
+      // Case: Looping settings should be updated
+      if (updatedLoopSettings.match(action)) {
+        const start =
+          action.payload.start ?? dispatch.getState().audio.loopStart;
+        const end = action.payload.end ?? dispatch.getState().audio.loopEnd;
+
+        this.getPlayer().seek(start);
+        this.getPlayer().setLoop(start, end);
+        this.setZoom(start, end);
+
+        return next(action);
+      }
+
+      // Case: given action does not trigger audio related side effects
       return next(action);
-    }
-
-    //Case: Application hot reloaded during development
-    if (hotReloaded.match(action)) {
-      //TODO: support Hot reload for audio files https://github.com/tscz/transcribe/issues/39
-      //this.initAudioContext(dispatch.getState().project.audioUrl, dispatch);
-
-      return next(action);
-    }
-
-    // Case: Play was triggered
-    if (triggeredPlay.match(action)) {
-      this.getPlayer().play();
-      return next(action);
-    }
-
-    // Case: Pause was triggered
-    if (triggeredPause.match(action)) {
-      this.getPlayer().pause();
-      return next(action);
-    }
-
-    // Case: Waveform needs to be updated
-    if (updateWaveform.match(action)) {
-      this.repaintWaveform(action.payload.sections, action.payload.measures);
-
-      return next(action);
-    }
-
-    // Case: playback settings need to be updated
-    if (updatedPlaybackSettings.match(action)) {
-      if (action.payload.playbackRate)
-        this.getPlayer().setPlaybackRate(action.payload.playbackRate);
-
-      if (action.payload.detune)
-        this.getPlayer().setDetune(action.payload.detune);
-
-      return next(action);
-    }
-
-    // Case: Looping needs to be toggled
-    if (toggledLoop.match(action)) {
-      this.getPlayer().toggleLoop();
-
-      return next(action);
-    }
-
-    // Case: Looping settings should be updated
-    if (updatedLoopSettings.match(action)) {
-      const start = action.payload.start ?? dispatch.getState().audio.loopStart;
-      const end = action.payload.end ?? dispatch.getState().audio.loopEnd;
-
-      this.getPlayer().seek(start);
-      this.getPlayer().setLoop(start, end);
-      this.setZoom(start, end);
-
-      return next(action);
-    }
-
-    // Case: given action does not trigger audio related side effects
-    return next(action);
-  };
+    };
 
   private cleanupPreviousInit() {
     this.peaks?.destroy();
@@ -192,10 +194,8 @@ class AudioMiddleware {
   };
 
   private setZoom(start: number, end: number) {
-    const zoomview:
-      | Peaks.WaveformView
-      | null
-      | undefined = this.peaks?.views.getView("zoomview");
+    const zoomview: Peaks.WaveformView | null | undefined =
+      this.peaks?.views.getView("zoomview");
 
     if (zoomview) {
       const duration = end - start;

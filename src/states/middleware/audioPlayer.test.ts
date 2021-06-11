@@ -19,7 +19,7 @@ jest.mock("tone", () => {
 let audioPlayer: AudioPlayer;
 
 beforeEach(() => {
-  ((Player as unknown) as jest.Mock).mockImplementation(() => {
+  (Player as unknown as jest.Mock).mockImplementation(() => {
     return {
       sync: jest.fn(),
       start: jest.fn(),
@@ -30,7 +30,7 @@ beforeEach(() => {
     };
   });
 
-  ((PitchShift as unknown) as jest.Mock).mockImplementation(() => {
+  (PitchShift as unknown as jest.Mock).mockImplementation(() => {
     return { toDestination: jest.fn(), dispose: jest.fn() };
   });
 
