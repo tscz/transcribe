@@ -1,9 +1,9 @@
 import blueGrey from "@material-ui/core/colors/blueGrey";
-import { createMuiTheme } from "@material-ui/core/styles";
+import { createTheme } from "@material-ui/core/styles";
 import { SectionType } from "model/model";
 
 // Extend Material UI theme type declaration
-declare module "@material-ui/core/styles/createMuiTheme" {
+declare module "@material-ui/core/styles/createTheme" {
   // add custom theme options
   interface ThemeOptions {
     logo: {
@@ -50,7 +50,7 @@ declare module "@material-ui/core/styles/createMuiTheme" {
 }
 
 // A custom theme for this app
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     type: "light",
     primary: blueGrey,
