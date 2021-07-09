@@ -38,12 +38,7 @@ interface PropsFromDispatch {
   updatedLoopSettings: typeof updatedLoopSettings;
 }
 
-interface Props {}
-
-type AllProps = PropsFromState &
-  PropsFromDispatch &
-  Props &
-  WithStyles<typeof styles>;
+type AllProps = PropsFromState & PropsFromDispatch & WithStyles<typeof styles>;
 
 interface State {
   start: number;

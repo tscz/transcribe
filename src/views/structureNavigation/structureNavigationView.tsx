@@ -9,7 +9,7 @@ class StructureNavigationView extends Component {
       <Grid
         container
         direction="column"
-        justify="center"
+        justifyContent="center"
         alignItems="center"
         alignContent="stretch"
       >

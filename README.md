@@ -31,6 +31,7 @@ Run the [Transcribe Demo App](https://tscz.github.com/transcribe) in your Browse
 [![Coverage Status](https://coveralls.io/repos/github/tscz/transcribe/badge.svg?branch=master)](https://coveralls.io/github/tscz/transcribe?branch=master)
 [![](https://api.dependabot.com/badges/status?host=github&repo=tscz/transcribe)](https://github.com/tscz/transcribe/releases/latest)
 [![](https://github.com/tscz/transcribe/workflows/Deploy%20storybook/badge.svg)](https://transcribe-storybook.herokuapp.com)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=tscz_transcribe&metric=alert_status)](https://sonarcloud.io/dashboard?id=tscz_transcribe)
 
 ## Usage
 Firstly, create a new transcription project and select an audio file of the song you want to transcribe.
