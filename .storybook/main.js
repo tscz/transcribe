@@ -10,9 +10,6 @@ module.exports = {
         configureJSX: true
       }
     }
-    ],
-    typescript: {
-      reactDocgen: 'react-docgen',
-    }
+    ]
 };
 

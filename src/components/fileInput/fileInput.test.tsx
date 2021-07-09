@@ -20,7 +20,7 @@ declare const global: CustomNodeJsGlobal;
 
 it("can select a file from local disk", () => {
   const mockCallback = jest.fn();
-  const mockUrl = "http://fileurl";
+  const mockUrl = "https://fileurl";
   const mockFile = new File([""], "project.zip");
 
   //Mock creating objectURL in the Browser
@@ -75,7 +75,7 @@ it("triggers the os file input dialog on icon button and text input click", () =
 });
 
 it("does not select a file if file chooser dialog is canceled", () => {
-  const mockCallback = jest.fn(() => {});
+  const mockCallback = jest.fn();
 
   //Render test component
   const wrapper = mount(
@@ -126,13 +126,7 @@ it("can be filtered for zip file types", () => {
 
 const createFileList = (files: File[]): FileList => {
   return {
-    length: files.length,
     item: (index: number) => files[index],
-    *[Symbol.iterator]() {
-      for (let i = 0; i < files.length; i++) {
-        yield files[i];
-      }
-    },
     ...files
   };
 };

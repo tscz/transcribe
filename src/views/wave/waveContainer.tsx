@@ -21,9 +21,7 @@ interface PropsFromDispatch {
   updateWaveform: typeof updateWaveform;
 }
 
-interface Props {}
-
-type AllProps = PropsFromState & PropsFromDispatch & Props;
+type AllProps = PropsFromState & PropsFromDispatch;
 
 class WaveContainer extends Component<AllProps> {
   constructor(props: AllProps) {

@@ -178,7 +178,7 @@ class App extends React.Component<AllProps> {
             <Grid
               container
               direction="column"
-              justify="flex-end"
+              justifyContent="flex-end"
               alignItems="flex-end"
               className={this.props.classes.footer}
             >
