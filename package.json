@@ -37,7 +37,7 @@
     "@storybook/addon-knobs": "6.3.0",
     "@storybook/preset-create-react-app": "3.2.0",
     "@storybook/react": "6.3.4",
-    "@types/debug": "4.1.6",
+    "@types/debug": "4.1.7",
     "@types/enzyme": "3.10.9",
     "@types/lodash": "4.14.171",
     "clsx": "1.1.1",
