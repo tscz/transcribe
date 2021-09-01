@@ -33,7 +33,7 @@
     "@material-ui/lab": "4.0.0-alpha.60",
     "@reduxjs/toolkit": "1.6.1",
     "@storybook/addon-actions": "6.3.6",
-    "@storybook/addon-docs": "6.3.6",
+    "@storybook/addon-docs": "6.3.7",
     "@storybook/addon-knobs": "6.3.0",
     "@storybook/preset-create-react-app": "3.2.0",
     "@storybook/react": "6.3.6",
