@@ -76,7 +76,7 @@
     "eslint-plugin-react": "7.25.1",
     "eslint-plugin-simple-import-sort": "7.0.0",
     "gh-pages": "3.2.3",
-    "jest-mock-extended": "2.0.2-beta2",
+    "jest-mock-extended": "2.0.4",
     "prettier": "2.3.2",
     "typescript": "4.4.2"
   },
