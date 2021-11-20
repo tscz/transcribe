@@ -23,7 +23,7 @@
 
 ## Quick start
 
-Run the [Transcribe Demo App](https://tscz.github.com/transcribe) in your Browser.
+Run the [Transcribe Demo App](https://tscz.github.io/transcribe/) in your Browser.
 
 ## Status
 
