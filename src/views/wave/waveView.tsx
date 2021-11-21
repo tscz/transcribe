@@ -9,6 +9,7 @@ import {
 const styles = () =>
   createStyles({
     zoomview: {
+      height: "150px",
       maxHeight: "400px"
     },
     overview: {
