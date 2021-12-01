@@ -80,7 +80,7 @@
     "eslint-plugin-simple-import-sort": "7.0.0",
     "gh-pages": "3.2.3",
     "jest-mock-extended": "2.0.4",
-    "prettier": "2.4.1",
+    "prettier": "2.5.0",
     "typescript": "4.4.3"
   },
   "jest": {
