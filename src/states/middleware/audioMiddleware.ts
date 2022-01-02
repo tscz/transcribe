@@ -194,7 +194,7 @@ class AudioMiddleware {
   };
 
   private setZoom(start: number, end: number) {
-    const zoomview: Peaks.WaveformView | null | undefined =
+    const zoomview: Peaks.WaveformZoomView | null | undefined =
       this.peaks?.views.getView("zoomview");
 
     if (zoomview) {
