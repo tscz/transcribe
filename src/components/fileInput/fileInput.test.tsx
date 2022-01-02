@@ -11,11 +11,13 @@ it("renders without crashing", () => {
   );
 });
 
-interface CustomNodeJsGlobal extends NodeJS.Global {
-  URL: {
-    createObjectURL: () => string;
-  };
-}
+type CustomNodeJsGlobal =
+  | typeof globalThis
+  | {
+      URL: {
+        createObjectURL: () => string;
+      };
+    };
 declare const global: CustomNodeJsGlobal;
 
 it("can select a file from local disk", () => {

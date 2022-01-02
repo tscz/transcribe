@@ -1,4 +1,4 @@
-import FileSaver from "file-saver";
+import FileSaver, { saveAs } from "file-saver";
 import JSZip from "jszip";
 import { initialAnalysisState } from "states/analysis/analysisSlice";
 import { initialProjectState } from "states/project/projectSlice";
@@ -14,9 +14,11 @@ async function contentOf(blob: Blob) {
 }
 
 // Mock fetch API by returning a dummy audio blob
-interface CustomNodeJsGlobal extends NodeJS.Global {
-  fetch: () => Promise<Response>;
-}
+type CustomNodeJsGlobal =
+  | typeof globalThis
+  | {
+      fetch: () => Promise<Response>;
+    };
 declare const global: CustomNodeJsGlobal;
 
 global.fetch = () => {
@@ -27,7 +29,7 @@ global.fetch = () => {
 
 // Mock file-saver's saveAs() function
 jest.mock("file-saver");
-const mockedSaveAs = FileSaver.saveAs as jest.Mock<typeof saveAs>;
+const mockedSaveAs = FileSaver.saveAs as unknown as jest.Mock<typeof saveAs>;
 
 it("can save a transcription", async () => {
   const expectedState: PersistedState = {
@@ -52,12 +54,12 @@ it("can save a transcription", async () => {
     "state.json": expect.anything()
   });
 
-  const persistedState = await json
+  const persistedState = await json!
     .async("text")
     .then((content) => JSON.parse(content));
   expect(persistedState).toEqual(expectedState);
 
-  const persistedAudioFile = await audioBlob.async("text");
+  const persistedAudioFile = await audioBlob!.async("text");
   expect(persistedAudioFile).toEqual(expectedAudioContent);
 });
 
