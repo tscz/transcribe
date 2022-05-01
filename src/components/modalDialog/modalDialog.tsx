@@ -6,7 +6,7 @@ import {
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import React, { Component } from "react";
+import React, { Component, PropsWithChildren } from "react";
 
 export interface DialogAction {
   label: string;
@@ -21,7 +21,7 @@ interface ModalDialogProps {
   actions?: DialogAction[];
 }
 
-class ModalDialog extends Component<ModalDialogProps> {
+class ModalDialog extends Component<PropsWithChildren<ModalDialogProps>> {
   render(): JSX.Element {
     return (
       <Dialog

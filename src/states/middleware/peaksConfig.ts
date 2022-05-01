@@ -32,7 +32,8 @@ class PeaksConfig {
       pointMarkerColor: theme.waveform.pointMarkerColor,
       showPlayheadTime: true,
       zoomLevels: [42], //TODO: Define good initial default
-      player: audioPlayer
+      player: audioPlayer,
+      waveformCache: true //TODO: Use default once types are fixed in peaks.js
     };
   }
 

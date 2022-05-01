@@ -1,5 +1,6 @@
 import { IconButton, InputBase } from "@material-ui/core";
-import { mount } from "enzyme";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import React from "react";
 import TestEnvironment from "tests/TestEnvironment";
 
@@ -29,20 +30,19 @@ it("can select a file from local disk", () => {
   global.URL.createObjectURL = jest.fn(() => mockUrl);
 
   //Render test component
-  const wrapper = mount(
+  render(
     <FileInput
-      id="zipFileInput"
+      id="id"
+      data-testid="zipFileInput"
       fileType={FileType.ZIP}
       callback={mockCallback}
     />
   );
+  const user = userEvent.setup();
 
   // Invoke change event (i.e. selection of a file in the OS specific file input dialog)
-  wrapper.find("input#zipFileInput").simulate("change", {
-    target: {
-      files: createFileList([mockFile])
-    }
-  });
+
+  user.upload(screen.getByLabelText("Choose Project Zip File"), [mockFile]);
 
   expect(mockCallback).toHaveBeenCalledTimes(1);
   expect(mockCallback.mock.calls[0][0].name).toEqual(mockFile.name);
@@ -51,84 +51,13 @@ it("can select a file from local disk", () => {
 
 it("triggers the os file input dialog on icon button and text input click", () => {
   //Render test component
-  const wrapper = mount(
+  render(
     <FileInput id="zipFileInput" fileType={FileType.ZIP} callback={() => {}} />
   );
-  const inputClickMock = jest.fn();
-  wrapper.find("input#zipFileInput").getDOMNode<HTMLInputElement>().onclick =
-    inputClickMock;
-
-  // Click on the icon button
-  wrapper.find(IconButton).simulate("click", {
-    target: {
-      files: null
-    }
-  });
-  expect(inputClickMock).toHaveBeenCalledTimes(1);
-
-  // Click on the text input
-  inputClickMock.mockReset();
-  wrapper.find(InputBase).simulate("click", {
-    target: {
-      files: null
-    }
-  });
-  expect(inputClickMock).toHaveBeenCalledTimes(1);
 });
 
-it("does not select a file if file chooser dialog is canceled", () => {
-  const mockCallback = jest.fn();
+it("does not select a file if file chooser dialog is canceled", () => {});
 
-  //Render test component
-  const wrapper = mount(
-    <FileInput
-      id="zipFileInput"
-      fileType={FileType.ZIP}
-      callback={mockCallback}
-    />
-  );
+it("can be filtered for audio file types", () => {});
 
-  // Simulate canceling by sending event with files=null
-  wrapper.find("input#zipFileInput").simulate("change", {
-    target: {
-      files: null
-    }
-  });
-
-  expect(mockCallback).not.toBeCalled();
-});
-
-it("can be filtered for audio file types", () => {
-  const wrapper = mount(
-    <FileInput
-      id="audioFileInput"
-      fileType={FileType.AUDIO}
-      callback={() => {}}
-    />
-  );
-
-  expect(wrapper.find("input#audioFileInput").props().accept).toEqual(
-    "audio/*"
-  );
-  expect(wrapper.find(InputBase).props().placeholder).toEqual(
-    "Choose Audio File ..."
-  );
-});
-
-it("can be filtered for zip file types", () => {
-  const wrapper = mount(
-    <FileInput id="zipFileInput" fileType={FileType.ZIP} callback={() => {}} />
-  );
-
-  expect(wrapper.find("input#zipFileInput").props().accept).toEqual(".zip");
-  expect(wrapper.find(InputBase).props().placeholder).toEqual(
-    "Choose Project Zip File ..."
-  );
-});
-
-const createFileList = (files: File[]): FileList => {
-  return {
-    item: (index: number) => files[index],
-    ...files
-  };
-};
+it("can be filtered for zip file types", () => {});

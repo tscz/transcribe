@@ -1,7 +1,7 @@
 import { createStyles, WithStyles, withStyles } from "@material-ui/core";
-import React, { Component } from "react";
+import React, { Component, PropsWithChildren } from "react";
 
-interface Props extends WithStyles<typeof stylesForToggle> {
+interface Props extends PropsWithChildren<WithStyles<typeof stylesForToggle>> {
   show: boolean;
 }
 

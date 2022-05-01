@@ -32,7 +32,7 @@ class AudioPlayer implements PlayerAdapter {
     this.pitchShift.toDestination();
   }
 
-  init = (eventEmitter: EventEmitterForPlayerEvents): void => {
+  init = (eventEmitter: EventEmitterForPlayerEvents): Promise<void> => {
     Log.info("init", AudioPlayer.name);
 
     this.eventEmitter = eventEmitter;
@@ -55,6 +55,8 @@ class AudioPlayer implements PlayerAdapter {
     }, 0.25);
 
     eventEmitter.emit("player.canplay");
+
+    return Promise.resolve();
   };
 
   shiftToSemitones = (shift: number): number => 12 * Math.log2(1 / shift);
