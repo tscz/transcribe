@@ -80,7 +80,7 @@
     "gh-pages": "3.2.3",
     "jest-mock-extended": "2.0.4",
     "prettier": "2.5.1",
-    "typescript": "4.5.4"
+    "typescript": "4.8.2"
   },
   "jest": {
     "collectCoverageFrom": [
