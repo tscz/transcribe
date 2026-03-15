@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import WaveSurfer from "wavesurfer.js";
 import RegionsPlugin from "wavesurfer.js/dist/plugins/regions.esm.js";
 import MinimapPlugin from "wavesurfer.js/dist/plugins/minimap.esm.js";
@@ -25,12 +25,14 @@ export function useWaveform(
   const regionsRef = useRef<RegionsPlugin | null>(null);
   const zoomPxRef = useRef<number>(0); // 0 = fit to container (wavesurfer default)
   const wsReadyRef = useRef<boolean>(false); // true only after wavesurfer fires "ready"
+  const scrollCleanupRef = useRef<(() => void) | null>(null);
+  const [scrollMetrics, setScrollMetrics] = useState({ left: 0, scrollWidth: 1, clientWidth: 1 });
 
   const { audioUrl, status, currentTime, seek } = useStore();
 
   // ── Draggable first-measure pin ───────────────────────────────────────────
 
-  const addFirstMeasurePin = useCallback((firstMeasureStart: number, duration: number) => {
+  const addFirstMeasurePin = useCallback((firstMeasureStart: number) => {
     const rp = regionsRef.current;
     if (!rp || !wsReadyRef.current) return;
 
@@ -177,6 +179,9 @@ export function useWaveform(
       wsRef.current = null;
     }
     wsReadyRef.current = false;
+    scrollCleanupRef.current?.();
+    scrollCleanupRef.current = null;
+    setScrollMetrics({ left: 0, scrollWidth: 1, clientWidth: 1 });
 
     const regions = RegionsPlugin.create();
     regionsRef.current = regions;
@@ -193,6 +198,7 @@ export function useWaveform(
       barRadius: 2,
       normalize: true,
       interact: true,
+      hideScrollbar: true,
       plugins: [
         regions,
 
@@ -224,8 +230,41 @@ export function useWaveform(
       const { sections, measures, duration, firstMeasureStart, status: s } = useStore.getState();
       if (s === "ready") {
         updateRegions(sections, measures, duration);
-        addFirstMeasurePin(firstMeasureStart, duration);
+        addFirstMeasurePin(firstMeasureStart);
       }
+      const scrollEl = container.querySelector("[part='scroll']") as HTMLElement | null;
+      if (scrollEl) {
+
+        const updateMetrics = () =>
+          setScrollMetrics({
+            left: scrollEl.scrollLeft,
+            scrollWidth: scrollEl.scrollWidth,
+            clientWidth: scrollEl.clientWidth,
+          });
+
+        scrollEl.addEventListener("scroll", updateMetrics);
+        const ro = new ResizeObserver(updateMetrics);
+        ro.observe(scrollEl);
+        requestAnimationFrame(updateMetrics);
+
+        scrollCleanupRef.current = () => {
+          scrollEl.removeEventListener("scroll", updateMetrics);
+          ro.disconnect();
+        };
+      }
+    });
+
+    // Re-read scroll metrics after zoom changes canvas width.
+    ws.on("zoom", () => {
+      requestAnimationFrame(() => {
+        const scrollEl = container.querySelector("[part='scroll']") as HTMLElement | null;
+        if (!scrollEl) return;
+        setScrollMetrics({
+          left: scrollEl.scrollLeft,
+          scrollWidth: scrollEl.scrollWidth,
+          clientWidth: scrollEl.clientWidth,
+        });
+      });
     });
 
     // Route user click/seek to Tone.js
@@ -234,6 +273,8 @@ export function useWaveform(
     wsRef.current = ws;
 
     return () => {
+      scrollCleanupRef.current?.();
+      scrollCleanupRef.current = null;
       ws.destroy();
       wsRef.current = null;
       regionsRef.current = null;
@@ -324,5 +365,12 @@ export function useWaveform(
     [detailRef]
   );
 
-  return { updateRegions, addFirstMeasurePin, updateLoopRegion, zoomIn, zoomOut, resetZoom, zoomToRegion };
+  const isAtFullZoom = scrollMetrics.scrollWidth <= scrollMetrics.clientWidth + 1;
+
+  const setScrollLeft = useCallback((left: number) => {
+    const scrollEl = detailRef.current?.querySelector("[part='scroll']") as HTMLElement | null;
+    if (scrollEl) scrollEl.scrollLeft = left;
+  }, [detailRef]);
+
+  return { updateRegions, addFirstMeasurePin, updateLoopRegion, zoomIn, zoomOut, resetZoom, zoomToRegion, isAtFullZoom, scrollMetrics, setScrollLeft };
 }

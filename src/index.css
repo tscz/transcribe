@@ -64,25 +64,5 @@
   [data-id^="m_"] {
     overflow: visible !important;
   }
-
-  /* Wavesurfer scroll container — ensure the scrollbar blends with the dark theme */
-  [part="scroll"] {
-    scrollbar-width: thin;
-    scrollbar-color: hsl(var(--border)) transparent;
-  }
-  [part="scroll"]::-webkit-scrollbar {
-    height: 3px;
-  }
-  [part="scroll"]::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  [part="scroll"]::-webkit-scrollbar-thumb {
-    @apply bg-border rounded-full;
-  }
-  [part="scroll"]::-webkit-scrollbar-thumb:hover {
-    @apply bg-muted-foreground;
-  }
-  [part="scroll"]::-webkit-scrollbar-corner {
-    background: transparent;
-  }
 }
+

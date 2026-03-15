@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 
 import {
+  dissolveSection,
   distributeMeasures,
   enclosingSectionOf,
   generateSectionId,
@@ -234,58 +235,34 @@ export const useStore = create<AppStore>()(
 
     updateSection: (sectionId, type, firstMeasure, lastMeasure) => {
       const { sections, measures } = get();
-      const old = sections.byId[sectionId];
-      if (!old) return;
+      if (!sections.byId[sectionId]) return;
+
+      // Dissolve the old section back to UNDEFINED (merges neighbors)
+      const dissolved = dissolveSection(sections, sectionId);
+
+      // The new range must lie entirely within a single UNDEFINED region
+      const parent = enclosingSectionOf(dissolved, firstMeasure, lastMeasure);
+      if (!parent) return; // would overlap a named section → reject
 
       const measureRange = measures.allIds.filter((id) => {
         const n = parseInt(id);
         return n >= parseInt(firstMeasure) && n <= parseInt(lastMeasure);
       });
 
-      const updated: Section = {
+      const newSection: Section = {
         id: generateSectionId(type, measureRange),
         type,
         measures: measureRange,
       };
 
-      const byId = { ...sections.byId };
-      delete byId[sectionId];
-      byId[updated.id] = updated;
-      const allIds = sections.allIds.map((id) => (id === sectionId ? updated.id : id));
-
-      set({ sections: { byId, allIds } });
+      const spliced = mergeSections(parent, newSection);
+      set({ sections: replaceSections(dissolved, [parent], spliced) });
     },
 
     removeSection: (sectionId) => {
       const { sections } = get();
-      const target = sections.byId[sectionId];
-      if (!target || target.type === SectionType.UNDEFINED) return;
-
-      // Dissolve into UNDEFINED and merge with neighbors
-      const dissolved = undefinedSection(target.measures);
-      const next = replaceSections(sections, [target], [dissolved]);
-
-      // Merge adjacent UNDEFINED sections
-      const merged: Section[] = [];
-      for (const id of next.allIds) {
-        const s = next.byId[id];
-        const prev = merged[merged.length - 1];
-        if (prev?.type === SectionType.UNDEFINED && s.type === SectionType.UNDEFINED) {
-          const combined = [...prev.measures, ...s.measures];
-          merged[merged.length - 1] = undefinedSection(combined);
-        } else {
-          merged.push(s);
-        }
-      }
-
-      const byId: Record<string, Section> = {};
-      const allIds: string[] = [];
-      for (const s of merged) {
-        byId[s.id] = s;
-        allIds.push(s.id);
-      }
-
-      set({ sections: { byId, allIds } });
+      if (!sections.byId[sectionId]) return;
+      set({ sections: dissolveSection(sections, sectionId) });
     },
 
     // ──────────────────────────────────────────────────────────────────────────

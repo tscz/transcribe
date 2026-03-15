@@ -198,6 +198,37 @@ export function rebuildSectionsForMeasures(
   return { byId, allIds };
 }
 
+/**
+ * Dissolve a named section back into UNDEFINED and merge adjacent UNDEFINED
+ * sections. Returns sections unchanged if the target is already UNDEFINED.
+ */
+export function dissolveSection(sections: Sections, sectionId: string): Sections {
+  const target = sections.byId[sectionId];
+  if (!target || target.type === SectionType.UNDEFINED) return sections;
+
+  const dissolved = undefinedSection(target.measures);
+  const next = replaceSections(sections, [target], [dissolved]);
+
+  const merged: Section[] = [];
+  for (const id of next.allIds) {
+    const s = next.byId[id];
+    const prev = merged[merged.length - 1];
+    if (prev?.type === SectionType.UNDEFINED && s.type === SectionType.UNDEFINED) {
+      merged[merged.length - 1] = undefinedSection([...prev.measures, ...s.measures]);
+    } else {
+      merged.push(s);
+    }
+  }
+
+  const byId: Record<string, Section> = {};
+  const allIds: string[] = [];
+  for (const s of merged) {
+    byId[s.id] = s;
+    allIds.push(s.id);
+  }
+  return { byId, allIds };
+}
+
 /** Returns [start, end] measure indices (as numbers) for a section */
 export function sectionBorders(section: Section): {
   first: number;

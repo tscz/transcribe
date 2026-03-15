@@ -4,14 +4,23 @@ import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useWaveform } from "@/hooks/useWaveform";
+import { SECTION_COLORS } from "@/lib/constants";
+import { getMeasureEnd } from "@/model/analysis";
+import { SectionType } from "@/model/types";
 import { useStore } from "@/store";
 
 export function WaveformView() {
   const detailRef = useRef<HTMLDivElement>(null);
   const overviewRef = useRef<HTMLDivElement>(null);
 
-  const { updateRegions, addFirstMeasurePin, updateLoopRegion, zoomIn, zoomOut, resetZoom, zoomToRegion } =
+  const { updateRegions, addFirstMeasurePin, updateLoopRegion, zoomIn, zoomOut, resetZoom, zoomToRegion, isAtFullZoom, scrollMetrics, setScrollLeft } =
     useWaveform(detailRef, overviewRef);
+
+  const maxScroll = Math.max(0, scrollMetrics.scrollWidth - scrollMetrics.clientWidth);
+  const thumbPct = scrollMetrics.clientWidth > 0
+    ? Math.max(8, (scrollMetrics.clientWidth / scrollMetrics.scrollWidth) * 100)
+    : 100;
+  const thumbLeftPct = maxScroll > 0 ? (scrollMetrics.left / maxScroll) * (100 - thumbPct) : 0;
 
   const { sections, measures, duration, firstMeasureStart, status, loopStart, loopEnd } = useStore();
 
@@ -19,7 +28,7 @@ export function WaveformView() {
   useEffect(() => {
     if (status !== "ready") return;
     updateRegions(sections, measures, duration);
-    addFirstMeasurePin(firstMeasureStart, duration);
+    addFirstMeasurePin(firstMeasureStart);
   }, [sections, measures, duration, firstMeasureStart, status, updateRegions, addFirstMeasurePin]);
 
   // Update selection highlight + auto-zoom whenever the selected region changes
@@ -82,6 +91,38 @@ export function WaveformView() {
           ref={detailRef}
           className={isReady ? "w-full" : "hidden"}
         />
+
+        {/* Custom scrollbar — always visible, styled consistently with app scrollbars */}
+        {isReady && (
+          <div className="relative h-1">
+            {/* Track — transparent, matching app vertical scrollbar track */}
+            <div className="absolute inset-0 rounded-full bg-transparent" />
+            {/* Thumb */}
+            <div
+              className="absolute inset-y-0 rounded-full transition-colors"
+              style={{
+                left: `${thumbLeftPct}%`,
+                width: `${thumbPct}%`,
+                background: isAtFullZoom
+                  ? "hsl(var(--border))"
+                  : "hsl(var(--muted-foreground) / 0.6)",
+              }}
+            />
+            {/* Invisible range input handles drag/click */}
+            {!isAtFullZoom && (
+              <input
+                type="range"
+                min={0}
+                max={maxScroll}
+                value={scrollMetrics.left}
+                step={1}
+                onChange={(e) => setScrollLeft(Number(e.target.value))}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                style={{ margin: 0 }}
+              />
+            )}
+          </div>
+        )}
       </div>
 
       {/* ── Overview / minimap strip ─────────────────────────────────────── */}
@@ -92,6 +133,35 @@ export function WaveformView() {
               Overview
             </span>
           </div>
+
+          {/* Section colour overlays */}
+          {duration > 0 && sections.allIds.map((id) => {
+            const section = sections.byId[id];
+            if (section.type === SectionType.UNDEFINED || section.measures.length === 0) return null;
+            const start = measures.byId[section.measures[0]]?.time ?? 0;
+            const end = getMeasureEnd(section.measures[section.measures.length - 1], measures, duration);
+            const left = (start / duration) * 100;
+            const width = ((end - start) / duration) * 100;
+            return (
+              <div
+                key={id}
+                className="absolute inset-y-0 z-10 pointer-events-none rounded-sm flex items-center justify-center"
+                style={{
+                  left: `${left}%`,
+                  width: `${width}%`,
+                  backgroundColor: SECTION_COLORS[section.type] + "55",
+                }}
+              >
+                <span
+                  className="text-[9px] font-bold leading-none select-none"
+                  style={{ color: SECTION_COLORS[section.type] }}
+                >
+                  {section.type.charAt(0)}
+                </span>
+              </div>
+            );
+          })}
+
           {/* Minimap renders into this container via the MinimapPlugin */}
           <div
             ref={overviewRef}
