@@ -1,5 +1,7 @@
-import { create } from "zustand";
+import { create, useStore as useZustandStore } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
+import { temporal } from "zundo";
+import type { TemporalState } from "zundo";
 
 import {
   dissolveSection,
@@ -100,6 +102,7 @@ const EMPTY_SECTIONS: Sections = { byId: {}, allIds: [] };
 const EMPTY_MEASURES: Measures = { byId: {}, allIds: [] };
 
 export const useStore = create<AppStore>()(
+  temporal(
   subscribeWithSelector((set, get) => ({
     // ── Project defaults ──
     status: "idle",
@@ -286,8 +289,28 @@ export const useStore = create<AppStore>()(
 
     openDialog: (dialog) => set({ currentDialog: dialog }),
     closeDialog: () => set({ currentDialog: "none" }),
-  }))
+  })),
+  {
+    partialize: (state) => ({
+      bpm: state.bpm,
+      timeSignature: state.timeSignature,
+      duration: state.duration,
+      firstMeasureStart: state.firstMeasureStart,
+      sections: state.sections,
+      measures: state.measures,
+    }),
+  }
+  )
 );
+
+type AnalysisSnapshot = Pick<
+  AnalysisSlice,
+  "bpm" | "timeSignature" | "duration" | "firstMeasureStart" | "sections" | "measures"
+>;
+
+export function useTemporalStore<T>(selector: (state: TemporalState<AnalysisSnapshot>) => T): T {
+  return useZustandStore(useStore.temporal, selector);
+}
 
 // Convenience selector hooks
 export const useProjectStatus = () => useStore((s) => s.status);
