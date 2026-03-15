@@ -1,186 +1,61 @@
 {
   "name": "transcribe",
-  "version": "0.0.10",
+  "version": "0.1.0",
   "private": true,
-  "homepage": "http://tscz.github.io/transcribe",
-  "license": "MIT",
+  "type": "module",
   "scripts": {
-    "start": "npm run setEnv --command=startWithoutEnv",
-    "startWithoutEnv": "react-scripts start",
-    "build": "npm run setEnv --command=buildWithoutEnv",
-    "buildWithoutEnv": "react-scripts build",
-    "test": "npm run setEnv --command=testWithoutEnv",
-    "testWithoutEnv": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "update": "yarn upgrade-interactive",
-    "setEnv": "cross-env-shell REACT_APP_VERSION=$npm_package_version REACT_APP_VERSION_HASH=\"$(git log --format=%h -1)\" REACT_APP_VERSION_DESCRIPTION=\"$(git log --format=%s -1)\" npm run $npm_config_command",
-    "storybook": "start-storybook -p 9009 -s public",
-    "build-storybook": "build-storybook -s public -o build-storybook",
-    "deploy-storybook": "gh-pages -d build-storybook -b storybook",
-    "lint": "eslint --ignore-path .gitignore . --ext ts --ext tsx --ext json",
-    "lint:fix": "npm run lint -- --fix",
-    "lint:check": "eslint --print-config src/components/app/app.tsx | eslint-config-prettier-check",
-    "coverage": "npm run testWithoutEnv -- --coverage",
-    "doc": "ts-node --project doc/tsconfig.json doc/diagrams/generate.ts"
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "coverage": "vitest run --coverage",
+    "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@material-ui/core": "4.12.3",
-    "@material-ui/icons": "4.11.2",
-    "@material-ui/lab": "4.0.0-alpha.60",
-    "@reduxjs/toolkit": "1.7.1",
-    "@storybook/addon-actions": "6.4.9",
-    "@storybook/addon-docs": "6.4.9",
-    "@storybook/addon-knobs": "6.4.0",
-    "@storybook/builder-webpack5": "^6.4.9",
-    "@storybook/manager-webpack5": "^6.4.9",
-    "@storybook/preset-create-react-app": "4.0.0",
-    "@storybook/react": "6.4.9",
-    "@types/debug": "4.1.7",
-    "@types/enzyme": "3.10.11",
-    "@types/lodash": "4.14.178",
-    "clsx": "1.1.1",
-    "cross-env": "7.0.3",
-    "debug": "4.3.3",
-    "enzyme": "3.11.0",
-    "file-saver": "2.0.5",
-    "jszip": "3.7.1",
-    "konva": "^8.3.2",
-    "node-plantuml": "0.9.0",
-    "peaks.js": "0.27.0",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "react-redux": "7.2.6",
-    "react-scripts": "5.0.0",
-    "react-test-renderer": "17.0.2",
-    "redux": "4.1.2",
-    "redux-devtools-extension": "2.13.9",
-    "tone": "14.7.77",
-    "ts-node": "10.4.0",
-    "typeface-roboto": "1.1.13",
-    "waveform-data": "^4.3.0"
+    "clsx": "^2.1.1",
+    "class-variance-authority": "^0.7.1",
+    "file-saver": "^2.0.5",
+    "jszip": "^3.10.1",
+    "lucide-react": "^0.475.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^6.28.0",
+    "tailwind-merge": "^2.6.0",
+    "tone": "^14.9.0",
+    "wavesurfer.js": "^7.8.7",
+    "zustand": "^5.0.3",
+    "@radix-ui/react-dialog": "^1.1.4",
+    "@radix-ui/react-dropdown-menu": "^2.1.4",
+    "@radix-ui/react-label": "^2.1.2",
+    "@radix-ui/react-popover": "^1.1.4",
+    "@radix-ui/react-scroll-area": "^1.2.3",
+    "@radix-ui/react-select": "^2.1.4",
+    "@radix-ui/react-separator": "^1.1.2",
+    "@radix-ui/react-slider": "^1.2.2",
+    "@radix-ui/react-switch": "^1.1.2",
+    "@radix-ui/react-tooltip": "^1.1.6"
   },
   "devDependencies": {
-    "@types/file-saver": "2.0.4",
-    "@types/jest": "27.4.0",
-    "@types/jszip": "3.4.1",
-    "@types/node": "17.0.8",
-    "@types/react": "17.0.38",
-    "@types/react-dom": "17.0.11",
-    "@types/react-redux": "7.1.21",
-    "@typescript-eslint/eslint-plugin": "5.9.0",
-    "@typescript-eslint/parser": "5.9.0",
-    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.6",
-    "eslint-config-prettier": "8.3.0",
-    "eslint-plugin-import": "2.25.4",
-    "eslint-plugin-prettier": "4.0.0",
-    "eslint-plugin-react": "7.28.0",
-    "eslint-plugin-simple-import-sort": "7.0.0",
-    "gh-pages": "3.2.3",
-    "jest-mock-extended": "2.0.4",
-    "prettier": "2.5.1",
-    "typescript": "4.5.4"
-  },
-  "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.{ts,tsx}",
-      "!src/**/*.stories.{ts,tsx}"
-    ]
-  },
-  "eslintConfig": {
-    "parser": "@typescript-eslint/parser",
-    "extends": [
-      "plugin:react/recommended",
-      "plugin:@typescript-eslint/recommended",
-      "plugin:import/errors",
-      "plugin:import/warnings",
-      "plugin:import/typescript",
-      "prettier"
-    ],
-    "parserOptions": {
-      "ecmaVersion": 2018,
-      "sourceType": "script",
-      "ecmaFeatures": {
-        "jsx": true
-      }
-    },
-    "plugins": [
-      "@typescript-eslint",
-      "react",
-      "simple-import-sort",
-      "import",
-      "prettier"
-    ],
-    "rules": {
-      "@typescript-eslint/no-empty-interface": "off",
-      "@typescript-eslint/explicit-function-return-type": "off",
-      "@typescript-eslint/no-use-before-define": "off",
-      "@typescript-eslint/no-empty-function": "off",
-      "simple-import-sort/imports": "error",
-      "sort-imports": "off",
-      "import/order": "off",
-      "import/first": "error",
-      "import/newline-after-import": "error",
-      "import/no-duplicates": "error",
-      "import/no-relative-parent-imports": "off",
-      "no-console": "error",
-      "react/prop-types": "off",
-      "react/forbid-dom-props": [
-        2,
-        {
-          "forbid": [
-            "style"
-          ]
-        }
-      ],
-      "react/forbid-component-props": [
-        2,
-        {
-          "forbid": [
-            "style"
-          ]
-        }
-      ],
-      "prettier/prettier": [
-        "error",
-        {
-          "trailingComma": "none",
-          "arrowParens": "always"
-        }
-      ],
-      "no-restricted-imports": [
-        "error",
-        {
-          "patterns": [
-            "../*"
-          ]
-        }
-      ]
-    },
-    "settings": {
-      "react": {
-        "version": "detect"
-      },
-      "import/resolver": {
-        "node": {
-          "paths": [
-            "src"
-          ]
-        }
-      }
-    }
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/file-saver": "^2.0.7",
+    "@types/node": "^22.13.0",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "@eslint/js": "^9.20.0",
+    "typescript-eslint": "^8.23.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "^3.0.5",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.20.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "jsdom": "^26.0.0",
+    "postcss": "^8.5.2",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3",
+    "vite": "^6.1.0",
+    "vitest": "^3.0.5"
   }
 }
