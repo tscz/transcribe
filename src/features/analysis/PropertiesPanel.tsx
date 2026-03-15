@@ -7,7 +7,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
 import { BPM_MAX, BPM_MIN } from "@/lib/constants";
 import { TIME_SIGNATURE_LABELS, TimeSignatureType } from "@/model/types";
 import { useStore } from "@/store";
@@ -17,9 +16,7 @@ export function PropertiesPanel() {
     bpm,
     timeSignature,
     firstMeasureStart,
-    syncFirstMeasureStart,
     updateRhythm,
-    setSyncFirstMeasureStart,
   } = useStore();
 
   return (
@@ -71,18 +68,9 @@ export function PropertiesPanel() {
             {firstMeasureStart.toFixed(2)}s
           </span>
         </div>
-        <div className="flex items-center gap-3 rounded-md border border-border px-3 py-2.5">
-          <Switch
-            checked={syncFirstMeasureStart}
-            onCheckedChange={setSyncFirstMeasureStart}
-            id="sync-measure"
-          />
-          <Label htmlFor="sync-measure" className="cursor-pointer text-xs leading-snug">
-            {syncFirstMeasureStart
-              ? "Click waveform to set measure 0"
-              : "Sync to waveform click"}
-          </Label>
-        </div>
+        <p className="text-xs text-muted-foreground/60 leading-snug">
+          Drag the <span className="text-amber-400 font-medium">M0</span> marker on the waveform to adjust.
+        </p>
       </div>
     </div>
   );

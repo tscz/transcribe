@@ -1,9 +1,12 @@
+import { Repeat } from "lucide-react";
+
 import { AddSectionDialog } from "@/features/analysis/AddSectionDialog";
 import { MeasuresGrid } from "@/features/analysis/MeasuresGrid";
 import { PropertiesPanel } from "@/features/analysis/PropertiesPanel";
 import { SectionsPanel } from "@/features/analysis/SectionsPanel";
 import { PlayerControls } from "@/features/audio/PlayerControls";
 import { WaveformView } from "@/features/waveform/WaveformView";
+import { formatTime } from "@/lib/utils";
 import { useStore } from "@/store";
 
 function PanelCard({
@@ -27,6 +30,19 @@ function PanelCard({
   );
 }
 
+function SelectionDisplay() {
+  const loopStart = useStore((s) => s.loopStart);
+  const loopEnd = useStore((s) => s.loopEnd);
+  const hasSelection = loopEnd > loopStart;
+
+  return (
+    <span className="flex items-center gap-1.5 text-xs text-muted-foreground tabular-nums shrink-0">
+      <Repeat className="h-3.5 w-3.5 shrink-0" />
+      {hasSelection ? `${formatTime(loopStart)} / ${formatTime(loopEnd)}` : "– / –"}
+    </span>
+  );
+}
+
 export function StructurePage() {
   const currentDialog = useStore((s) => s.currentDialog);
 
@@ -38,7 +54,10 @@ export function StructurePage() {
         <PanelCard title="Song Overview">
           <div className="p-3 space-y-3">
             <WaveformView />
-            <PlayerControls />
+            <div className="flex items-center justify-between gap-3">
+              <PlayerControls />
+              <SelectionDisplay />
+            </div>
           </div>
         </PanelCard>
 
@@ -63,7 +82,10 @@ export function StructurePage() {
         <PanelCard title="Now Playing">
           <div className="p-3 space-y-3">
             <WaveformView />
-            <PlayerControls />
+            <div className="flex items-center justify-between gap-3">
+              <PlayerControls />
+              <SelectionDisplay />
+            </div>
           </div>
         </PanelCard>
 

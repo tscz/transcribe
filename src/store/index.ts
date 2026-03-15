@@ -27,7 +27,6 @@ interface ProjectSlice {
   status: ProjectStatus;
   title: string;
   audioUrl: string | null;
-  syncFirstMeasureStart: boolean;
 }
 
 interface AnalysisSlice {
@@ -47,6 +46,8 @@ interface AudioSlice {
   loopStart: number;
   loopEnd: number;
   currentTime: number;
+  /** Set by waveform/measure clicks; consumed by useAudioPlayer to move Tone.Transport */
+  seekTarget: number | null;
 }
 
 interface UiSlice {
@@ -62,7 +63,6 @@ interface Actions {
   loadProject: (state: PersistedState, audioUrl: string) => void;
   setProjectReady: () => void;
   resetProject: () => void;
-  setSyncFirstMeasureStart: (enabled: boolean) => void;
 
   // Analysis
   updateRhythm: (partial: {
@@ -82,6 +82,9 @@ interface Actions {
   setLooping: (looping: boolean) => void;
   setLoopRegion: (start: number, end: number) => void;
   setCurrentTime: (time: number) => void;
+  /** Seek to a time (triggers Tone.Transport move via useAudioPlayer) */
+  seek: (time: number) => void;
+  clearSeekTarget: () => void;
 
   // UI
   openDialog: (dialog: DialogType) => void;
@@ -101,7 +104,6 @@ export const useStore = create<AppStore>()(
     status: "idle",
     title: "",
     audioUrl: null,
-    syncFirstMeasureStart: false,
 
     // ── Analysis defaults ──
     bpm: 120,
@@ -119,6 +121,7 @@ export const useStore = create<AppStore>()(
     loopStart: 0,
     loopEnd: 0,
     currentTime: 0,
+    seekTarget: null,
 
     // ── UI defaults ──
     currentDialog: "none",
@@ -155,7 +158,6 @@ export const useStore = create<AppStore>()(
         currentTime: 0,
         loopStart: 0,
         loopEnd: duration,
-        syncFirstMeasureStart: false,
       });
     },
 
@@ -190,9 +192,6 @@ export const useStore = create<AppStore>()(
         isPlaying: false,
         currentTime: 0,
       }),
-
-    setSyncFirstMeasureStart: (enabled) =>
-      set({ syncFirstMeasureStart: enabled }),
 
     // ──────────────────────────────────────────────────────────────────────────
     // Analysis actions
@@ -299,6 +298,10 @@ export const useStore = create<AppStore>()(
     setLooping: (looping) => set({ isLooping: looping }),
     setLoopRegion: (start, end) => set({ loopStart: start, loopEnd: end }),
     setCurrentTime: (time) => set({ currentTime: time }),
+    seek: (time) => {
+      set({ seekTarget: time, currentTime: time });
+    },
+    clearSeekTarget: () => set({ seekTarget: null }),
 
     // ──────────────────────────────────────────────────────────────────────────
     // UI actions
