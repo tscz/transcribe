@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 6% 4%;
+    --foreground: 0 0% 97%;
+    --card: 240 5% 8%;
+    --card-foreground: 0 0% 97%;
+    --popover: 240 5% 10%;
+    --popover-foreground: 0 0% 97%;
+    --primary: 239 84% 67%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4% 14%;
+    --secondary-foreground: 0 0% 97%;
+    --muted: 240 4% 14%;
+    --muted-foreground: 240 5% 50%;
+    --accent: 262 70% 66%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 4% 18%;
+    --input: 240 4% 18%;
+    --ring: 239 84% 67%;
+    --radius: 0.5rem;
+
+    /* Section colors */
+    --section-intro: #FACC15;
+    --section-verse: #FB923C;
+    --section-prechorus: #F97316;
+    --section-chorus: #4ADE80;
+    --section-bridge: #F472B6;
+    --section-solo: #22D3EE;
+    --section-outro: #818CF8;
+    --section-undefined: #27272a;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground;
+  }
+}
