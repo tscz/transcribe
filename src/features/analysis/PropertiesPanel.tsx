@@ -20,7 +20,7 @@ export function PropertiesPanel() {
   } = useStore();
 
   return (
-    <div className="space-y-5 p-4">
+    <div className="space-y-5">
       {/* BPM */}
       <div className="space-y-2.5">
         <div className="flex items-center justify-between">

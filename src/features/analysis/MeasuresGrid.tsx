@@ -3,10 +3,12 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SECTION_COLORS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { TIME_SIGNATURE_BEATS } from "@/model/types";
 import { useStore } from "@/store";
 
 export function MeasuresGrid() {
-  const { measures, sections, loopStart, loopEnd, setLoopRegion, duration } = useStore();
+  const { measures, sections, timeSignature, loopStart, loopEnd, setLoopRegion, duration } = useStore();
+  const measuresPerRow = TIME_SIGNATURE_BEATS[timeSignature] * 2; // 4/4 → 8, 3/4 → 6
 
   // Build section color map
   const measureColors: Record<string, string> = {};
@@ -104,47 +106,52 @@ export function MeasuresGrid() {
       </div>
 
       {/* Measure grid */}
-      <div className="overflow-auto p-3 space-y-4">
+      <div className="flex-1 overflow-auto p-3 space-y-4">
         {sectionGroups.map(({ label, color, measureIds }) => (
           <div key={label + measureIds[0]} className="space-y-1.5">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: color }} />
               <span className="text-xs font-medium text-muted-foreground capitalize">{label}</span>
             </div>
-            <div className="flex flex-wrap gap-1">
-              {measureIds.map((mId) => {
-                const measure = measures.byId[mId];
-                if (!measure) return null;
-                const mEnd = getMeasureEnd(mId);
-                const isSelected =
-                  hasSelection &&
-                  measure.time >= loopStart - 0.001 &&
-                  mEnd <= loopEnd + 0.001;
-                const isSelectionStart = isSelected && Math.abs(measure.time - loopStart) < 0.001;
-                const num = parseInt(mId);
+            <div className="flex flex-col gap-1">
+              {Array.from({ length: Math.ceil(measureIds.length / measuresPerRow) }, (_, rowIdx) =>
+                measureIds.slice(rowIdx * measuresPerRow, (rowIdx + 1) * measuresPerRow)
+              ).map((rowIds, rowIdx) => (
+                <div key={rowIdx} className="flex gap-1">
+                  {rowIds.map((mId) => {
+                    const measure = measures.byId[mId];
+                    if (!measure) return null;
+                    const mEnd = getMeasureEnd(mId);
+                    const isSelected =
+                      hasSelection &&
+                      measure.time >= loopStart - 0.001 &&
+                      mEnd <= loopEnd + 0.001;
+                    const isSelectionStart = isSelected && Math.abs(measure.time - loopStart) < 0.001;
+                    const num = parseInt(mId);
 
-                return (
-                  <button
-                    key={mId}
-                    onClick={() => handleMeasureClick(mId)}
-                    className={cn(
-                      "w-8 h-8 text-xs rounded transition-all font-mono relative",
-                      "hover:scale-110 hover:z-10",
-                      isSelected
-                        ? "ring-2 ring-primary text-foreground font-semibold"
-                        : "text-muted-foreground hover:text-foreground",
-                      isSelectionStart && "ring-offset-1 ring-offset-background"
-                    )}
-                    style={{
-                      backgroundColor: color + (isSelected ? "70" : "25"),
-                    }}
-                    title={`Measure ${mId} @ ${measure.time.toFixed(2)}s`}
-                  >
-                    {/* Always show number for selected measures, every 4th otherwise */}
-                    {isSelected || num % 4 === 0 ? mId : "·"}
-                  </button>
-                );
-              })}
+                    return (
+                      <button
+                        key={mId}
+                        onClick={() => handleMeasureClick(mId)}
+                        className={cn(
+                          "w-8 h-8 text-xs rounded transition-all font-mono relative",
+                          "hover:scale-110 hover:z-10",
+                          isSelected
+                            ? "ring-2 ring-primary text-foreground font-semibold"
+                            : "text-muted-foreground hover:text-foreground",
+                          isSelectionStart && "ring-offset-1 ring-offset-background"
+                        )}
+                        style={{
+                          backgroundColor: color + (isSelected ? "70" : "25"),
+                        }}
+                        title={`Measure ${mId} @ ${measure.time.toFixed(2)}s`}
+                      >
+                        {isSelected || num % 4 === 0 ? mId : "·"}
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
             </div>
           </div>
         ))}

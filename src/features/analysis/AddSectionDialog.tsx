@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,8 +25,28 @@ export function AddSectionDialog({ open }: { open: boolean }) {
   const [firstMeasure, setFirstMeasure] = useState("0");
   const [lastMeasure, setLastMeasure] = useState("0");
 
-  const { closeDialog, addSection, measures } = useStore();
+  const { closeDialog, addSection, measures, sections } = useStore();
   const measureIds = measures.allIds;
+
+  // Only allow selecting measures that are currently unassigned (UNDEFINED)
+  const undefinedMeasureIds = sections.allIds
+    .map((id) => sections.byId[id])
+    .filter((s) => s.type === SectionType.UNDEFINED)
+    .flatMap((s) => s.measures);
+
+  useEffect(() => {
+    if (!open) return;
+    setType(SectionType.VERSE);
+    const undefinedSection = sections.allIds
+      .map((id) => sections.byId[id])
+      .find((s) => s.type === SectionType.UNDEFINED && s.measures.length > 0);
+    const initFirst = undefinedSection ? undefinedSection.measures[0] : (measureIds[0] ?? "0");
+    const initLast = undefinedSection
+      ? undefinedSection.measures[undefinedSection.measures.length - 1]
+      : initFirst;
+    setFirstMeasure(initFirst);
+    setLastMeasure(initLast);
+  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const first = parseInt(firstMeasure);
   const last = parseInt(lastMeasure);
@@ -70,7 +90,7 @@ export function AddSectionDialog({ open }: { open: boolean }) {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {measureIds.map((id) => (
+                  {undefinedMeasureIds.filter((id) => parseInt(id) <= last).map((id) => (
                     <SelectItem key={id} value={id}>
                       {id}
                     </SelectItem>
@@ -88,7 +108,7 @@ export function AddSectionDialog({ open }: { open: boolean }) {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {measureIds
+                  {undefinedMeasureIds
                     .filter((id) => parseInt(id) >= first)
                     .map((id) => (
                       <SelectItem key={id} value={id}>
@@ -110,7 +130,7 @@ export function AddSectionDialog({ open }: { open: boolean }) {
           <Button variant="ghost" onClick={closeDialog}>
             Cancel
           </Button>
-          <Button onClick={handleAdd} disabled={!valid || measureIds.length === 0}>
+          <Button onClick={handleAdd} disabled={!valid || undefinedMeasureIds.length === 0}>
             Add
           </Button>
         </DialogFooter>

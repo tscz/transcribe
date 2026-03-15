@@ -43,14 +43,22 @@ export function SectionsPanel() {
             </tr>
           </thead>
           <tbody>
-            {sections.allIds.map((id) => {
+            {sections.allIds.map((id, idx) => {
               const section = sections.byId[id];
               const { first, last } = sectionBorders(section);
               const isUndefined = section.type === SectionType.UNDEFINED;
               const color = SECTION_COLORS[section.type];
 
+              // Measures this section can expand into without overlapping named sections
+              const prevSection = idx > 0 ? sections.byId[sections.allIds[idx - 1]] : null;
+              const nextSection = idx < sections.allIds.length - 1 ? sections.byId[sections.allIds[idx + 1]] : null;
+              const prevUndefined = prevSection?.type === SectionType.UNDEFINED ? prevSection.measures : [];
+              const nextUndefined = nextSection?.type === SectionType.UNDEFINED ? nextSection.measures : [];
+              const validStarts = [...prevUndefined, ...section.measures].filter((m) => parseInt(m) <= last);
+              const validEnds = [...section.measures, ...nextUndefined].filter((m) => parseInt(m) >= first);
+
               return (
-                <tr key={id} className="border-b border-border/50 hover:bg-secondary/30 transition-colors">
+                <tr key={id} className="group border-b border-border/50 hover:bg-secondary/30 transition-colors">
                   {/* Color swatch */}
                   <td className="px-3 py-2">
                     <div
@@ -99,13 +107,11 @@ export function SectionsPanel() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {measures.allIds
-                            .filter((m) => parseInt(m) <= last)
-                            .map((m) => (
-                              <SelectItem key={m} value={m} className="text-xs">
-                                {m}
-                              </SelectItem>
-                            ))}
+                          {validStarts.map((m) => (
+                            <SelectItem key={m} value={m} className="text-xs">
+                              {m}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     )}
@@ -126,13 +132,11 @@ export function SectionsPanel() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {measures.allIds
-                            .filter((m) => parseInt(m) >= first)
-                            .map((m) => (
-                              <SelectItem key={m} value={m} className="text-xs">
-                                {m}
-                              </SelectItem>
-                            ))}
+                          {validEnds.map((m) => (
+                            <SelectItem key={m} value={m} className="text-xs">
+                              {m}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     )}
