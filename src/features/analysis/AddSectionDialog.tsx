@@ -27,7 +27,6 @@ export function AddSectionDialog({ open }: { open: boolean }) {
 
   const { closeDialog, addSection, measures } = useStore();
   const measureIds = measures.allIds;
-  const maxMeasure = measureIds[measureIds.length - 1] ?? "0";
 
   const first = parseInt(firstMeasure);
   const last = parseInt(lastMeasure);

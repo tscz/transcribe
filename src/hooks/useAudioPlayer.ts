@@ -1,20 +1,25 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import * as Tone from "tone";
 
 import { useStore } from "@/store";
 
 /**
  * Manages the Tone.js audio engine.
- * Tone.Player → PitchShift effect → Destination
+ * Tone.Player → PitchShift → Destination
  *
- * Exposes:
- *  - seek(time): move playhead
- *  - currentSeconds(): returns current Tone.Transport position
+ * Time model:
+ *   Tone.getTransport().seconds  = raw Transport time, advances at real-time rate
+ *   audioTime                    = Transport.seconds * playbackRate  (actual content position)
+ *
+ * All store values (loopStart, loopEnd, seekTarget, currentTime) are in audioTime.
+ * Whenever we read/write Transport.seconds we convert:
+ *   Transport → audio : t * playbackRate
+ *   audio → Transport : t / playbackRate
  */
 export function useAudioPlayer() {
   const playerRef = useRef<Tone.Player | null>(null);
   const pitchShiftRef = useRef<Tone.PitchShift | null>(null);
-  const loopTimeoutRef = useRef<number | null>(null);
+  const prevRateRef = useRef<number>(1); // tracks previous playbackRate for Transport compensation
 
   const {
     audioUrl,
@@ -25,11 +30,11 @@ export function useAudioPlayer() {
     isLooping,
     loopStart,
     loopEnd,
+    seekTarget,
     setPlaying,
     setProjectReady,
     setCurrentTime,
-    syncFirstMeasureStart,
-    updateRhythm,
+    clearSeekTarget,
   } = useStore();
 
   // ── Initialize audio engine when a project is loaded ─────────────────────
@@ -40,7 +45,6 @@ export function useAudioPlayer() {
     let cancelled = false;
 
     const init = async () => {
-      // Tear down any previous instance
       if (playerRef.current) {
         playerRef.current.stop();
         playerRef.current.dispose();
@@ -56,12 +60,9 @@ export function useAudioPlayer() {
         url: audioUrl,
         onload: () => {
           if (cancelled) return;
-          Tone.getTransport().loop = false;
           setProjectReady();
         },
-        onerror: (e) => {
-          console.error("Audio load error", e);
-        },
+        onerror: (e) => console.error("Audio load error", e),
       }).connect(pitchShift);
 
       pitchShiftRef.current = pitchShift;
@@ -69,10 +70,7 @@ export function useAudioPlayer() {
     };
 
     init();
-
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [audioUrl, status]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Play / pause ──────────────────────────────────────────────────────────
@@ -91,69 +89,65 @@ export function useAudioPlayer() {
     }
   }, [isPlaying]);
 
-  // ── Time tracking (RAF loop while playing) ────────────────────────────────
+  // ── Consume seekTarget — convert audio time → Transport time ──────────────
+
+  useEffect(() => {
+    if (seekTarget === null) return;
+    Tone.getTransport().seconds = seekTarget / playbackRate;
+    clearSeekTarget();
+  }, [seekTarget, clearSeekTarget]); // eslint-disable-line react-hooks/exhaustive-deps
+  // playbackRate intentionally omitted: seekTarget is always set fresh by the
+  // seek action, which already has access to the current rate via the store.
+
+  // ── Time tracking + loop enforcement (RAF while playing) ──────────────────
 
   useEffect(() => {
     if (!isPlaying) return;
 
     let rafId: number;
     const tick = () => {
-      const t = Tone.getTransport().seconds;
-      setCurrentTime(t);
-
-      // Handle loop end
-      if (isLooping && t >= loopEnd) {
-        Tone.getTransport().seconds = loopStart;
+      const audioTime = Tone.getTransport().seconds * playbackRate;
+      setCurrentTime(audioTime);
+      if (isLooping && audioTime >= loopEnd) {
+        Tone.getTransport().seconds = loopStart / playbackRate;
       }
-
       rafId = requestAnimationFrame(tick);
     };
     rafId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafId);
-  }, [isPlaying, isLooping, loopStart, loopEnd, setCurrentTime]);
+  }, [isPlaying, isLooping, loopStart, loopEnd, playbackRate, setCurrentTime]);
 
-  // ── Sync playback rate ────────────────────────────────────────────────────
+  // ── Playback rate ─────────────────────────────────────────────────────────
 
   useEffect(() => {
     if (!playerRef.current) return;
+
+    const prevRate = prevRateRef.current;
+    if (prevRate !== playbackRate) {
+      // Keep the current audio content position when rate changes:
+      //   audioTime = Transport * prevRate  →  newTransport = audioTime / newRate
+      const audioTime = Tone.getTransport().seconds * prevRate;
+      Tone.getTransport().seconds = audioTime / playbackRate;
+      prevRateRef.current = playbackRate;
+    }
+
     playerRef.current.playbackRate = playbackRate;
   }, [playbackRate]);
 
-  // ── Sync detune / pitch shift ─────────────────────────────────────────────
+  // ── Pitch shift ───────────────────────────────────────────────────────────
 
   useEffect(() => {
     if (!pitchShiftRef.current) return;
-    // Combine manual detune with pitch compensation for playback rate
     const compensation = 12 * Math.log2(1 / playbackRate);
     pitchShiftRef.current.pitch = compensation + detune;
   }, [detune, playbackRate]);
 
-  // ── Sync loop ─────────────────────────────────────────────────────────────
+  // ── Stop on unmount ───────────────────────────────────────────────────────
 
   useEffect(() => {
     return () => {
-      if (loopTimeoutRef.current) clearTimeout(loopTimeoutRef.current);
+      Tone.getTransport().stop();
+      setPlaying(false);
     };
-  }, []);
-
-  // ── Seek helper ───────────────────────────────────────────────────────────
-
-  const seek = useCallback((time: number) => {
-    Tone.getTransport().seconds = time;
-    setCurrentTime(time);
-
-    // If syncFirstMeasureStart mode is active, use seek position as measure 0
-    if (useStore.getState().syncFirstMeasureStart) {
-      updateRhythm({ firstMeasureStart: time });
-    }
-  }, [setCurrentTime, updateRhythm]);
-
-  // ── Stop (used on project reset) ──────────────────────────────────────────
-
-  const stop = useCallback(() => {
-    Tone.getTransport().stop();
-    setPlaying(false);
-  }, [setPlaying]);
-
-  return { seek, stop };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 }
