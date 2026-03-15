@@ -15,7 +15,7 @@ import { SectionType } from "@/model/types";
 import { useStore } from "@/store";
 
 export function SectionsPanel() {
-  const { sections, measures, removeSection, updateSection, openDialog } = useStore();
+  const { sections, removeSection, updateSection, openDialog } = useStore();
 
   if (sections.allIds.length === 0) {
     return (
