@@ -16,9 +16,6 @@
     "deploy": "gh-pages -d build",
     "update": "yarn upgrade-interactive",
     "setEnv": "cross-env-shell REACT_APP_VERSION=$npm_package_version REACT_APP_VERSION_HASH=\"$(git log --format=%h -1)\" REACT_APP_VERSION_DESCRIPTION=\"$(git log --format=%s -1)\" npm run $npm_config_command",
-    "storybook": "start-storybook -p 9009 -s public",
-    "build-storybook": "build-storybook -s public -o build-storybook",
-    "deploy-storybook": "gh-pages -d build-storybook -b storybook",
     "lint": "eslint --ignore-path .gitignore . --ext ts --ext tsx --ext json",
     "lint:fix": "npm run lint -- --fix",
     "lint:check": "eslint --print-config src/components/app/app.tsx | eslint-config-prettier-check",
@@ -30,13 +27,6 @@
     "@material-ui/icons": "4.11.2",
     "@material-ui/lab": "4.0.0-alpha.60",
     "@reduxjs/toolkit": "1.7.1",
-    "@storybook/addon-actions": "6.4.9",
-    "@storybook/addon-docs": "6.4.9",
-    "@storybook/addon-knobs": "6.4.0",
-    "@storybook/builder-webpack5": "^6.4.9",
-    "@storybook/manager-webpack5": "^6.4.9",
-    "@storybook/preset-create-react-app": "4.0.0",
-    "@storybook/react": "6.4.9",
     "@types/debug": "4.1.7",
     "@types/enzyme": "3.10.11",
     "@types/lodash": "4.14.178",
@@ -84,8 +74,7 @@
   },
   "jest": {
     "collectCoverageFrom": [
-      "src/**/*.{ts,tsx}",
-      "!src/**/*.stories.{ts,tsx}"
+      "src/**/*.{ts,tsx}"
     ]
   },
   "eslintConfig": {

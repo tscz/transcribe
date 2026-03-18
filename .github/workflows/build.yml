@@ -26,9 +26,6 @@ jobs:
     - name: Verify code linting and formatting rules
       run: |
         npm run lint
-    - name: Build the storybook
-      run: |
-        npm run build-storybook
     - name: Run all tests with code coverage
       run: |
         npm run coverage
