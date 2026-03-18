@@ -51,9 +51,6 @@ const createAppStore = () => {
     middleware: [new AudioMiddleware().createMiddleware]
   });
 
-  if (process.env.NODE_ENV !== "production" && module.hot) {
-    module.hot.accept("./store", () => store.replaceReducer(createRootReducer));
-  }
   return store;
 };
 

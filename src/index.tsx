@@ -30,11 +30,6 @@ if (process.env.NODE_ENV !== "production") {
   localStorage.setItem("debug", "transcribe:*");
 }
 
-/** Enable hot reload while development */
-if (process.env.NODE_ENV !== "production" && module.hot) {
-  module.hot.accept("./components/app/app", renderApp);
-}
-
 const MediaElement = () => {
   return (
     <audio id={AUDIO_DOM_ELEMENT} controls hidden>
