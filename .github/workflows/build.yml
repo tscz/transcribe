@@ -8,26 +8,17 @@ env:
 jobs:
   build:
 
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        node-version: [ 16.x]
+    runs-on: ubuntu-latest
 
     steps:
-    - name: Set git to use LF
-      run: |
-        git config --global core.autocrlf false
-        git config --global core.eol lf
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+    - uses: actions/checkout@v4
+    - name: Use Node.js 20.x
+      uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 20.x
     - name: Install dependencies
       run: |
-        npm install -g yarn 
+        npm install -g yarn
         yarn install --frozen-lockfile --network-timeout 500000
     - name: Build the app
       run: |
@@ -38,22 +29,15 @@ jobs:
     - name: Build the storybook
       run: |
         npm run build-storybook
-    - name: Run all tests without code coverage
-      if: matrix.os != 'ubuntu-latest'
-      run: |
-        npm run test
     - name: Run all tests with code coverage
-      if: matrix.os == 'ubuntu-latest'
       run: |
         npm run coverage
     - name: SonarCloud Scan
       uses: SonarSource/sonarqube-scan-action@v5
-      if: matrix.os == 'ubuntu-latest'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    - name: Deploy coverage results to Coveralls 
-      if: matrix.os == 'ubuntu-latest'
-      uses: coverallsapp/github-action@v1.0.1
+    - name: Deploy coverage results to Coveralls
+      uses: coverallsapp/github-action@v2
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
