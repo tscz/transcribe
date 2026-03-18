@@ -8,9 +8,9 @@
 # testing
 /coverage
 
-# production
-/build
-/build-storybook
+# build output
+/dist
+/dist-ssr
 
 # temp files
 gitInfo.txt

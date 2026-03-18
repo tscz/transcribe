@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Transcribe</title>
+    <script>
+      // GitHub Pages SPA redirect.
+      // When Pages returns a 404 for a client-side route (e.g. /transcribe/structure),
+      // encode the full path into the query string and redirect to the app root so
+      // React Router can pick it up.
+      (function () {
+        var l = window.location;
+        l.replace(
+          l.protocol +
+            "//" +
+            l.hostname +
+            (l.port ? ":" + l.port : "") +
+            "/transcribe/?" +
+            l.pathname.replace(/&/g, "~and~") +
+            (l.search ? "&" + l.search.slice(1).replace(/&/g, "~and~") : "") +
+            l.hash
+        );
+      })();
+    </script>
+  </head>
+</html>
