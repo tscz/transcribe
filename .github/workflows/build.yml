@@ -47,7 +47,7 @@ jobs:
       run: |
         npm run coverage
     - name: SonarCloud Scan
-      uses: sonarsource/sonarcloud-github-action@master
+      uses: SonarSource/sonarqube-scan-action@v5
       if: matrix.os == 'ubuntu-latest'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
