@@ -1,4 +1,4 @@
-import { AudioLines, FolderOpen, Plus } from "lucide-react";
+import { AudioLines, CloudDownload, FolderOpen, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { useStore } from "@/store";
@@ -38,6 +38,14 @@ export function LandingPage() {
           >
             <FolderOpen className="h-4 w-4" />
             Open Project
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full gap-2"
+            onClick={() => openDialog("gdrive-open")}
+          >
+            <CloudDownload className="h-4 w-4" />
+            Open from Google Drive
           </Button>
         </div>
 

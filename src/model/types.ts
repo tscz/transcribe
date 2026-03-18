@@ -62,7 +62,7 @@ export type ProjectStatus = "idle" | "loading" | "ready";
 
 // ─── Dialog types ─────────────────────────────────────────────────────────────
 
-export type DialogType = "none" | "new" | "open" | "save" | "addSection";
+export type DialogType = "none" | "new" | "open" | "save" | "addSection" | "gdrive-open" | "gdrive-save";
 
 // ─── Persisted state (for zip save/load) ─────────────────────────────────────
 

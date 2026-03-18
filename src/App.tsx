@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import { AppShell } from "@/components/AppShell";
+import { useGDriveCallback } from "@/features/gdrive/useGDriveCallback";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { DrumPage } from "@/pages/DrumPage";
 import { GuitarPage } from "@/pages/GuitarPage";
@@ -17,6 +18,8 @@ function RequireProject({ children }: { children: React.ReactNode }) {
 }
 
 export function App() {
+  useGDriveCallback();
+
   return (
     <TooltipProvider delayDuration={400}>
       <Routes>

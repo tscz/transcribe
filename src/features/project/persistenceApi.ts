@@ -7,20 +7,26 @@ const STATE_FILE = "state.json";
 const AUDIO_FILE = "audio.blob";
 const ZIP_NAME = "transcription.zip";
 
-export async function saveProject(
+export async function buildProjectZip(
   state: PersistedState,
   audioUrl: string
-): Promise<void> {
+): Promise<Blob> {
   const zip = new JSZip();
 
-  // Fetch the audio blob from the blob URL
   const audioResponse = await fetch(audioUrl);
   const audioBlob = await audioResponse.blob();
 
   zip.file(STATE_FILE, JSON.stringify(state, null, 2));
   zip.file(AUDIO_FILE, audioBlob);
 
-  const content = await zip.generateAsync({ type: "blob" });
+  return zip.generateAsync({ type: "blob" });
+}
+
+export async function saveProject(
+  state: PersistedState,
+  audioUrl: string
+): Promise<void> {
+  const content = await buildProjectZip(state, audioUrl);
   saveAs(content, ZIP_NAME);
 }
 

@@ -1,4 +1,4 @@
-import { AudioLines, FolderOpen, Plus, Save } from "lucide-react";
+import { AudioLines, CloudDownload, CloudUpload, FolderOpen, Plus, Save } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
@@ -61,6 +61,33 @@ export function TopBar() {
             </Button>
           </TooltipTrigger>
           <TooltipContent>Save project</TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => openDialog("gdrive-open")}
+            >
+              <CloudDownload />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Open from Google Drive</TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              disabled={!isReady}
+              onClick={() => openDialog("gdrive-save")}
+            >
+              <CloudUpload />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Save to Google Drive</TooltipContent>
         </Tooltip>
       </div>
 
