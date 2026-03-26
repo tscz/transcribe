@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import * as Tone from "tone";
 
+import { useShallow } from "zustand/react/shallow";
 import { useStore } from "@/store";
 
 /**
@@ -20,6 +21,7 @@ export function useAudioPlayer() {
   const playerRef = useRef<Tone.Player | null>(null);
   const pitchShiftRef = useRef<Tone.PitchShift | null>(null);
   const prevRateRef = useRef<number>(1); // tracks previous playbackRate for Transport compensation
+  const playerSyncedRef = useRef<boolean>(false); // true once player.sync().start(0) has been called
 
   const {
     audioUrl,
@@ -35,7 +37,23 @@ export function useAudioPlayer() {
     setProjectReady,
     setCurrentTime,
     clearSeekTarget,
-  } = useStore();
+  } = useStore(
+    useShallow((s) => ({
+      audioUrl: s.audioUrl,
+      status: s.status,
+      isPlaying: s.isPlaying,
+      playbackRate: s.playbackRate,
+      detune: s.detune,
+      isLooping: s.isLooping,
+      loopStart: s.loopStart,
+      loopEnd: s.loopEnd,
+      seekTarget: s.seekTarget,
+      setPlaying: s.setPlaying,
+      setProjectReady: s.setProjectReady,
+      setCurrentTime: s.setCurrentTime,
+      clearSeekTarget: s.clearSeekTarget,
+    }))
+  );
 
   // ── Initialize audio engine when a project is loaded ─────────────────────
 
@@ -67,6 +85,7 @@ export function useAudioPlayer() {
 
       pitchShiftRef.current = pitchShift;
       playerRef.current = player;
+      playerSyncedRef.current = false;
     };
 
     init();
@@ -80,7 +99,10 @@ export function useAudioPlayer() {
     if (isPlaying) {
       Tone.start().then(() => {
         if (playerRef.current?.loaded) {
-          playerRef.current.sync().start(0);
+          if (!playerSyncedRef.current) {
+            playerRef.current.sync().start(0);
+            playerSyncedRef.current = true;
+          }
           transport.start();
         }
       });

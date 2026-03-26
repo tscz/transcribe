@@ -4,10 +4,21 @@ import { Button } from "@/components/ui/button";
 import { SECTION_COLORS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { TIME_SIGNATURE_BEATS } from "@/model/types";
+import { useShallow } from "zustand/react/shallow";
 import { useStore } from "@/store";
 
 export function MeasuresGrid() {
-  const { measures, sections, timeSignature, loopStart, loopEnd, setLoopRegion, duration } = useStore();
+  const { measures, sections, timeSignature, loopStart, loopEnd, setLoopRegion, duration } = useStore(
+    useShallow((s) => ({
+      measures: s.measures,
+      sections: s.sections,
+      timeSignature: s.timeSignature,
+      loopStart: s.loopStart,
+      loopEnd: s.loopEnd,
+      setLoopRegion: s.setLoopRegion,
+      duration: s.duration,
+    }))
+  );
   const measuresPerRow = TIME_SIGNATURE_BEATS[timeSignature] * 2; // 4/4 → 8, 3/4 → 6
 
   // Build section color map
