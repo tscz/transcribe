@@ -54,7 +54,7 @@ export function Sidebar() {
 
       {/* Version */}
       <div className="px-4 py-3 border-t border-border">
-        <p className="text-xs text-muted-foreground">v0.2.0</p>
+        <p className="text-xs text-muted-foreground">v{__APP_VERSION__}</p>
       </div>
     </aside>
   );
