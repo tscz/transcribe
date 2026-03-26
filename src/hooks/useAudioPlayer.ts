@@ -20,6 +20,7 @@ export function useAudioPlayer() {
   const playerRef = useRef<Tone.Player | null>(null);
   const pitchShiftRef = useRef<Tone.PitchShift | null>(null);
   const prevRateRef = useRef<number>(1); // tracks previous playbackRate for Transport compensation
+  const playerSyncedRef = useRef<boolean>(false); // true once player.sync().start(0) has been called
 
   const {
     audioUrl,
@@ -67,6 +68,7 @@ export function useAudioPlayer() {
 
       pitchShiftRef.current = pitchShift;
       playerRef.current = player;
+      playerSyncedRef.current = false;
     };
 
     init();
@@ -80,7 +82,10 @@ export function useAudioPlayer() {
     if (isPlaying) {
       Tone.start().then(() => {
         if (playerRef.current?.loaded) {
-          playerRef.current.sync().start(0);
+          if (!playerSyncedRef.current) {
+            playerRef.current.sync().start(0);
+            playerSyncedRef.current = true;
+          }
           transport.start();
         }
       });
