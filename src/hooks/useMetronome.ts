@@ -127,7 +127,7 @@ export function useMetronome() {
       }
     );
     return unsub;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, []);
 
   // ── Recalibrate beat index on seek so accents stay aligned ───────────────
@@ -152,6 +152,6 @@ export function useMetronome() {
 
   useEffect(() => {
     return () => stopLoop();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, []);
 }
