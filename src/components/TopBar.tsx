@@ -1,4 +1,4 @@
-import { AudioLines, FolderOpen, Plus, Save } from "lucide-react";
+import { AudioLines, CircleHelp, FolderOpen, Plus, Save } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
@@ -72,6 +72,18 @@ export function TopBar() {
           {title}
         </span>
       )}
+
+      {/* Help */}
+      <div className="ml-auto">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" size="icon-sm" onClick={() => navigate("/help")}>
+              <CircleHelp />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Help</TooltipContent>
+        </Tooltip>
+      </div>
     </header>
   );
 }

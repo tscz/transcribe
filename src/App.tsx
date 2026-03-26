@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { DrumPage } from "@/pages/DrumPage";
 import { GuitarPage } from "@/pages/GuitarPage";
 import { HarmonyPage } from "@/pages/HarmonyPage";
+import { HelpPage } from "@/pages/HelpPage";
 import { LandingPage } from "@/pages/LandingPage";
 import { PrintPage } from "@/pages/PrintPage";
 import { StructurePage } from "@/pages/StructurePage";
@@ -66,7 +67,8 @@ export function App() {
                   </RequireProject>
                 }
               />
-              <Route path="*" element={<Navigate to="/" replace />} />
+              <Route path="/help" element={<HelpPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
           </Routes>
         </TooltipProvider>

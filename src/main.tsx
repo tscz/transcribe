@@ -14,6 +14,11 @@ window.addEventListener("error", (e) => {
 });
 
 window.addEventListener("unhandledrejection", (e) => {
+  // AbortError and "Failed to fetch" are expected when WaveSurfer's internal
+  // fetch is cancelled by ws.destroy() during page navigation — not user-facing errors.
+  if (e.reason instanceof DOMException && e.reason.name === "AbortError") return;
+  if (e.reason instanceof TypeError && e.reason.message === "Failed to fetch") return;
+
   console.error("[unhandled rejection]", e.reason);
   const message =
     e.reason instanceof Error ? e.reason.message : String(e.reason ?? "Unhandled promise rejection");

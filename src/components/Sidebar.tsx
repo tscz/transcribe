@@ -1,5 +1,6 @@
 import {
   AudioLines,
+  CircleHelp,
   Drum,
   Guitar,
   Music2,
@@ -52,9 +53,23 @@ export function Sidebar() {
         ))}
       </nav>
 
-      {/* Version */}
-      <div className="px-4 py-3 border-t border-border">
-        <p className="text-xs text-muted-foreground">v{__APP_VERSION__}</p>
+      {/* Help + Version */}
+      <div className="px-2 py-3 border-t border-border space-y-0.5">
+        <NavLink
+          to="/help"
+          className={({ isActive }) =>
+            cn(
+              "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+              isActive
+                ? "bg-secondary text-foreground font-medium"
+                : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"
+            )
+          }
+        >
+          <CircleHelp className="h-4 w-4 shrink-0" />
+          Help
+        </NavLink>
+        <p className="text-xs text-muted-foreground px-3 pt-1">v{__APP_VERSION__}</p>
       </div>
     </aside>
   );
