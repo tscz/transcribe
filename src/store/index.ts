@@ -49,6 +49,7 @@ interface AudioSlice {
   currentTime: number;
   /** Set by waveform/measure clicks; consumed by useAudioPlayer to move Tone.Transport */
   seekTarget: number | null;
+  metronomeEnabled: boolean;
 }
 
 interface UiSlice {
@@ -86,6 +87,7 @@ interface Actions {
   /** Seek to a time (triggers Tone.Transport move via useAudioPlayer) */
   seek: (time: number) => void;
   clearSeekTarget: () => void;
+  setMetronomeEnabled: (enabled: boolean) => void;
 
   // UI
   openDialog: (dialog: DialogType) => void;
@@ -123,6 +125,7 @@ export const useStore = create<AppStore>()(
     loopEnd: 0,
     currentTime: 0,
     seekTarget: null,
+    metronomeEnabled: false,
 
     // ── UI defaults ──
     currentDialog: "none",
@@ -279,6 +282,7 @@ export const useStore = create<AppStore>()(
       set({ seekTarget: time, currentTime: time });
     },
     clearSeekTarget: () => set({ seekTarget: null }),
+    setMetronomeEnabled: (enabled) => set({ metronomeEnabled: enabled }),
 
     // ──────────────────────────────────────────────────────────────────────────
     // UI actions
