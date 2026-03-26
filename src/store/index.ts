@@ -289,6 +289,17 @@ export const useStore = create<AppStore>()(
   }))
 );
 
+// Preserve store state across Vite HMR so a loaded project isn't lost on code changes.
+// Blob URLs remain valid for the lifetime of the browser session, so audioUrl survives.
+if (import.meta.hot) {
+  import.meta.hot.dispose((data) => {
+    data.storeState = useStore.getState();
+  });
+  if (import.meta.hot.data?.storeState) {
+    useStore.setState(import.meta.hot.data.storeState);
+  }
+}
+
 // Convenience selector hooks
 export const useProjectStatus = () => useStore((s) => s.status);
 export const useAudioUrl = () => useStore((s) => s.audioUrl);
