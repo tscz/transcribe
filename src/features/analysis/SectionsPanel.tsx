@@ -12,10 +12,18 @@ import {
 import { EDITABLE_SECTION_TYPES, SECTION_COLORS, SECTION_LABELS } from "@/lib/constants";
 import { sectionBorders } from "@/model/analysis";
 import { SectionType } from "@/model/types";
+import { useShallow } from "zustand/react/shallow";
 import { useStore } from "@/store";
 
 export function SectionsPanel() {
-  const { sections, removeSection, updateSection, openDialog } = useStore();
+  const { sections, removeSection, updateSection, openDialog } = useStore(
+    useShallow((s) => ({
+      sections: s.sections,
+      removeSection: s.removeSection,
+      updateSection: s.updateSection,
+      openDialog: s.openDialog,
+    }))
+  );
 
   if (sections.allIds.length === 0) {
     return (

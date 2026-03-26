@@ -7,6 +7,7 @@ import { useWaveform } from "@/hooks/useWaveform";
 import { SECTION_COLORS } from "@/lib/constants";
 import { getMeasureEnd } from "@/model/analysis";
 import { SectionType } from "@/model/types";
+import { useShallow } from "zustand/react/shallow";
 import { useStore } from "@/store";
 
 export function WaveformView() {
@@ -22,7 +23,17 @@ export function WaveformView() {
     : 100;
   const thumbLeftPct = maxScroll > 0 ? (scrollMetrics.left / maxScroll) * (100 - thumbPct) : 0;
 
-  const { sections, measures, duration, firstMeasureStart, status, loopStart, loopEnd } = useStore();
+  const { sections, measures, duration, firstMeasureStart, status, loopStart, loopEnd } = useStore(
+    useShallow((s) => ({
+      sections: s.sections,
+      measures: s.measures,
+      duration: s.duration,
+      firstMeasureStart: s.firstMeasureStart,
+      status: s.status,
+      loopStart: s.loopStart,
+      loopEnd: s.loopEnd,
+    }))
+  );
 
   // Re-draw regions and pin together so the pin is never lost after a clearRegions()
   useEffect(() => {

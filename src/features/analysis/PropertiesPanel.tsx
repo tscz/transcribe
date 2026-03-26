@@ -9,15 +9,18 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { BPM_MAX, BPM_MIN } from "@/lib/constants";
 import { TIME_SIGNATURE_LABELS, TimeSignatureType } from "@/model/types";
+import { useShallow } from "zustand/react/shallow";
 import { useStore } from "@/store";
 
 export function PropertiesPanel() {
-  const {
-    bpm,
-    timeSignature,
-    firstMeasureStart,
-    updateRhythm,
-  } = useStore();
+  const { bpm, timeSignature, firstMeasureStart, updateRhythm } = useStore(
+    useShallow((s) => ({
+      bpm: s.bpm,
+      timeSignature: s.timeSignature,
+      firstMeasureStart: s.firstMeasureStart,
+      updateRhythm: s.updateRhythm,
+    }))
+  );
 
   return (
     <div className="space-y-5">

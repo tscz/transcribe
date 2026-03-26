@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import * as Tone from "tone";
 
+import { useShallow } from "zustand/react/shallow";
 import { useStore } from "@/store";
 
 /**
@@ -36,7 +37,23 @@ export function useAudioPlayer() {
     setProjectReady,
     setCurrentTime,
     clearSeekTarget,
-  } = useStore();
+  } = useStore(
+    useShallow((s) => ({
+      audioUrl: s.audioUrl,
+      status: s.status,
+      isPlaying: s.isPlaying,
+      playbackRate: s.playbackRate,
+      detune: s.detune,
+      isLooping: s.isLooping,
+      loopStart: s.loopStart,
+      loopEnd: s.loopEnd,
+      seekTarget: s.seekTarget,
+      setPlaying: s.setPlaying,
+      setProjectReady: s.setProjectReady,
+      setCurrentTime: s.setCurrentTime,
+      clearSeekTarget: s.clearSeekTarget,
+    }))
+  );
 
   // ── Initialize audio engine when a project is loaded ─────────────────────
 

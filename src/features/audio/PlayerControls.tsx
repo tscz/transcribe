@@ -20,6 +20,7 @@ import {
   PLAYBACK_RATE_STEP,
 } from "@/lib/constants";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
+import { useShallow } from "zustand/react/shallow";
 import { useStore } from "@/store";
 import { cn } from "@/lib/utils";
 
@@ -35,7 +36,20 @@ export function PlayerControls() {
     setPlaybackRate,
     setDetune,
     setLooping,
-  } = useStore();
+  } = useStore(
+    useShallow((s) => ({
+      isPlaying: s.isPlaying,
+      playbackRate: s.playbackRate,
+      detune: s.detune,
+      isLooping: s.isLooping,
+      currentTime: s.currentTime,
+      duration: s.duration,
+      setPlaying: s.setPlaying,
+      setPlaybackRate: s.setPlaybackRate,
+      setDetune: s.setDetune,
+      setLooping: s.setLooping,
+    }))
+  );
 
   // The hook manages the Tone.js engine side-effects
   useAudioPlayer();
