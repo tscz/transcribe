@@ -1,5 +1,6 @@
 import {
   AudioLines,
+  Drum,
   Gauge,
   Maximize2,
   MusicIcon,
@@ -143,6 +144,11 @@ export function HelpPage() {
             label="Pitch shift"
             description="Transpose the audio up or down in semitones without affecting speed. Useful when a recording is slightly out of tune. Range: −12 to +12 semitones."
           />
+          <Row
+            icon={<Drum />}
+            label="Metronome"
+            description="Toggle an audible click track that follows the song's BPM and time signature. Beat 1 of each measure plays an accented click; other beats play a softer click. The metronome stays in sync at any playback speed."
+          />
         </div>
       </Section>
 
@@ -181,6 +187,7 @@ export function HelpPage() {
           <li>Use the scroll wheel over the waveform to zoom without clicking the zoom buttons.</li>
           <li>Slow playback to 0.5× while looping a tricky passage to hear every note clearly.</li>
           <li>Use pitch shift to match a recording to a reference instrument that may be tuned differently.</li>
+          <li>Enable the metronome while slowing playback to check if your BPM setting is correctly aligned with the recording.</li>
           <li>Save frequently — the browser has no auto-save and a page refresh will lose unsaved changes.</li>
         </ul>
       </Section>

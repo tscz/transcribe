@@ -1,4 +1,5 @@
 import {
+  Drum,
   Gauge,
   MusicIcon,
   Pause,
@@ -21,6 +22,7 @@ import {
   PLAYBACK_RATE_STEP,
 } from "@/lib/constants";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
+import { useMetronome } from "@/hooks/useMetronome";
 import { useShallow } from "zustand/react/shallow";
 import { useStore } from "@/store";
 import { cn } from "@/lib/utils";
@@ -31,29 +33,34 @@ export function PlayerControls() {
     playbackRate,
     detune,
     isLooping,
+    metronomeEnabled,
     currentTime,
     duration,
     setPlaying,
     setPlaybackRate,
     setDetune,
     setLooping,
+    setMetronomeEnabled,
   } = useStore(
     useShallow((s) => ({
       isPlaying: s.isPlaying,
       playbackRate: s.playbackRate,
       detune: s.detune,
       isLooping: s.isLooping,
+      metronomeEnabled: s.metronomeEnabled,
       currentTime: s.currentTime,
       duration: s.duration,
       setPlaying: s.setPlaying,
       setPlaybackRate: s.setPlaybackRate,
       setDetune: s.setDetune,
       setLooping: s.setLooping,
+      setMetronomeEnabled: s.setMetronomeEnabled,
     }))
   );
 
-  // The hook manages the Tone.js engine side-effects
+  // The hooks manage Tone.js engine side-effects
   useAudioPlayer();
+  useMetronome();
 
   return (
     <div className="flex items-center gap-2 flex-wrap">
@@ -85,6 +92,21 @@ export function PlayerControls() {
           </Button>
         </TooltipTrigger>
         <TooltipContent>Loop selected region</TooltipContent>
+      </Tooltip>
+
+      {/* Metronome toggle */}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant={metronomeEnabled ? "secondary" : "ghost"}
+            size="icon"
+            onClick={() => setMetronomeEnabled(!metronomeEnabled)}
+            className={cn("shrink-0", metronomeEnabled && "ring-1 ring-primary")}
+          >
+            <Drum className="h-4 w-4" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Metronome</TooltipContent>
       </Tooltip>
 
       {/* Current time */}
