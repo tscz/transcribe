@@ -17,7 +17,6 @@ import { useStore } from "@/store";
 export function useMetronome() {
   const loopRef = useRef<Tone.Loop | null>(null);
   const beatIndexRef = useRef<number>(0);
-  const loopScheduledRef = useRef<boolean>(false);
   const accentSynthRef = useRef<Tone.Synth | null>(null);
   const normalSynthRef = useRef<Tone.Synth | null>(null);
 
@@ -44,62 +43,53 @@ export function useMetronome() {
     };
   }, []);
 
-  // ── Internal helpers ─────────────────────────────────────────────────────
-
-  const stopLoop = () => {
-    loopRef.current?.stop(0);
-    loopRef.current?.dispose();
-    loopRef.current = null;
-    loopScheduledRef.current = false;
-    beatIndexRef.current = 0;
-  };
-
-  const buildLoop = () => {
-    const { bpm, timeSignature, playbackRate, firstMeasureStart } = useStore.getState();
-    const beatsPerMeasure = TIME_SIGNATURE_BEATS[timeSignature];
-    const beatInterval = (60 / bpm) / playbackRate;
-    const loopStart = firstMeasureStart / playbackRate;
-
-    const loop = new Tone.Loop((time) => {
-      const accent = beatIndexRef.current % beatsPerMeasure === 0;
-      const synth = accent ? accentSynthRef.current : normalSynthRef.current;
-      synth?.triggerAttackRelease(accent ? 1000 : 600, "32n", time);
-      beatIndexRef.current += 1;
-    }, beatInterval);
-
-    loopRef.current = loop;
-    return { loop, loopStart };
-  };
-
-  const startLoop = () => {
-    if (loopScheduledRef.current) return;
-    const { loop, loopStart } = buildLoop();
-    loop.start(loopStart);
-    loopScheduledRef.current = true;
-  };
-
-  // ── React to play state and metronome toggle ─────────────────────────────
+  // ── All store subscriptions in a single effect ───────────────────────────
 
   useEffect(() => {
-    const unsub = useStore.subscribe(
+    // Does not reset beatIndexRef — callers that need a fresh index (seek, project
+    // load) set it explicitly before or after calling stopLoop.
+    const stopLoop = () => {
+      loopRef.current?.dispose();
+      loopRef.current = null;
+    };
+
+    const startLoop = () => {
+      if (loopRef.current) return;
+      const { bpm, timeSignature, playbackRate, firstMeasureStart, currentTime } = useStore.getState();
+      const beatsPerMeasure = TIME_SIGNATURE_BEATS[timeSignature];
+      const beatInterval = (60 / bpm) / playbackRate;
+      const loopStart = firstMeasureStart / playbackRate;
+      // Use currentTime (audio time) / playbackRate instead of Tone.getTransport().seconds
+      // so that rate-change restarts read the correct Transport position before useAudioPlayer's
+      // React effect has had a chance to compensate Transport.seconds for the new rate.
+      const startAt = Math.max(loopStart, currentTime / playbackRate);
+
+      // Calibrate beat index to the start position so accents align with measure downbeats.
+      // This covers: first play mid-song, metronome toggle while playing, and param changes.
+      const elapsed = Math.max(0, currentTime / playbackRate - loopStart);
+      beatIndexRef.current = Math.round(elapsed / beatInterval) % beatsPerMeasure;
+
+      const loop = new Tone.Loop((time) => {
+        const accent = beatIndexRef.current % beatsPerMeasure === 0;
+        const synth = accent ? accentSynthRef.current : normalSynthRef.current;
+        synth?.triggerAttackRelease(accent ? 1000 : 600, "32n", time);
+        beatIndexRef.current += 1;
+      }, beatInterval);
+
+      loopRef.current = loop;
+      loop.start(startAt);
+    };
+
+    const unsubPlayback = useStore.subscribe(
       (s) => ({ isPlaying: s.isPlaying, metronomeEnabled: s.metronomeEnabled }),
       ({ isPlaying, metronomeEnabled }) => {
-        if (isPlaying && metronomeEnabled) {
-          startLoop();
-        } else {
-          stopLoop();
-        }
+        if (isPlaying && metronomeEnabled) startLoop();
+        else stopLoop();
       },
       { equalityFn: shallow }
     );
-    return unsub;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
-  // ── Rebuild loop when BPM / time signature / rate / offset changes ───────
-
-  useEffect(() => {
-    const unsub = useStore.subscribe(
+    const unsubParams = useStore.subscribe(
       (s) => ({
         bpm: s.bpm,
         timeSignature: s.timeSignature,
@@ -113,45 +103,40 @@ export function useMetronome() {
       },
       { equalityFn: shallow }
     );
-    return unsub;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
-  // ── Stop loop when a new project is loading (Transport.cancel() is called) ──
-
-  useEffect(() => {
-    const unsub = useStore.subscribe(
+    // Transport.cancel() is called on project load, which destroys all scheduled
+    // events and makes our loop reference stale — stop before that happens.
+    const unsubStatus = useStore.subscribe(
       (s) => s.status,
       (status) => {
-        if (status === "loading") stopLoop();
+        if (status === "loading") {
+          stopLoop();
+          beatIndexRef.current = 0;
+        }
       }
     );
-    return unsub;
-   
-  }, []);
 
-  // ── Recalibrate beat index on seek so accents stay aligned ───────────────
-
-  useEffect(() => {
-    const unsub = useStore.subscribe(
+    const unsubSeek = useStore.subscribe(
       (s) => s.seekTarget,
       (seekTarget) => {
         if (seekTarget === null) return;
-        const { bpm, timeSignature, playbackRate, firstMeasureStart } = useStore.getState();
-        const beatsPerMeasure = TIME_SIGNATURE_BEATS[timeSignature];
-        const beatInterval = (60 / bpm) / playbackRate;
-        const offsetSeconds = firstMeasureStart / playbackRate;
-        const elapsed = Math.max(0, seekTarget / playbackRate - offsetSeconds);
-        beatIndexRef.current = Math.round(elapsed / beatInterval) % beatsPerMeasure;
+        // seek() atomically sets currentTime = seekTarget, so startLoop() will calibrate
+        // beatIndexRef from the new position. Restarting the loop also re-anchors its
+        // AudioContext phase so clicks land on beat boundaries after the seek.
+        if (loopRef.current) {
+          const { isPlaying, metronomeEnabled } = useStore.getState();
+          stopLoop();
+          if (isPlaying && metronomeEnabled) startLoop();
+        }
       }
     );
-    return unsub;
-  }, []);
 
-  // ── Cleanup on unmount ───────────────────────────────────────────────────
-
-  useEffect(() => {
-    return () => stopLoop();
-   
+    return () => {
+      unsubPlayback();
+      unsubParams();
+      unsubStatus();
+      unsubSeek();
+      stopLoop();
+    };
   }, []);
 }

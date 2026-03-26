@@ -24,6 +24,7 @@ const resetStore = () =>
     loopEnd: 0,
     currentTime: 0,
     seekTarget: null,
+    metronomeEnabled: false,
     currentDialog: "none",
     currentPath: "/",
   });
@@ -67,6 +68,12 @@ describe("createProject", () => {
     expect(s.currentTime).toBe(0);
     expect(s.loopStart).toBe(0);
   });
+
+  it("resets metronomeEnabled to false", () => {
+    useStore.setState({ metronomeEnabled: true });
+    get().createProject("Test", "blob:url", 10);
+    expect(get().metronomeEnabled).toBe(false);
+  });
 });
 
 // ─── loadProject ─────────────────────────────────────────────────────────────
@@ -102,6 +109,12 @@ describe("loadProject", () => {
     expect(s.currentTime).toBe(0);
     expect(s.loopEnd).toBe(30);
   });
+
+  it("resets metronomeEnabled to false", () => {
+    useStore.setState({ metronomeEnabled: true });
+    get().loadProject(persistedState, "blob:saved");
+    expect(get().metronomeEnabled).toBe(false);
+  });
 });
 
 // ─── setProjectReady ──────────────────────────────────────────────────────────
@@ -111,6 +124,12 @@ describe("setProjectReady", () => {
     useStore.setState({ status: "loading" });
     get().setProjectReady();
     expect(get().status).toBe("ready");
+  });
+
+  it("does not change metronomeEnabled", () => {
+    useStore.setState({ status: "loading", metronomeEnabled: false });
+    get().setProjectReady();
+    expect(get().metronomeEnabled).toBe(false);
   });
 });
 
@@ -129,6 +148,12 @@ describe("resetProject", () => {
     expect(s.duration).toBe(0);
     expect(s.isPlaying).toBe(false);
     expect(s.currentTime).toBe(0);
+  });
+
+  it("resets metronomeEnabled to false", () => {
+    useStore.setState({ metronomeEnabled: true });
+    get().resetProject();
+    expect(get().metronomeEnabled).toBe(false);
   });
 });
 
@@ -287,6 +312,13 @@ describe("audio actions", () => {
     get().seek(5);
     get().clearSeekTarget();
     expect(get().seekTarget).toBeNull();
+  });
+
+  it("setMetronomeEnabled toggles metronomeEnabled", () => {
+    get().setMetronomeEnabled(true);
+    expect(get().metronomeEnabled).toBe(true);
+    get().setMetronomeEnabled(false);
+    expect(get().metronomeEnabled).toBe(false);
   });
 });
 

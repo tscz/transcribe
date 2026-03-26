@@ -159,6 +159,7 @@ export const useStore = create<AppStore>()(
         measures,
         sections,
         isPlaying: false,
+        metronomeEnabled: false,
         currentTime: 0,
         loopStart: 0,
         loopEnd: duration,
@@ -177,6 +178,7 @@ export const useStore = create<AppStore>()(
         sections: state.sections,
         measures: state.measures,
         isPlaying: false,
+        metronomeEnabled: false,
         currentTime: 0,
         loopStart: 0,
         loopEnd: state.duration,
@@ -194,6 +196,7 @@ export const useStore = create<AppStore>()(
         measures: EMPTY_MEASURES,
         duration: 0,
         isPlaying: false,
+        metronomeEnabled: false,
         currentTime: 0,
       }),
 
